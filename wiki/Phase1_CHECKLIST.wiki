@@ -1,0 +1,11 @@
+#summary Just a list of what all needs to be completed.
+
+= Introduction =
+
+Here is a general list of the things we need to complete in order to finish Phase 1.
+
+
+= Details =
+
+Create a virtual CPU
+Create a memory manager
