@@ -7,7 +7,8 @@
   #.Decompose the project into 3 subtasks: 
     #) The Driver/Loader/Long-term sch subtasks, 
     #) The Short-term/Dispatcher/Context-Switcher subtask and 
-    #) the CPU and associated modules. (Then define all the interfaces and data structures to be shared by all the 3 major components, and integrate them into your simulator). 
+    #) the CPU and associated modules. 
+  #.Then define all the interfaces and data structures to be shared by all the 3 major components, and integrate them into your simulator). 
   #.Download the set of tasks/programs (in the program-data-file) to be executed from the course website. 
   #.Design and write the code for the short-term loader (you may take advantage of the loader-module in the given code).
   #.Add a program cache in the CPU module and compile it. And when the scheduler assigns a process to the CPU, the whole process must be loaded into the program cache of the CPU from the RAM. Run this single CPU as a single thread (a uniprocessor system).
