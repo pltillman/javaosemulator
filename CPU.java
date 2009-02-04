@@ -74,6 +74,9 @@ public class CPU {
                 b_reg = Byte.parseByte(instr_req.substring(8,11));
                 d_reg = Byte.parseByte(instr_req.substring(12,15));
                 address = Integer.parseInt(instr_req.substring(16,31));
+
+                //Effective Address = Content (B-reg) + Address
+                //effective_addr( (content(b_reg))+ address );
                 break;
             case 10:
                 address = Integer.parseInt(instr_req.substring(8,31));
@@ -94,7 +97,7 @@ public class CPU {
     //************************************************
     //
     //************************************************
-    protected void execute(int opCode) {
+    protected void execute(int o) {
 
         if (opCode != 0) {
 
@@ -102,7 +105,7 @@ public class CPU {
 
                 case 0:
                     //Reads content of I/P buffer into a accumulator
-
+                    
                     break;
 
                 case 1:
@@ -248,6 +251,10 @@ public class CPU {
         }
     }
 
+    private void effective_addr(int i) {
+
+        
+    }
 
     private void calc_arith(int i) {
 

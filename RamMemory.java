@@ -10,8 +10,8 @@ public class RamMemory {
 
     }
 
-    public void writeData(int d) {
-
+    public void writeData(int loc, Byte data) {
+        ram[loc] = data;
     }
 
     public int readData(int i) {
