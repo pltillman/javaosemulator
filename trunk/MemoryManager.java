@@ -1,10 +1,16 @@
 
+//****************************************************
+//  Default constructor
+//****************************************************
+public class MemoryManager {
 
-public final class MemoryManager {
+    private DiskMemory disk;
+    private RamMemory ram;
 
-    DiskMemory disk;
-    RamMemory ram;
-    
+
+    //****************************************************
+    //  Default constructor
+    //****************************************************
     public MemoryManager() {
 
         disk = new DiskMemory(2048);
@@ -12,26 +18,38 @@ public final class MemoryManager {
 
     }
 
-    public void writeDiskData(int d) {
+    //****************************************************
+    //  This writes the given data to the disk starting at
+    //  the location provided.
+    //****************************************************
+    public void writeDiskData(int loc, Byte data) {
 
-        disk.writeData(d);
+        disk.writeData(loc, data);
 
     }
 
-
-    public int readDiskData(int r) {
+    //****************************************************
+    //  Returns a string representation of the hex code
+    //****************************************************
+    public String readDiskData(int r) {
 
         return disk.readData(r);
 
     }
     
+    //****************************************************
+    //  Default constructor
+    //****************************************************
+    public void writeRamData(int loc, Byte data) {
 
-    public void writeRamData(int d) {
-
-        ram.writeData(d);
+        ram.writeData(loc, data);
         
     }
 
+
+    //****************************************************
+    //  Default constructor
+    //****************************************************
     public int readRamData(int r) {
 
         return ram.readData(r);

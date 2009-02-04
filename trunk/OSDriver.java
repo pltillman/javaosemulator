@@ -4,24 +4,29 @@ import java.io.IOException;
 
 public class OSDriver {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+    private static Loader loader;
+    public static MemoryManager MemManager;
+    private static ProcessControlBlock PCB;
 
-        //create ram, disk
-        
+    public static void main(String[] args) throws SystemError {
 
+        //Create Memory Manager -- disk, ram,
+        MemManager = new MemoryManager();
 
-        //create a new processor
+        //Create the Process Control Block
+        PCB = new ProcessControlBlock;
 
-
+        //Create a new CPU
+        CPU cpu1 = new CPU();
 
         File pFile = new File("DataFile1.txt");
-        Loader loader = new Loader();
+        File pFile2 = new File("DataFile2.txt");
+
+        //load the program files
+        loader = new Loader(pFile, pFile2);
 
         try {
-            loader.load(pFile);
+            loader.load();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -29,7 +34,7 @@ public class OSDriver {
 
 
         //call scheduler
-
+        
 
 
 
