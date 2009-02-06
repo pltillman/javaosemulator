@@ -4,7 +4,7 @@
 //****************************************************
 public class MemoryManager {
 
-    private DiskMemory disk;
+    public DiskMemory disk;
     private RamMemory ram;
 
 
@@ -22,7 +22,7 @@ public class MemoryManager {
     //  This writes the given data to the disk starting at
     //  the location provided.
     //****************************************************
-    public void writeDiskData(int loc, Byte data) {
+    public synchronized void writeDiskData(int loc, String data) {
 
         disk.writeData(loc, data);
 
@@ -31,7 +31,7 @@ public class MemoryManager {
     //****************************************************
     //  Returns a string representation of the hex code
     //****************************************************
-    public String readDiskData(int r) {
+    public synchronized String readDiskData(int r) {
 
         return disk.readData(r);
 
@@ -40,7 +40,7 @@ public class MemoryManager {
     //****************************************************
     //  Default constructor
     //****************************************************
-    public void writeRamData(int loc, Byte data) {
+    public synchronized void writeRamData(int loc, String data) {
 
         ram.writeData(loc, data);
         
@@ -50,9 +50,17 @@ public class MemoryManager {
     //****************************************************
     //  Default constructor
     //****************************************************
-    public int readRamData(int r) {
+    public synchronized String readRamData(int r) {
 
         return ram.readData(r);
 
+    }
+
+    public String printDisk() {
+        return disk.toString();
+    }
+
+    public String printRam() {
+        return ram.toString();
     }
 }

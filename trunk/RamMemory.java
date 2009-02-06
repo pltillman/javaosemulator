@@ -1,22 +1,42 @@
 
-
+    //****************************************************
+    //  Default constructor
+    //****************************************************
 public class RamMemory {
 
-    private final Byte[] ram;
+    private String[] ram;
 
+
+    //****************************************************
+    //  Default constructor
+    //****************************************************
     public RamMemory(int s) {
         
-        ram = new Byte[s];
+        ram = new String[s];
 
     }
 
-    public void writeData(int loc, Byte data) {
+    //****************************************************
+    //  Default constructor
+    //****************************************************
+    public void writeData(int loc, String data) {
+        
         ram[loc] = data;
     }
 
-    public int readData(int i) {
 
-        return i;
+    //****************************************************
+    //  Default constructor
+    //****************************************************
+    public String readData(int i) {
 
+        return ram[i];
+
+    }
+
+
+    public String toString() {
+
+        return ram.toString();
     }
 }

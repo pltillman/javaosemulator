@@ -1,26 +1,36 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 
+//****************************************************
+//  Default constructor
+//****************************************************
 public class OSDriver {
 
     private static Loader loader;
     public static MemoryManager MemManager;
-    private static ProcessControlBlock PCB;
+    public static ProcessControlBlock PCB;
 
+
+    //****************************************************
+    //  Begin main() 
+    //****************************************************
     public static void main(String[] args) throws SystemError {
 
+        FileReader pFile;
+        FileReader pFile2;
         //Create Memory Manager -- disk, ram,
         MemManager = new MemoryManager();
 
         //Create the Process Control Block
-        PCB = new ProcessControlBlock;
+        PCB = new ProcessControlBlock();
 
         //Create a new CPU
-        CPU cpu1 = new CPU();
+        //CPU cpu1 = new CPU();
 
-        File pFile = new File("DataFile1.txt");
-        File pFile2 = new File("DataFile2.txt");
+        try {
+            pFile = new FileReader("DataFile1.txt");
+            pFile2 = new FileReader("DataFile2.txt");
+
 
         //load the program files
         loader = new Loader(pFile, pFile2);
@@ -30,6 +40,24 @@ public class OSDriver {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        for (int u=0; u<2048; u++) {
+            System.out.println(MemManager.readDiskData(u));
+        }
+
+        System.out.println(MemManager.readRamData(2));
+        System.out.println(MemManager.printDisk());
+        PCB.printPCB();
+
+
+
+        } catch ( FileNotFoundException fnfe ) {
+            fnfe.printStackTrace();
+
+        } catch ( IOException ioe ) {
+            ioe.printStackTrace();
+        }
+
 
 
 

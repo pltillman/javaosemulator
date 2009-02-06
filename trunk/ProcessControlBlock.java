@@ -1,5 +1,5 @@
 
-import java.util.Queue;
+import java.util.ArrayList;
 
 //****************************************************
 //  File                 ProcessControlBlock.java
@@ -8,7 +8,7 @@ import java.util.Queue;
 //****************************************************
 public class ProcessControlBlock {
 
-    private static Queue jobQueue;
+    private static ArrayList<PCB_block> jobQueue;
     private static String [][] jobQ;
     private PCB_block pcb_e;
     private static int count;
@@ -19,6 +19,7 @@ public class ProcessControlBlock {
     public ProcessControlBlock() {
         //jobQ = new String[];
         count = 0;
+        jobQueue = new ArrayList<PCB_block>();
     }
 
     //****************************************************
@@ -26,10 +27,10 @@ public class ProcessControlBlock {
     //  added to the queue once the data related data
     //  to the object.
     //****************************************************
-    public void createJob(String i, String s, String p) {
+    public void createJob(int i, int s, int p) {
 
         //Integer.parseInt(s,16)
-        pcb_e = new PCB_block(Integer.parseInt(i), Integer.parseInt(s), Integer.parseInt(s,16));
+        pcb_e = new PCB_block(i, s, p);
 
     }
 
@@ -37,9 +38,9 @@ public class ProcessControlBlock {
     //  Adds the data metadata to the object and then adds
     //  the object to the queue.
     //****************************************************
-    public void addMeta(String i, String o, String t) {
+    public void addMeta(int i, int o, int t) {
 
-        pcb_e.addMetadata(Integer.parseInt(i,16), Integer.parseInt(o,16), Integer.parseInt(t,16));
+        pcb_e.addMetadata(i, o, t);
         jobQueue.add(pcb_e);
         count++;
 
@@ -49,7 +50,7 @@ public class ProcessControlBlock {
     //  Returns the next job in the queue.
     //****************************************************
     public Object getNextJob() {
-        return jobQueue.peek();
+        return jobQueue;
     }
 
     //****************************************************
@@ -59,6 +60,25 @@ public class ProcessControlBlock {
         jobQueue.remove(j);
     }
 
+    public void printPCB() {
+
+        //System.out.println(jobQueue.toString());
+        for (PCB_block v : jobQueue) {
+            System.out.println("JobID: " + v.getJobID() + "\tJobPriority: " +
+                    v.getJobPriority() + "\tJobSize: " + v.getJobSize());
+        }
+    }
+//    public PCB_block findJob(int i) {
+//
+//        for (PCB_block tmp : jobQueue) {
+//            if (tmp.getJobID() == i) {
+//                return tmp;
+//            } else {
+//                break;
+//            }
+//        }
+//
+//    }
 //    public Object getShortestJob() {
 //        int target = 0;
 //
@@ -81,6 +101,10 @@ public class ProcessControlBlock {
         private int output_buffer;
         private int tmp_buffer;
         private Boolean status;
+        private int mem_loc; //added by the schedule once the job is
+                             //placed in memory. indicates what
+                             //physical address in ram the job begins.
+
         PCB_block(int i, int s, int p) {
             this.jobID = i;
             this.jobSize = s;
@@ -105,8 +129,23 @@ public class ProcessControlBlock {
         public Boolean getStatus() {
             return this.status;
         }
+        public int get_Input_buffer(int jID) {
+            return this.input_buffer;
+        }
+        public int get_Output_buffer(int jID) {
+            return this.output_buffer;
+        }
+        public int get_tmp_buffer(int jID) {
+            return this.tmp_buffer;
+        }
         public void terminate(Boolean b) {
             this.status = b;
+        }
+        public void set_mem_loc(int k) {
+            this.mem_loc = k;
+        }
+        public int get_mem_loc(int jID) {
+            return this.mem_loc;
         }
     }
 }
