@@ -16,6 +16,12 @@ public class CPU {
     private int pc;
 
     private int effective_addr;
+
+    private int STATE;
+    private final int WAITING = 1;
+    private final int RUNNING = 2;
+    
+
     //************************************************
     //
     //} thrown into a big while (not 'halt' opcode).
