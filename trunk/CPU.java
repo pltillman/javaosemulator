@@ -14,6 +14,8 @@ public class CPU {
 
     private int[] reg_Array;
     private int pc;
+
+    private int effective_addr;
     //************************************************
     //
     //} thrown into a big while (not 'halt' opcode).
@@ -154,23 +156,23 @@ public class CPU {
                     break;
                 case 11:
                     //Transfers address/data directly into a register
-
+                    //immediate - MOVI
                     break;
                 case 12:
                     //Adds a data directly to the content of a register
-                    
+                    //ADDI
                     break;
                 case 13:
                     //Multiplies a data directly to the content of a register
-
+                    //MULI
                     break;
                 case 14:
                     //Divides a data directly to the content of a register
-
+                    //DIVI
                     break;
                 case 15:
                     //Loads a data/address directly to the content of a register
-
+                    //immediate - LDI
                     break;
                 case 16:
                     //Sets the D-reg to 1 if  first S-reg is less than second S-reg, and 0 otherwise
@@ -186,7 +188,7 @@ public class CPU {
                     break;
                 case 19:
                     //Does nothing and moves to next instruction
-                    pc +=4;
+                    pc++;
                     break;
                 case 20:
                     //Jumps to a specified location
@@ -194,35 +196,47 @@ public class CPU {
                     break;
                 case 21:
                     //Branches to an address when content of B-reg = D-reg
-
+                    if (d_reg == b_reg) {
+                        pc = address;
+                    }
                     break;
                 case 22:
                     //Branches to an address when content of B-reg <> D-reg
-
+                    if (b_reg != d_reg) {
+                        pc = address;
+                    }
                     break;
                 case 23:
                     //Branches to an address when content of D-reg = 0
-
+                    if (d_reg == 0) {
+                        pc = address;
+                    }
                     break;
                 case 24:
                     //Branches to an address when content of B-reg <> 0
-
+                    if (b_reg != 0) {
+                        pc = address;
+                    }
                     break;
                 case 25:
                     //Branches to an address when content of B-reg > 0
-
+                    if (b_reg > 0) {
+                        pc = address;
+                    }
                     break;
                 case 26:
                     //Branches to an address when content of B-reg < 0
-
+                    if (b_reg < 0) {
+                        pc = address;
+                    }
                     break;
             }
         }
     }
 
-    private void effective_addr(int i) {
+    private int effective_addr(int i) {
 
-        
+        return (effective_addr = b_reg + address);
     }
 
     private void calc_arith(int i) {
