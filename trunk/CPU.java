@@ -4,8 +4,8 @@
 public class CPU {
 
 
-    private int opCode;
-    private int type;
+    private byte opCode;
+    private byte type;
     private byte s1_reg;
     private byte s2_reg;
     private byte d_reg;
@@ -20,7 +20,10 @@ public class CPU {
     private int STATE;
     private final int WAITING = 1;
     private final int RUNNING = 2;
-    
+
+
+    //NEED SOMETHING TO HOLD THE JOB SIZE IN RAM
+
 
     //************************************************
     //
@@ -45,11 +48,17 @@ public class CPU {
 
 
     //************************************************
-    //
+    //  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
+    //  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
+    //  STRING FOR PROCESSESING BY DECODE()
     //************************************************
-    protected String fetch(int r) {
-
-        return OSDriver.MemManager.readRamData(r);
+    protected String fetch(int pc) {
+        String instruction = new String();
+        for (int i=0; i<5; i++) {
+            byte line = OSDriver.MemManager.readRamData(pc);
+            instruction += line;
+        }
+        return instruction;
         
     }
 
@@ -69,8 +78,8 @@ public class CPU {
 
 
         //EXTRACT THE TYPE AND OPCODE FROM THE INSTRUCTION
-        this.type = Integer.parseInt(instr_req.substring(0,1));
-        this.opCode = Integer.parseInt(instr_req.substring(2,7));
+        this.type = Byte.parseByte(instr_req.substring(0,1));
+        this.opCode = Byte.parseByte(instr_req.substring(2,7));
 
 
         //USE TYPE TO DETERMINE HOW TO EXTRACT THE REMAINING COMPONENTS
@@ -87,8 +96,6 @@ public class CPU {
                 if (address > 0) {
                     b_reg = 0;
                 }
-                //Effective Address = Content (B-reg) + Address
-                //effective_addr( (content(b_reg))+ address );
                 break;
             case 10:
                 address = Integer.parseInt(instr_req.substring(8,31));
@@ -190,6 +197,8 @@ public class CPU {
                     break;
                 case 18:
                     //Logical end of program
+                    int job =0;
+                    pc = OSDriver.PCB.get(job).getJobSize();
                     terminate(1);
                     break;
                 case 19:
@@ -198,7 +207,8 @@ public class CPU {
                     break;
                 case 20:
                     //Jumps to a specified location
-                    jump(address);
+                    pc = address;
+                    //OSDriver.tools.effective_addr(address));
                     break;
                 case 21:
                     //Branches to an address when content of B-reg = D-reg
@@ -240,10 +250,7 @@ public class CPU {
         }
     }
 
-    private int effective_addr(int i) {
 
-        return (effective_addr = b_reg + address);
-    }
 
     private void calc_arith(int i) {
 
@@ -278,8 +285,10 @@ public class CPU {
                 byte tmp_reg = s1_reg;
                 s1_reg = s2_reg;
                 s2_reg = tmp_reg;
+                break;
+            default:
+                break;
 
-        
         }
 
     }

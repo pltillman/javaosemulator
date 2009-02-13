@@ -37,12 +37,7 @@ public class Loader {
                 System.out.println("loading 2nd data file");
             }
             
-
             //System.out.println(str.toString());
-
-
-            
-
             
             //input2.close();
 
@@ -134,9 +129,8 @@ public class Loader {
             OSDriver.MemManager.writeDiskData(loc, s);
 
         } else if (o == 1) {
-            //add data to input buffer
-            OSDriver.MemManager.writeRamData(loc, s);
-
+            
+            //OSDriver.MemManager.writeRamData(loc, s);
         }
         System.out.println("data added");
     }

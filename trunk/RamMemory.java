@@ -4,7 +4,7 @@
     //****************************************************
 public class RamMemory {
 
-    private String[] ram;
+    private byte[] ram;
 
 
     //****************************************************
@@ -12,14 +12,14 @@ public class RamMemory {
     //****************************************************
     public RamMemory(int s) {
         
-        ram = new String[s];
+        ram = new byte[s];
 
     }
 
     //****************************************************
     //  Default constructor
     //****************************************************
-    public void writeData(int loc, String data) {
+    public void writeData(int loc, byte data) {
         
         ram[loc] = data;
     }
@@ -28,7 +28,7 @@ public class RamMemory {
     //****************************************************
     //  Default constructor
     //****************************************************
-    public String readData(int i) {
+    public byte readData(int i) {
 
         return ram[i];
 

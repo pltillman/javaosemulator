@@ -9,6 +9,8 @@ public class OSDriver {
     private static Loader loader;
     public static MemoryManager MemManager;
     public static ProcessControlBlock PCB;
+    public static OSToolkit tools;
+
 
 
     //****************************************************
@@ -23,6 +25,9 @@ public class OSDriver {
 
         //Create the Process Control Block
         PCB = new ProcessControlBlock();
+
+        //Create an instance of the toolkit
+        tools = new OSToolkit();
 
         //Create a new CPU
         //CPU cpu1 = new CPU();
