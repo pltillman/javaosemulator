@@ -27,10 +27,10 @@ public class ProcessControlBlock {
     //  added to the queue once the data related data
     //  to the object.
     //****************************************************
-    public void createJob(int i, int s, int p) {
+    public void createJob(int i, int s, int p, int a) {
 
         //Integer.parseInt(s,16)
-        pcb_e = new PCB_block(i, s, p);
+        pcb_e = new PCB_block(i, s, p, a);
 
     }
 
@@ -55,8 +55,8 @@ public class ProcessControlBlock {
     public PCB_block getNextJob() {
         PCB_block tmp = jobQueue.get(0);
         jobQueue.remove(jobQueue.get(0));
+        
         return tmp;
-
     }
 
     //****************************************************

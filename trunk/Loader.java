@@ -13,6 +13,7 @@ public class Loader {
     FileReader file_1;
     FileReader file_2;
     private static int count=0;
+    protected int addr;
 
     public Loader(FileReader f1, FileReader f2) {
 
@@ -48,6 +49,8 @@ public class Loader {
     }
 
     private Boolean readDataFile(BufferedReader in) {
+
+        addr = 0;
 
         try {
             String str = in.readLine();
@@ -105,7 +108,8 @@ public class Loader {
             int id = Integer.parseInt(token.nextToken(),16);
             int size = Integer.parseInt(token.nextToken(),16);
             int priority = Integer.parseInt(token.nextToken(),16);
-            OSDriver.PCB.createJob(id, size, priority);
+            OSDriver.PCB.createJob(id, size, priority, addr);
+            addr += size-1;
         } else if (o == 1) {
             //add job data to PCB
             int input = Integer.parseInt(token.nextToken(),16);
