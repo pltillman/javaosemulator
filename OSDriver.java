@@ -37,22 +37,32 @@ public class OSDriver {
             pFile2 = new FileReader("DataFile2.txt");
 
 
-        //load the program files
-        loader = new Loader(pFile, pFile2);
+            //load the program files
+            loader = new Loader(pFile, pFile2);
 
-        try {
-            loader.load();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+            try {
+                loader.load();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
 
-        for (int u=0; u<2048; u++) {
-            System.out.println(MemManager.readDiskData(u));
-        }
 
-        System.out.println(MemManager.readRamData(2));
-        System.out.println(MemManager.printDisk());
-        PCB.printPCB();
+
+//            while (/*there are more jobs */) {
+//                // call short term scheduler
+//            }
+
+
+
+
+            
+            for (int u=0; u<2048; u++) {
+                System.out.println(MemManager.readDiskData(u));
+            }
+
+            System.out.println(MemManager.readRamData(2));
+            System.out.println(MemManager.printDisk());
+            PCB.printPCB();
 
 
 
