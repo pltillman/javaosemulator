@@ -43,10 +43,10 @@ public class PCB_block {
     public int getStatus() {
         return this.status;
     }
-    public int getJobAddress() {
+    public int getDiskAddress() {
         return this.address;
     }
-    public void setJobAddress(int a) {
+    public void setDiskAddress(int a) {
         this.address = a;
     }
     public Boolean setStatus(int s) {

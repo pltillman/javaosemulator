@@ -40,7 +40,7 @@ public class MemoryManager {
     //****************************************************
     //  Default constructor
     //****************************************************
-    public synchronized void writeRamData(int loc, byte data) {
+    public synchronized void writeRamData(int loc, short data) {
 
         ram.writeData(loc, data);
         
@@ -50,7 +50,7 @@ public class MemoryManager {
     //****************************************************
     //  Default constructor
     //****************************************************
-    public synchronized byte readRamData(int r) {
+    public synchronized short readRamData(int r) {
 
         return ram.readData(r);
 

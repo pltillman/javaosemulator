@@ -4,7 +4,7 @@
     //****************************************************
 public class RamMemory {
 
-    private byte[] ram;
+    private short[] ram;
 
 
     //****************************************************
@@ -12,14 +12,14 @@ public class RamMemory {
     //****************************************************
     public RamMemory(int s) {
         
-        ram = new byte[s];
+        ram = new short[s];
 
     }
 
     //****************************************************
     //  Default constructor
     //****************************************************
-    public void writeData(int loc, byte data) {
+    public void writeData(int loc, short data) {
         
         ram[loc] = data;
     }
@@ -28,7 +28,7 @@ public class RamMemory {
     //****************************************************
     //  Default constructor
     //****************************************************
-    public byte readData(int i) {
+    public short readData(int i) {
 
         return ram[i];
 
