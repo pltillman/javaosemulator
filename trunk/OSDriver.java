@@ -10,6 +10,7 @@ public class OSDriver {
     public static MemoryManager MemManager;
     public static ProcessControlBlock PCB;
     public static OSToolkit tools;
+    public static LongTermScheduler LTS;
 
 
 
@@ -28,6 +29,8 @@ public class OSDriver {
 
         //Create an instance of the toolkit
         tools = new OSToolkit();
+
+        
 
         //Create a new CPU
         //CPU cpu1 = new CPU();
@@ -53,17 +56,18 @@ public class OSDriver {
 //            }
 
 
-
-
             
             for (int u=0; u<2048; u++) {
-                System.out.println(MemManager.readDiskData(u));
+                //System.out.println(MemManager.readDiskData(u));
             }
 
-            System.out.println(MemManager.readRamData(2));
-            System.out.println(MemManager.printDisk());
-            PCB.printPCB();
+            //System.out.println(MemManager.readRamData(2));
+            //System.out.println(MemManager.printDisk());
+            //PCB.printPCB();
 
+            LTS = new LongTermScheduler();
+            
+            //Scheduler sched = new Scheduler();
 
 
         } catch ( FileNotFoundException fnfe ) {

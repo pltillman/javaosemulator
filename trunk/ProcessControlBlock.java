@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 //****************************************************
 //  File                 ProcessControlBlock.java
@@ -8,18 +9,18 @@ import java.util.ArrayList;
 //****************************************************
 public class ProcessControlBlock {
 
-    private static ArrayList<PCB_block> jobQueue;
+    private static Stack<PCB_block> jobQueue;
     private static String [][] jobQ;
     private PCB_block pcb_e;
     private static int count;
-
+    
     //****************************************************
     //  Default constructor
     //****************************************************
     public ProcessControlBlock() {
         //jobQ = new String[];
         count = 0;
-        jobQueue = new ArrayList<PCB_block>();
+        jobQueue = new Stack<PCB_block>();
     }
 
     //****************************************************
@@ -46,17 +47,24 @@ public class ProcessControlBlock {
 
     }
 
-    public PCB_block get(int i) {
-        return jobQueue.get(i);
+    public int getJobCount() {
+        return count;
+    }
+    public PCB_block getJob(int i) {
+
+        return jobQueue.get(--i);
     }
     //****************************************************
     //  Returns the next job in the queue.
     //****************************************************
     public PCB_block getNextJob() {
-        PCB_block tmp = jobQueue.get(0);
-        jobQueue.remove(jobQueue.get(0));
-        
-        return tmp;
+        //PCB_block tmp = jobQueue.get(0);
+        return jobQueue.pop();
+//        if (tmp != null)
+//            return tmp;
+//        jobQueue.remove(jobQueue.get(0));
+//        System.out.println("ct." + count);
+//        return tmp;
     }
 
     //****************************************************

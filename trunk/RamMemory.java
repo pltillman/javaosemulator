@@ -36,7 +36,9 @@ public class RamMemory {
 
 
     public String toString() {
-
+        for (int i=0; i<ram.length; i++) {
+            System.out.println(ram[i]);
+        }
         return ram.toString();
     }
 }

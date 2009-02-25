@@ -12,9 +12,25 @@ Effective-Address method.*/
 
 public class Scheduler {
 
+    
     public Scheduler() {
 
+        //for (int i=0; i<2048; i++) {
+            String hexString = OSDriver.MemManager.readDiskData(0);
+            System.out.println("hexString: " + hexString);
+            hexString = hexString.substring(2);
+            System.out.println("hexString: " + hexString);
+            //String binaryBits = Integer.toBinaryString(Integer.parseInt(hexString, 16));
+            //System.out.println("binaryBits: " + binaryBits);
 
+            String t = "0xC050005C";
+            String p = OSDriver.tools.hexToByte(t);
+            System.out.println("binary " + p);
+            //int t1 = Integer.parseInt(t, 16);
+            //System.out.println(t1);
+            //String tt = Integer.toBinaryString(Integer.parseInt(t,16));
+            //System.out.println(tt);
+        //}
     }
 
     
