@@ -35,7 +35,7 @@ public class Loader {
             if (readDataFile(input2) ) {
                 input2.close();
                 //readDataFile(input2);
-                System.out.println("loading 2nd data file");
+                //System.out.println("loading 2nd data file");
             }
             
             //System.out.println(str.toString());
@@ -117,7 +117,7 @@ public class Loader {
             int temp = Integer.parseInt(token.nextToken(),16);
             OSDriver.PCB.addMeta(input, output, temp);
         }
-        System.out.println("job added");
+        //System.out.println("job added");
     }
 
     //****************************************************
@@ -136,6 +136,6 @@ public class Loader {
             
             //OSDriver.MemManager.writeRamData(loc, s);
         }
-        System.out.println("data added");
+        //System.out.println("data added");
     }
 }

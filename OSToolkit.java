@@ -41,6 +41,43 @@ public class OSToolkit {
     }
 
 
+    protected String hexToByte(String h) {
+
+        byte[] hexByte = new byte[4];
+        String tmp = h.substring(2);
+        byte tbyte;
+        String bin = "";
+        for (int i=0; i<tmp.length();i++) {
+            System.out.println("bin: " + bin);
+            bin += Integer.toBinaryString(Character.digit(h.charAt(i),16));
+            System.out.println(i);
+
+        }
+        System.out.println(bin);
+        return bin;
+
+
+
+
+
+
+//        while (!h.equals("")) {
+//
+//            for (int i = 0,j = h.length(); i < j; i++){
+//                //you may want to just append each byte instead of printing it
+//                hexByte[i] = Integer.toBinaryString(Character.digit(h.charAt(i),16));
+//            }
+//
+//            System.out.println();
+//        }
+
+
+
+    }
+
+
+
+    
     protected int content(byte b) {
 
         return OSDriver.MemManager.readRamData(b);
