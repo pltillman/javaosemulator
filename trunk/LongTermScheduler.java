@@ -37,12 +37,15 @@ public class LongTermScheduler {
         System.out.println("Start: " + jobStart);
         System.out.println("Size: " + jobSize);
         
-        while ( Memleft>=(jobSize*4) && CURRJOB<=OSDriver.PCB.getJobCount() ) {
-            job.set_mem_start(loc);
-            int s = jobStart;
-            while( jobStart < (jobStart + jobSize) ) {
-                System.out.println("Threshold: " + (jobSize*4) + " of " + jobSize+jobStart);
-                String hexString = OSDriver.MemManager.readDiskData(s);
+        while ( (Memleft>=(jobSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
+                job.set_mem_start(loc);
+           // int s = jobStart;
+            int v = jobStart+jobSize;
+             //while( jobStart < (v)) {
+            System.out.println("Threshold: " + (jobSize*4) + " of " + v);
+
+            for (int p=jobStart; p<v;p++){
+                String hexString = OSDriver.MemManager.readDiskData(p);
                 hexString = hexString.substring(2);  // so we need to strip of the prefix 0x
                 //System.out.println("hexString: " + hexString);  // then print again to see that it's just 0000dd99
                 long t = Long.parseLong(hexString, 16);
@@ -57,10 +60,6 @@ public class LongTermScheduler {
                 }
                 //System.out.println("Binary bits: " + binaryBits);
 
-                if (loc > 1024) {
-                    System.out.println("location is greater than ram size: " + loc);
-                    System.exit(1);
-                }
                 short binaryBits1 = Short.valueOf(binaryBits.substring(0,7), 2);
                 //System.out.println(binaryBits1);
                 System.out.println("Location: " + loc);
@@ -80,12 +79,14 @@ public class LongTermScheduler {
                 //loc += 4;
 
                 Memleft -= 4;
-                s++;
+                //s++;
             }
+             
             System.out.println("Added job: " + CURRJOB + " at address: " +
                     jobStart + "-" + loc);
             CURRJOB++;
             job.set_mem_end(loc);
+            System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
             jobQ.AddQueue(job);
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();
