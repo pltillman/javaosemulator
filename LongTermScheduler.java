@@ -17,6 +17,8 @@ public class LongTermScheduler {
     private static int Memleft = 1024;
     private int loc= 0;
     private int CURRJOB;
+    private int jobStart;
+    private int jobSize;
 
     public LongTermScheduler() {
         jobQ = new CircularArray(10);
@@ -29,19 +31,20 @@ public class LongTermScheduler {
         PCB_block job = OSDriver.PCB.getJob(++CURRJOB);
         System.out.println("job count: " + OSDriver.PCB.getJobCount());
 
-        int jobStart = job.getDiskAddress();
-        int jobSize = job.getJobSize();
+        jobStart = job.getDiskAddress();
+        jobSize = job.getJobSize();
 
         System.out.println("Start: " + jobStart);
         System.out.println("Size: " + jobSize);
         
-        while ( Memleft>=jobSize && CURRJOB<=OSDriver.PCB.getJobCount() ) {
+        while ( Memleft>=(jobSize*4) && CURRJOB<=OSDriver.PCB.getJobCount() ) {
             job.set_mem_start(loc);
-
-            for (int s=jobStart; s<jobSize+jobStart; s++) {
+            int s = jobStart;
+            while( jobStart < (jobStart + jobSize) ) {
+                System.out.println("Threshold: " + (jobSize*4) + " of " + jobSize+jobStart);
                 String hexString = OSDriver.MemManager.readDiskData(s);
                 hexString = hexString.substring(2);  // so we need to strip of the prefix 0x
-                System.out.println("hexString: " + hexString);  // then print again to see that it's just 0000dd99
+                //System.out.println("hexString: " + hexString);  // then print again to see that it's just 0000dd99
                 long t = Long.parseLong(hexString, 16);
                 //System.out.println(t);
                 String binaryBits = Long.toBinaryString(t);
@@ -52,23 +55,32 @@ public class LongTermScheduler {
                         binaryBits = 0 + binaryBits;
                     }
                 }
-                System.out.println("Binary bits: " + binaryBits);
+                //System.out.println("Binary bits: " + binaryBits);
 
+                if (loc > 1024) {
+                    System.out.println("location is greater than ram size: " + loc);
+                    System.exit(1);
+                }
                 short binaryBits1 = Short.valueOf(binaryBits.substring(0,7), 2);
                 //System.out.println(binaryBits1);
+                System.out.println("Location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits1);
                 short binaryBits2 = Short.valueOf(binaryBits.substring(8,15), 2);
                 //System.out.println(binaryBits2);
+                System.out.println("Location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits2);
                 short binaryBits3 = Short.valueOf(binaryBits.substring(16,23), 2);
                 //System.out.println(binaryBits3);
+                System.out.println("Location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits3);
                 short binaryBits4 = Short.valueOf(binaryBits.substring(24,31), 2);
                 //System.out.println(binaryBits4);
+                System.out.println("Location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits4);
                 //loc += 4;
-                
+
                 Memleft -= 4;
+                s++;
             }
             System.out.println("Added job: " + CURRJOB + " at address: " +
                     jobStart + "-" + loc);
@@ -78,6 +90,7 @@ public class LongTermScheduler {
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();
             jobSize = job.getJobSize();
+            System.out.println("new job size: " + jobSize);
         }
 
         //System.out.println(OSDriver.MemManager.printRam());
