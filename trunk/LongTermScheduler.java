@@ -7,10 +7,11 @@
  *
  * @author rebes926
  */
-import java.util.ArrayList;
+import java.util.Queue;
 
 public class LongTermScheduler {
-    public static ArrayList<PCB_block> readyQueue;
+
+    public static Queue<PCB_block> readyQueue;
     //CircularArray jobQ;
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
@@ -22,15 +23,16 @@ public class LongTermScheduler {
     private int cJobStart;
     private int cJobEnd;
     private final int loaded = 2;
+    
     public LongTermScheduler() {
-       //jobQ = new CircularArray(10);
-        readyQueue= new ArrayList<PCB_block>();
+
         CURRJOB = 0;
         start();
         printQ();
     }
 
     public void start() {
+
 
         PCB_block job = OSDriver.PCB.getJob(++CURRJOB);
         System.out.println("job count: " + OSDriver.PCB.getJobCount());
@@ -42,10 +44,11 @@ public class LongTermScheduler {
         System.out.println("Size: " + jobSize);
         
         while ( (Memleft>=(jobSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
-                job.set_mem_start(loc);
-           // int s = jobStart;
+
+            job.set_mem_start(loc);
+            // int s = jobStart;
             int v = jobStart+jobSize;
-             //while( jobStart < (v)) {
+            //while( jobStart < (v)) {
             System.out.println("Threshold: " + (jobSize*4) + " of " + v);
 
             for (int p=jobStart; p<v;p++){
@@ -62,7 +65,6 @@ public class LongTermScheduler {
                         binaryBits = 0 + binaryBits;
                     }
                 }
-                //System.out.println("Binary bits: " + binaryBits);
 
                 short binaryBits1 = Short.valueOf(binaryBits.substring(0,7), 2);
                 //System.out.println(binaryBits1);
@@ -80,10 +82,8 @@ public class LongTermScheduler {
                 //System.out.println(binaryBits4);
                 System.out.println("Location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits4);
-                //loc += 4;
 
                 Memleft -= 4;
-                //s++;
             }
              
             System.out.println("Added job: " + CURRJOB + " at address: " +
@@ -103,21 +103,6 @@ public class LongTermScheduler {
         }
 
         //System.out.println(OSDriver.MemManager.printRam());
-
-//      for (int j=0; j<1; j++)
-//      {
-//       String hexString = OSDriver.MemManager.readDiskData(5);  // this will be a loop where 3 is some variable i
-//       System.out.println("hexString: " + hexString);   // this just shows the string as 0x0000dd99
-//
-//
-//       System.out.println("binaryBits: " + binaryBits1 + "\n" + binaryBits2 +
-//               "\n" + binaryBits3 + "\n" + binaryBits4);   // print it to verify
-//       //byte it = Byte.parseByte(binaryBits, 2);
-//
-//        //System.out.println(it);
-//       }
-//
-//       jobQueue.AddQueue(pcbq);
 
 
     }
@@ -139,47 +124,4 @@ public class LongTermScheduler {
      
     }
 
-    public class CircularArray {
-        
-        private int front, back;
-        private Object data[];
-
-
-        public CircularArray (int size) {
-            front = 0;
-            back = 0;
-            data = new Object [size];
-        }
-
-        public boolean EmptyQueue () {
-            return (front == back);
-        }
-
-
-        public Object PopQueue () {
-            Object z;
-
-            if (EmptyQueue())
-                return null;
-            else {
-                z = data[front];
-                front = (front + 1) % data.length;
-                return(z);
-            }
-        }
-
-        public void AddQueue (Object z) {
-            data[back] = z;
-            back = (back + 1) % data.length;
-        }
-
-        public Object FirstQueue(){
-            return(data[front]);
-        }
-
-
-        public Object LastQueue() {
-            return(data[back-1]); }
-
-        }
 }
