@@ -7,11 +7,11 @@
  *
  * @author rebes926
  */
-
+import java.util.ArrayList;
 
 public class LongTermScheduler {
-
-    CircularArray jobQ;
+    public static ArrayList<PCB_block> readyQueue;
+    //CircularArray jobQ;
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
     private static int Memleft = 1024;
@@ -19,11 +19,15 @@ public class LongTermScheduler {
     private int CURRJOB;
     private int jobStart;
     private int jobSize;
-
+    private int cJobStart;
+    private int cJobEnd;
+    private final int loaded = 2;
     public LongTermScheduler() {
-        jobQ = new CircularArray(10);
+       //jobQ = new CircularArray(10);
+        readyQueue= new ArrayList<PCB_block>();
         CURRJOB = 0;
         start();
+        printQ();
     }
 
     public void start() {
@@ -86,12 +90,16 @@ public class LongTermScheduler {
                     jobStart + "-" + loc);
             CURRJOB++;
             job.set_mem_end(loc);
+            job.setStatus(loaded);
             System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
-            jobQ.AddQueue(job);
+            readyQueue.add(job);
+
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();
             jobSize = job.getJobSize();
             System.out.println("new job size: " + jobSize);
+
+
         }
 
         //System.out.println(OSDriver.MemManager.printRam());
@@ -113,7 +121,23 @@ public class LongTermScheduler {
 
 
     }
+    public void checkJob(int j)
+    {
+       PCB_block cJob= OSDriver.PCB.getJob(j);
+       if (cJob.getStatus() == loaded)
+       {
+           cJobStart = cJob.get_mem_start(j);
+           cJobEnd= cJob.get_mem_end(j);
 
+       }
+    }
+
+    public void printQ()
+    {
+       for (PCB_block t: readyQueue)
+         System.out.println("id: " +t.getJobID());
+     
+    }
 
     public class CircularArray {
         
@@ -156,5 +180,6 @@ public class LongTermScheduler {
 
         public Object LastQueue() {
             return(data[back-1]); }
+
         }
 }
