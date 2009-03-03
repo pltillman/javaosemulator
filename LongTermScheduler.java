@@ -7,11 +7,11 @@
  *
  * @author rebes926
  */
-import java.util.Queue;
+import java.util.ArrayList;
 
 public class LongTermScheduler {
 
-    public static Queue<PCB_block> readyQueue;
+    public static ArrayList<PCB_block> readyQueue;
     //CircularArray jobQ;
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
