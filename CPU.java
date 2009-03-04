@@ -4,12 +4,12 @@
 public class CPU {
 
 
-    private byte opCode;
-    private byte type;
-    private byte s1_reg;
-    private byte s2_reg;
-    private byte d_reg;
-    private byte b_reg;
+    private short opCode;
+    private short type;
+    private short s1_reg;
+    private short s2_reg;
+    private short d_reg;
+    private short b_reg;
     private int oBufferSize;
     private int iBufferSize;
     private int tBufferSize;
@@ -70,21 +70,26 @@ public class CPU {
 
         //create a new string to hold the instruction
         String instruction = new String();
-        
+        String returnedInst = new String();
+
         //loop 4 times to get all pieces of the word
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<4; i++) {
             //read data from ram
             short line = OSDriver.MemManager.readRamData(pc++);
             //get binary represenation of value.
             instruction = Integer.toBinaryString(line);
+
             //add any leading zeros that were left off by the previous operation
             if (instruction.length() < 8) {
                 for (int y = 0; y < 8-instruction.length(); y++) {
                     instruction = 0 + instruction;
                 }
+                returnedInst += instruction;
+            } else {
+                returnedInst += instruction;
             }
         }
-        return instruction;
+        return returnedInst;
         
     }
 
@@ -104,10 +109,10 @@ public class CPU {
 
 
         //EXTRACT THE TYPE AND OPCODE FROM THE INSTRUCTION
-        this.type = Byte.parseByte(instr_req.substring(0,1));
-        this.opCode = Byte.parseByte(instr_req.substring(2,7));
+        this.type = Short.parseShort(instr_req.substring(0,1));
+        this.opCode = Short.parseShort(instr_req.substring(2,7));
 
-
+        System.out.println("instruction length: " + instr_req);
         //USE TYPE TO DETERMINE HOW TO EXTRACT THE REMAINING COMPONENTS
         switch (type) {
             case 00:
@@ -118,7 +123,7 @@ public class CPU {
             case 01:
                 b_reg = Byte.parseByte(instr_req.substring(8,11));
                 d_reg = Byte.parseByte(instr_req.substring(12,15));
-                address = Integer.parseInt(instr_req.substring(16,31));
+                address = Byte.parseByte(instr_req.substring(16,31));
                 if (address > 0) {
                     b_reg = 0;
                 }
@@ -307,7 +312,7 @@ public class CPU {
                 d_reg = (byte)(s1_reg | s2_reg);
                 break;
             case 6:
-                byte tmp_reg = s1_reg;
+                short tmp_reg = s1_reg;
                 s1_reg = s2_reg;
                 s2_reg = tmp_reg;
                 break;
