@@ -10,6 +10,13 @@ public class CPU {
     private byte s2_reg;
     private byte d_reg;
     private byte b_reg;
+    private int oBufferSize;
+    private int iBufferSize;
+    private int tBufferSize;
+    private int out_buffer;
+    private int in_buffer;
+    private int tmp_buffer;
+
     private int address;
 
     private int[] reg_Array;
@@ -29,23 +36,30 @@ public class CPU {
     //
     //} thrown into a big while (not 'halt' opcode).
     //************************************************
-    public CPU(/*pass something here*/) {
+    public CPU() {
 
-        // and assign it to the vars above here!
-        pc = 0;
+        //Create registers and make the accumulator
         reg_Array = new int[16];
         reg_Array[1] = 0;
 
-        while (pc != 0) {
-
-            String instr = fetch(pc);
-            execute(decode(instr));
-            pc++;
-        }
-
     }
 
+    public CPU(int[] j) {
+        //set the pc counter & buffer sizes
+        pc = j[1];
+        oBufferSize = j[3]; //size in # of words
+        iBufferSize = j[4];
+        tBufferSize = j[5];
 
+        //run the duration of the job
+        while (pc <= j[3]) {
+            String instr = fetch(pc);
+            execute(decode(instr));
+            pc += 4;
+        }
+        
+    }
+    
 
     //************************************************
     //  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
@@ -53,10 +67,22 @@ public class CPU {
     //  STRING FOR PROCESSESING BY DECODE()
     //************************************************
     protected String fetch(int pc) {
+
+        //create a new string to hold the instruction
         String instruction = new String();
+        
+        //loop 4 times to get all pieces of the word
         for (int i=0; i<5; i++) {
-            byte line = OSDriver.MemManager.readRamData(pc);
-            instruction += line;
+            //read data from ram
+            short line = OSDriver.MemManager.readRamData(pc++);
+            //get binary represenation of value.
+            instruction = Integer.toBinaryString(line);
+            //add any leading zeros that were left off by the previous operation
+            if (instruction.length() < 8) {
+                for (int y = 0; y < 8-instruction.length(); y++) {
+                    instruction = 0 + instruction;
+                }
+            }
         }
         return instruction;
         
@@ -125,15 +151,15 @@ public class CPU {
 
                 case 0:
                     //Reads content of I/P buffer into a accumulator
-                    
+                    reg_Array[0] = in_buffer;
                     break;
                 case 1:
                     //Writes the content of accumulator into O/P buffer
-
+                    out_buffer = reg_Array[0];
                     break;
                 case 2:
                     //Stores content of a reg.  into an address
-
+                    //byte b = 0b0011;
                     break;
                 case 3:
                     //Loads the content of an address into a reg.
@@ -197,13 +223,12 @@ public class CPU {
                     break;
                 case 18:
                     //Logical end of program
-                    int job =0;
-                    pc = OSDriver.PCB.get(job).getJobSize();
-                    terminate(1);
-                    break;
+                    //int job =0;
+                    //pc = OSDriver.PCB.getJob(job).getJobSize();
+                    return;
                 case 19:
                     //Does nothing and moves to next instruction
-                    pc++;
+                    pc += 4;
                     break;
                 case 20:
                     //Jumps to a specified location
