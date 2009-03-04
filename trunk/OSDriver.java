@@ -59,9 +59,9 @@ import java.io.*;
 
 
 
-             for (int u=0; u<2048; u++) {
-                 //System.out.println(MemManager.readDiskData(u));
-             }
+//             for (int u=0; u<2048; u++) {
+//                 //System.out.println(MemManager.readDiskData(u));
+//             }
 
              //System.out.println(MemManager.readRamData(2));
              //System.out.println(MemManager.printDisk());
@@ -77,21 +77,23 @@ import java.io.*;
              ioe.printStackTrace();
          }
 
-         //call scheduler
-             SJF = new ShortestJobFirst();
-             LTS = new LongTermScheduler();
-             STS = new shortTermScheduler();
+        //call scheduler
+        //SJF = new ShortestJobFirst();
+        LTS = new LongTermScheduler();
+        STS = new shortTermScheduler();
 
-              SJF.SJF();
-              LTS.start();
+        //SJF.SJF();
+        LTS.start();
 
 
-              int numberOfProcess = PCB.getJobCount();
+        int numberOfProcess = LTS.readyQueue.size();
+        int[] jMeta = new int[6];
+        CPU cpu1;
 
-              for(int i=0; i<numberOfProcess; i++){
-                currentProcess = STS.selectProcess();
-                STS.runProcess(currentProcess);
-              }
+        for(int i=0; i<numberOfProcess; i++){
+            jMeta = STS.Store(i);
+            cpu1 = new CPU(jMeta);
+        }
 
               
 
