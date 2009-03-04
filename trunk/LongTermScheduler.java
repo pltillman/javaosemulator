@@ -23,6 +23,7 @@ public class LongTermScheduler {
     private int cJobEnd;
     private final int loaded = 2;
     PCB_block job;
+    
     public LongTermScheduler() {
        //jobQ = new CircularArray(10);
         readyQueue= new ArrayList<PCB_block>();
