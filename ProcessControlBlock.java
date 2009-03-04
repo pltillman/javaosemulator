@@ -57,15 +57,15 @@ public class ProcessControlBlock {
     //****************************************************
     //  Returns the next job in the queue.
     //****************************************************
-    public PCB_block getNextJob() {
-        //PCB_block tmp = jobQueue.get(0);
-        return jobQueue.pop();
-//        if (tmp != null)
-//            return tmp;
-//        jobQueue.remove(jobQueue.get(0));
-//        System.out.println("ct." + count);
-//        return tmp;
-    }
+//    public PCB_block getNextJob() {
+//        //PCB_block tmp = jobQueue.get(0);
+//        return jobQueue.pop();
+////        if (tmp != null)
+////            return tmp;
+////        jobQueue.remove(jobQueue.get(0));
+////        System.out.println("ct." + count);
+////        return tmp;
+//    }
 
     //****************************************************
     //  Removes a job from the queue.
