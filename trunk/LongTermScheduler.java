@@ -22,17 +22,22 @@ public class LongTermScheduler {
     private int cJobStart;
     private int cJobEnd;
     private final int loaded = 2;
+    private int jobCount=0;
     PCB_block job;
+    double percRam = 0;
     
+
     public LongTermScheduler() {
        //jobQ = new CircularArray(10);
         readyQueue= new ArrayList<PCB_block>();
+
         CURRJOB = 0;
         start();
         printQ();
     }
 
     public void start() {
+        Memleft= 1024;
        if(CURRJOB<OSDriver.PCB.getJobCount()){
          job = OSDriver.PCB.getJob(++CURRJOB);
         System.out.println("job count: " + OSDriver.PCB.getJobCount());
@@ -47,6 +52,7 @@ public class LongTermScheduler {
           System.out.println("There are no more jobs ");
         while ((Memleft>=(jobSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
                 job.set_mem_start(loc);
+
            // int s = jobStart;
             int v = jobStart+jobSize;
              //while( jobStart < (v)) {
@@ -88,24 +94,36 @@ public class LongTermScheduler {
 
                 Memleft -= 4;
                 //s++;
+                
             }
              
             System.out.println("Added job: " + CURRJOB + " at address: " +
                     jobStart + "-" + loc);
+            
             CURRJOB++;
             job.set_mem_end(loc);
             job.setStatus(loaded);
             System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
+            
+           // System.out.println("job count: "+ jobCount);
             readyQueue.add(job);
+            job.setinQueueTime(System.nanoTime());
 
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();
             jobSize = job.getJobSize();
-            System.out.println("new job size: " + jobSize);
-
+           
+           if(CURRJOB==OSDriver.PCB.getJobCount())
+           {
+               //OSDriver.DONE=true;
+               return;
+           }
 
         }
-
+       //  percentRam();
+        //double percent= Memleft/RAMSIZE;
+         //System.out.println("Percentage of RAM used: " + percent*100);
+        //average percentage of RAM used based on total
         //System.out.println(OSDriver.MemManager.printRam());
 
 //      for (int j=0; j<1; j++)
@@ -139,8 +157,19 @@ public class LongTermScheduler {
     public void printQ()
     {
        for (PCB_block t: readyQueue)
-         System.out.println("id: " +t.getJobID());
+         System.out.println("id: " + t.getJobID());
      
+    }
+
+    public void percentRam()
+    {  
+        double average;
+        double avg;
+        average= (RAMSIZE-Memleft);
+
+        //avg= average/RAMSIZE;
+           percRam+=average/RAMSIZE;
+           
     }
 
     public class CircularArray {
