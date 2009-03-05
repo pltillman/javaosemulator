@@ -38,12 +38,7 @@ public class CPU {
     //
     //} thrown into a big while (not 'halt' opcode).
     //************************************************
-    public CPU() {
-        
-    }
-
-    public CPU(int[] j) throws IOException {
-
+    public CPU() throws IOException {
         ioCount = 0;
 
         //Create registers and make the accumulator
@@ -52,6 +47,10 @@ public class CPU {
 
         out = new BufferedWriter(new FileWriter("CPU_log.txt"));
         out.append("CPU LOG FILE");
+    }
+
+    public void load (int[] j) throws IOException {
+
         out.append("\n|||||||||||||||||");
         out.append("\nJob #" + j[0]);
 
@@ -72,7 +71,7 @@ public class CPU {
             pc += 4;
         }
         System.out.println(j[1] + " " + j[3]);
-        out.close();
+        //out.close();
         
     }
     
@@ -95,16 +94,24 @@ public class CPU {
 
         //loop 4 times to get all pieces of the word
         for (int i=0; i<4; i++) {
+
             //read data from ram
             short line = OSDriver.MemManager.readRamData(pc++);
+            System.out.println(line);
+
             //get binary represenation of value.
             instruction = Integer.toBinaryString(line);
+            System.out.println(instruction);
 
             //add any leading zeros that were left off by the previous operation
+            int b = instruction.length();
+
             if (instruction.length() < 8) {
-                for (int y = 0; y < 9-instruction.length(); y++) {
-                    instruction = 0 + instruction;
+                for (int y = 0; y < 8-b; y++) {
+                    instruction = "0" + instruction;
                 }
+                System.out.println(instruction);
+                System.out.println("byte length: " + instruction.length());
                 returnedInst += instruction;
             } else {
                 returnedInst += instruction;
