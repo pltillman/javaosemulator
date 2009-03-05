@@ -12,6 +12,13 @@ public class PCB_block {
     private int status;
     private final int READY = 0;
     private final int FINISHED = 1;
+
+    private int inqueueTime = 0;
+    private int outqueueTime = 0;
+    private int cpuStartTime = 0;
+    private int cpuEndTime = 0;
+
+
     private int mem_loc; //added by the schedule once the job is
                          //placed in memory. indicates what
                          //physical address in ram the job begins.
@@ -80,5 +87,30 @@ public class PCB_block {
     public int get_mem_end(int jID) {
         return this.mem_end;
     }
+    public void setCpuEndTime(int t) {
+        this.cpuEndTime = t;
+    }
+    public void setCpuStartTime(int t) {
+        this.cpuStartTime = t;
+    }
+    public void setinQueueTime(int t) {
+        this.inqueueTime = t;
+    }
+    public void setoutQueueTime(int t) {
+        this.outqueueTime = t;
+    }
+    public int getCpuEndTime() {
+        return this.cpuEndTime;
+    }
+    public int setCpuStartTime() {
+        return this.cpuStartTime;
+    }
+    public int setinQueueTime() {
+        return this.inqueueTime;
+    }
+    public int setoutQueueTime() {
+        return this.outqueueTime;
+    }
+
 
 }
