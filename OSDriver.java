@@ -59,23 +59,6 @@ import java.io.*;
 
 
 
-  //            while (/*there are more jobs */) {
-  //                // call short term scheduler
-  //            }
-
-
-
- //             for (int u=0; u<2048; u++) {
- //                 //System.out.println(MemManager.readDiskData(u));
- //             }
-
-              //System.out.println(MemManager.readRamData(2));
-              //System.out.println(MemManager.printDisk());
-              //PCB.printPCB();
-
-              //Scheduler sched = new Scheduler();
-
-
           } catch ( FileNotFoundException fnfe ) {
               fnfe.printStackTrace();
 
@@ -83,34 +66,37 @@ import java.io.*;
               ioe.printStackTrace();
           }
 
-         //call scheduler
-         //SJF = new ShortestJobFirst();
-         LTS = new LongTermScheduler();
-         STS = new shortTermScheduler();
-
-         //SJF.SJF
-         //LTS.start();
+        //call scheduler
+        //SJF = new ShortestJobFirst();
+        LTS = new LongTermScheduler();
+        STS = new shortTermScheduler();
 
 
-         int numberOfProcess = LongTermScheduler.readyQueue.size();
+        int numberOfProcess = LongTermScheduler.readyQueue.size();
 
-         int[] jMeta = new int[6];
-         CPU cpu1;
-         PCB_block job;
-         disk = new DiskMemory(2048);
-         ram = new RamMemory(1024);
-         RamJobSize=0;
+        int[] jMeta = new int[6];
+        CPU cpu1 = null;
+        try {
+            cpu1 = new CPU();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        PCB_block job;
+        disk = new DiskMemory(2048);
+        ram = new RamMemory(1024);
+        RamJobSize=0;
 
-            LTS.start();
-            STS.SJF();
+        LTS.start();
+        STS.SJF();
          
 
      //    while(!DONE || !LongTermScheduler.readyQueue.isEmpty()){
 
             for(int i=0; i<numberOfProcess; i++){
                 jMeta = STS.Store(i);
+                System.out.println("Job: " + i);
                 try {
-                    cpu1 = new CPU(jMeta);
+                    cpu1.load(jMeta);
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
