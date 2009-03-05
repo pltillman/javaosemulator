@@ -10,14 +10,16 @@ public class PCB_block {
     private int output_buffer;
     private int tmp_buffer;
     private int status;
+
     private final int READY = 0;
     private final int FINISHED = 1;
+    private final int LOADED = 2;
+    private final int COMPLETE = 3;
 
-    private int inqueueTime = 0;
-    private int outqueueTime = 0;
-    private int cpuStartTime = 0;
-    private int cpuEndTime = 0;
-
+    private long inqueueTime = 0;
+    private long outqueueTime = 0;
+    private long cpuStartTime = 0;
+    private long cpuEndTime = 0;
 
     private int mem_loc; //added by the schedule once the job is
                          //placed in memory. indicates what
@@ -87,28 +89,28 @@ public class PCB_block {
     public int get_mem_end(int jID) {
         return this.mem_end;
     }
-    public void setCpuEndTime(int t) {
+    public void setCpuEndTime(long t) {
         this.cpuEndTime = t;
     }
-    public void setCpuStartTime(int t) {
+    public void setCpuStartTime(long t) {
         this.cpuStartTime = t;
     }
-    public void setinQueueTime(int t) {
+    public void setinQueueTime(long t) {
         this.inqueueTime = t;
     }
-    public void setoutQueueTime(int t) {
+    public void setoutQueueTime(long t) {
         this.outqueueTime = t;
     }
-    public int getCpuEndTime() {
+    public long getCpuEndTime() {
         return this.cpuEndTime;
     }
-    public int setCpuStartTime() {
+    public long getCpuStartTime() {
         return this.cpuStartTime;
     }
-    public int setinQueueTime() {
+    public long getinQueueTime() {
         return this.inqueueTime;
     }
-    public int setoutQueueTime() {
+    public long getoutQueueTime() {
         return this.outqueueTime;
     }
 
