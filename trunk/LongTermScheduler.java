@@ -1,12 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author rebes926
- */
 import java.util.ArrayList;
 
 public class LongTermScheduler {
@@ -15,7 +6,7 @@ public class LongTermScheduler {
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
     private static int Memleft = 1024;
-    private int loc= 0;
+    private int loc = 0;
     private int CURRJOB;
     private int jobStart;
     private int jobSize;
@@ -37,58 +28,71 @@ public class LongTermScheduler {
     }
 
     public void start() {
-        Memleft= 1024;
-       if(CURRJOB<OSDriver.PCB.getJobCount()){
-         job = OSDriver.PCB.getJob(++CURRJOB);
-        System.out.println("job count: " + OSDriver.PCB.getJobCount());
+//        loc = 0;
+//        Memleft = 1024;
 
-        jobStart = job.getDiskAddress();
-        jobSize = job.getJobSize();
+        if (CURRJOB<OSDriver.PCB.getJobCount()) {
+            job = OSDriver.PCB.getJob(++CURRJOB);
+            //System.out.println("job count: " + OSDriver.PCB.getJobCount());
 
-        System.out.println("Start: " + jobStart);
-        System.out.println("Size: " + jobSize);
+            jobStart = job.getDiskAddress();
+            jobSize = job.getJobSize();
+
+            System.out.println("Start: " + jobStart);
+            System.out.println("Size: " + jobSize);
+        } else {
+            OSDriver.DONE = true;
+            System.out.println("There are no more jobs ");
+            return;
         }
-       else
-          System.out.println("There are no more jobs ");
-        while ((Memleft>=(jobSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
-                job.set_mem_start(loc);
 
-           // int s = jobStart;
+        while ((Memleft>=(jobSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
+            job.set_mem_start(loc);
+
+            // int s = jobStart;
             int v = jobStart+jobSize;
              //while( jobStart < (v)) {
             System.out.println("Threshold: " + (jobSize*4) + " of " + v);
 
-            for (int p=jobStart; p<v;p++){
+            for (int p=jobStart; p<v; p++){
                 String hexString = OSDriver.MemManager.readDiskData(p);
                 hexString = hexString.substring(2);  // so we need to strip of the prefix 0x
-                //System.out.println("hexString: " + hexString);  // then print again to see that it's just 0000dd99
-                long t = Long.parseLong(hexString, 16);
-                //System.out.println(t);
+
+                System.out.println("hexString: " + hexString);  // then print again to see that it's just 0000dd99
+
+                Long t = Long.parseLong(hexString, 16);
+                
                 String binaryBits = Long.toBinaryString(t);
-                //System.out.println(binaryBits);// then convert it to a string of bits
-                if (binaryBits.length() < 32) {
-                    int diff = 32 - binaryBits.length();
+
+                System.out.println("BINARY STRING " + binaryBits + "\t Next memory start=" + p + "\t Next memory end=" + v);// then convert it to a string of bits
+
+                int length = binaryBits.length();
+
+                if (length < 32) {
+                    int diff = 32 - length;
                     for (int i=0; i<diff; i++) {
-                        binaryBits = 0 + binaryBits;
+                        binaryBits = 0 + "" + binaryBits;
                     }
                 }
+                
+                System.out.println("BINARY STRING AFTER " + binaryBits);// then convert it to a string of bits
                 //System.out.println("Binary bits: " + binaryBits);
 
-                short binaryBits1 = Short.valueOf(binaryBits.substring(0,7), 2);
+                short binaryBits1 = Short.valueOf(binaryBits.substring(0,8), 2);
                 //System.out.println(binaryBits1);
-                System.out.println("Location: " + loc);
+                System.out.println("Decimal: " + binaryBits1 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits1);
-                short binaryBits2 = Short.valueOf(binaryBits.substring(8,15), 2);
+                short binaryBits2 = Short.valueOf(binaryBits.substring(8,16), 2);
                 //System.out.println(binaryBits2);
-                System.out.println("Location: " + loc);
+                System.out.println("Decimal: " + binaryBits2 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits2);
-                short binaryBits3 = Short.valueOf(binaryBits.substring(16,23), 2);
+                short binaryBits3 = Short.valueOf(binaryBits.substring(16,24), 2);
                 //System.out.println(binaryBits3);
-                System.out.println("Location: " + loc);
+                System.out.println("Decimal: " + binaryBits3 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits3);
                 short binaryBits4 = Short.valueOf(binaryBits.substring(24,31), 2);
                 //System.out.println(binaryBits4);
-                System.out.println("Location: " + loc);
+                System.out.println("Decimal: " + binaryBits4 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits4);
                 //loc += 4;
 
@@ -108,18 +112,17 @@ public class LongTermScheduler {
            // System.out.println("job count: "+ jobCount);
             readyQueue.add(job);
             job.setinQueueTime(System.nanoTime());
-
+            System.out.println("CURRJOB=" + CURRJOB);
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();
             jobSize = job.getJobSize();
            
-           if(CURRJOB==OSDriver.PCB.getJobCount())
-           {
+            if(CURRJOB==OSDriver.PCB.getJobCount()) {
                //OSDriver.DONE=true;
                return;
-           }
-
+            }
         }
+        
        //  percentRam();
         //double percent= Memleft/RAMSIZE;
          //System.out.println("Percentage of RAM used: " + percent*100);
@@ -171,48 +174,4 @@ public class LongTermScheduler {
            percRam+=average/RAMSIZE;
            
     }
-
-    public class CircularArray {
-        
-        private int front, back;
-        private Object data[];
-
-
-        public CircularArray (int size) {
-            front = 0;
-            back = 0;
-            data = new Object [size];
-        }
-
-        public boolean EmptyQueue () {
-            return (front == back);
-        }
-
-
-        public Object PopQueue () {
-            Object z;
-
-            if (EmptyQueue())
-                return null;
-            else {
-                z = data[front];
-                front = (front + 1) % data.length;
-                return(z);
-            }
-        }
-
-        public void AddQueue (Object z) {
-            data[back] = z;
-            back = (back + 1) % data.length;
-        }
-
-        public Object FirstQueue(){
-            return(data[front]);
-        }
-
-
-        public Object LastQueue() {
-            return(data[back-1]); }
-
-        }
 }
