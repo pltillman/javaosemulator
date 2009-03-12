@@ -68,6 +68,7 @@ public class Loader {
                     str = in.readLine();
 
                     while ( !str.contains("//") ) {
+                        System.out.println("adding " + str + " to location " + count);
                         addData(str, 0, count++);
                         str = in.readLine();
                     }
@@ -85,7 +86,7 @@ public class Loader {
                 } else {
                     str = in.readLine();
                     System.out.println("trying to load datafile");
-                    System.out.println(str);
+                    System.out.println("Read data: " + str);
                 }
             }
         } catch (IOException ioe) {
@@ -109,13 +110,14 @@ public class Loader {
             int size = Integer.parseInt(token.nextToken(),16);
             int priority = Integer.parseInt(token.nextToken(),16);
             OSDriver.PCB.createJob(id, size, priority, addr);
-            addr += size-1;
+            //addr ++;
         } else if (o == 1) {
             //add job data to PCB
             int input = Integer.parseInt(token.nextToken(),16);
             int output = Integer.parseInt(token.nextToken(),16);
             int temp = Integer.parseInt(token.nextToken(),16);
             OSDriver.PCB.addMeta(input, output, temp);
+            //addr++;
         }
         //System.out.println("job added");
     }
@@ -131,6 +133,7 @@ public class Loader {
         if (o == 0) {
             //add data to disk
             OSDriver.MemManager.writeDiskData(loc, s);
+            addr++;
 
         } else if (o == 1) {
             
