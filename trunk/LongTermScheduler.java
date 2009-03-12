@@ -28,8 +28,8 @@ public class LongTermScheduler {
     }
 
     public void start() {
-//        loc = 0;
-//        Memleft = 1024;
+        loc = 0;
+        Memleft = 1024;
 
         if (CURRJOB<OSDriver.PCB.getJobCount()) {
             job = OSDriver.PCB.getJob(++CURRJOB);
@@ -56,11 +56,11 @@ public class LongTermScheduler {
 
             for (int p=jobStart; p<v; p++){
                 String hexString = OSDriver.MemManager.readDiskData(p);
-                hexString = hexString.substring(2);  // so we need to strip of the prefix 0x
+                hexString = hexString.substring(2,10);  // so we need to strip of the prefix 0x
 
                 System.out.println("hexString: " + hexString);  // then print again to see that it's just 0000dd99
 
-                Long t = Long.parseLong(hexString, 16);
+                long t = Long.parseLong(hexString, 16);
                 
                 String binaryBits = Long.toBinaryString(t);
 
@@ -118,7 +118,7 @@ public class LongTermScheduler {
             jobSize = job.getJobSize();
            
             if(CURRJOB==OSDriver.PCB.getJobCount()) {
-               //OSDriver.DONE=true;
+               OSDriver.DONE=true;
                return;
             }
         }

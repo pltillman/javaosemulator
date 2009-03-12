@@ -10,6 +10,11 @@ public class CPU {
     private short s2_reg;
     private short d_reg;
     private short b_reg;
+
+
+    private final int data = 0;
+
+    
     private int oBufferSize;
     private int iBufferSize;
     private int tBufferSize;
@@ -17,7 +22,7 @@ public class CPU {
     private int in_buffer;
     private int tmp_buffer;
 
-    private int address;
+    private long address;
 
     private int[] reg_Array;
     private int pc;
@@ -60,6 +65,8 @@ public class CPU {
         iBufferSize = j[4];
         tBufferSize = j[5];
 
+
+        System.out.println("Program Counter set to: " + pc);
         //run the duration of the job
         while (pc < j[2]) {
             String instr = fetch(pc);
@@ -69,10 +76,7 @@ public class CPU {
                 ioe.printStackTrace();
             }
             pc += 4;
-        }
-        System.out.println(j[1] + " " + j[3]);
-        //out.close();
-        
+        }     
     }
     
 
@@ -92,31 +96,32 @@ public class CPU {
         String instruction = new String();
         String returnedInst = new String();
 
+        int k=pc;
+        for (int j=0; j<4; j++) {
+            System.out.println("Ram: " + OSDriver.MemManager.readRamData(k++));
+        }
         //loop 4 times to get all pieces of the word
         for (int i=0; i<4; i++) {
 
             //read data from ram
-            short line = OSDriver.MemManager.readRamData(pc++);
-            System.out.println(line);
+            //short line = ;
 
             //get binary represenation of value.
-            instruction = Integer.toBinaryString(line);
-            System.out.println(instruction);
+            instruction = Integer.toBinaryString(OSDriver.MemManager.readRamData(pc++));
+
+            System.out.println("AFTER EXTRACTION " + instruction);
 
             //add any leading zeros that were left off by the previous operation
             int b = instruction.length();
-
             if (instruction.length() < 8) {
                 for (int y = 0; y < 8-b; y++) {
                     instruction = "0" + instruction;
                 }
-                System.out.println(instruction);
-                System.out.println("byte length: " + instruction.length());
-                returnedInst += instruction;
+                returnedInst =  returnedInst + "" + instruction;
             } else {
-                returnedInst += instruction;
+                returnedInst = returnedInst + "" + instruction;
             }
-            //System.out.println("ret length: " + returnedInst.length());
+            System.out.println("AFTER EXTRACTION & APPENDING " + returnedInst);
         }
         return returnedInst;
         
@@ -135,30 +140,29 @@ public class CPU {
         //String binInstr = Integer.toBinaryString(instr_req);
         //Integer.toBinaryString(Character.digit(line.charAt(i),16))
 
+        System.out.println("Binary instruction: " + instr_req );
         
         out.append("decoding instruction....");
        
-
         //EXTRACT THE TYPE AND OPCODE FROM THE INSTRUCTION
         this.type = Short.parseShort(instr_req.substring(0,1),2);
         this.opCode = Short.parseShort(instr_req.substring(2,6),2);
 
-        System.out.println("instruction length: " + instr_req.length());
         //USE TYPE TO DETERMINE HOW TO EXTRACT THE REMAINING COMPONENTS
         out.append("\nInstruction type:");
         switch (type) {
 
             case 00:
                 out.append(" arithmetic");
-                s1_reg = Byte.parseByte(instr_req.substring(7,10),2);
-                s2_reg = Byte.parseByte(instr_req.substring(11,14),2);
-                d_reg = Byte.parseByte(instr_req.substring(15,18),2);
+                s1_reg = Short.parseShort(instr_req.substring(7,10),2);
+                s2_reg = Short.parseShort(instr_req.substring(10,14),2);
+                d_reg = Short.parseShort(instr_req.substring(14,18),2);
                 break;
             case 01:
                 out.append(" branch of immediate");
-                b_reg = Byte.parseByte(instr_req.substring(7,10),2);
-                d_reg = Byte.parseByte(instr_req.substring(11,14),2);
-                address = Byte.parseByte(instr_req.substring(15,31),2);
+                b_reg = Short.parseShort(instr_req.substring(7,10),2);
+                d_reg = Short.parseShort(instr_req.substring(10,14),2);
+                address = Long.parseLong(instr_req.substring(14,32),2);
                 if (address > 0) {
                     b_reg = 0;
                 }
@@ -184,10 +188,10 @@ public class CPU {
     //
     //************************************************
     protected void execute(int o) throws IOException {
-        out.append("executing instruction....");
+        out.append("\nexecuting instruction....");
 
         if (opCode != 0) {
-            out.append("\nOPCODE =" + opCode);
+            //out.append("\nOPCODE =" + opCode);
             switch (opCode) {
 
                 case 0:
@@ -204,138 +208,156 @@ public class CPU {
                 case 2:
                     out.append("\nStoring register in address");
                     //Stores content of a reg.  into an address
-                    //byte b = 0b0011;
+                    //OSDriver.MemManager.writeRamData((int)address);
                     break;
                 case 3:
                     out.append("\nLoading address into register");
                     //Loads the content of an address into a reg.
-
+                    s1_reg = OSDriver.MemManager.readRamData((short)address);
                     break;
                 case 4:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nSwapping registers");
                     //Transfers the content of one register into another
                     calc_arith(6);
                     break;
                 case 5:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nAdding s_regs into d_reg");
                     //Adds content of two S-regs into D-reg
                     calc_arith(0);
                     break;
                 case 6:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nSubtracting s_regs into d_reg");
                     //Subtracts content of two S-regs into D-reg
                     calc_arith(1);
                     break;
                 case 7:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nMultiplying s_regs into d_reg");
                     //Multiplies content of two S-regs into D-reg
                     calc_arith(2);
                     break;
                 case 8:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nDividing s_regs into d_reg");
                     //Divides content of two S-regs into D-reg
                     calc_arith(3);
                     break;
                 case 9:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nLogical AND of s_regs");
                     //Logical AND of two S-regs into D-reg
                     calc_arith(4);
                     break;
                 case 10:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nLogical OR of s_regs");
                     //Logical OR of two S-regs into D-reg
                     calc_arith(5);
                     break;
                 case 11:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nTransferring data into register");
                     //Transfers address/data directly into a register
                     //immediate - MOVI
                     break;
                 case 12:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nAdding data into register");
                     //Adds a data directly to the content of a register
                     //ADDI
                     break;
                 case 13:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nMultiplying data into register");
                     //Multiplies a data directly to the content of a register
                     //MULI
                     break;
                 case 14:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nDividing data into register");
                     //Divides a data directly to the content of a register
                     //DIVI
                     break;
                 case 15:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nLoading data/address into register");
                     //Loads a data/address directly to the content of a register
                     //immediate - LDI
                     break;
                 case 16:
-                    out.append("\nopCode " + opCode);
                     //Sets the D-reg to 1 if  first S-reg is less than second S-reg, and 0 otherwise
+                    if (s1_reg < s2_reg) {
+                        out.append("\nSetting d_reg to 1");
+                        d_reg = 1;
+                    } else {
+                        out.append("\nSetting d_reg to 0");
+                        d_reg = 0;
+                    }
                     break;
                 case 17:
-                    out.append("\nopCode " + opCode);
                     //Sets the D-reg to 1 if  first S-reg is less than a data, and 0 otherwise
+                    if (s1_reg < data) {
+                        out.append("\nSetting d_reg to 1");
+                        d_reg = 1;
+                    } else {
+                        out.append("\nSetting d_reg to 0");
+                        d_reg = 0;
+                    }
                     break;
                 case 18:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nEnd of program detected!");
                     //Logical end of program
                     //int job =0;
-                    //pc = OSDriver.PCB.getJob(job).getJobSize();
                     return;
                 case 19:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nMoving to the next instruction");
                     //Does nothing and moves to next instruction
-                    //pc += 4;
+                    pc += 4;
                     break;
                 case 20:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nJumping to another location");
                     //Jumps to a specified location
-                    pc = address;
+                    pc = (int)address;
+                    out.append("\nProgram counter set to " + pc);
                     //OSDriver.tools.effective_addr(address));
                     break;
                 case 21:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nChecking if b_reg = d_reg, then branch");
                     //Branches to an address when content of B-reg = D-reg
                     if (d_reg == b_reg) {
-                        pc = address;
+                        pc = (int)address;
+                        out.append("\nProgram counter set to " + pc);
                     }
                     break;
                 case 22:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nChecking if b_reg != d_reg, then branch");
                     //Branches to an address when content of B-reg <> D-reg
                     if (b_reg != d_reg) {
-                        pc = address;
+                        pc = (int)address;
+                        out.append("\nProgram counter set to " + pc);
                     }
                     break;
                 case 23:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nChecking if d_reg is 0, then branch");
                     //Branches to an address when content of D-reg = 0
                     if (d_reg == 0) {
-                        pc = address;
+                        pc = (int)address;
+                        out.append("\nProgram counter set to " + pc);
                     }
                     break;
                 case 24:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nChecking if b_reg != 0, then branch");
                     //Branches to an address when content of B-reg <> 0
                     if (b_reg != 0) {
-                        pc = address;
+                        pc = (int)address;
+                        out.append("\nProgram counter set to " + pc);
                     }
                     break;
                 case 25:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nChecking if b_reg > 0, then branch");
                     //Branches to an address when content of B-reg > 0
                     if (b_reg > 0) {
-                        pc = address;
+                        pc = (int)address;
+                        out.append("\nProgram counter set to " + pc);
                     }
                     break;
                 case 26:
-                    out.append("\nopCode " + opCode);
+                    out.append("\nChecking if b_reg < 0, then branch");
                     //Branches to an address when content of B-reg < 0
                     if (b_reg < 0) {
-                        pc = address;
+                        pc = (int)address;
+                        out.append("\nProgram counter set to " + pc);
                     }
                     break;
             }
