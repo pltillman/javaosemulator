@@ -1,5 +1,5 @@
 
-import java.util.Vector;
+import java.util.Stack;
 
 //****************************************************
 //  File                 ProcessControlBlock.java
@@ -8,7 +8,7 @@ import java.util.Vector;
 //****************************************************
 public class ProcessControlBlock {
 
-    private static Vector<PCB_block> jobQueue;
+    private static Stack<PCB_block> jobQueue;
     private static String [][] jobQ;
     private PCB_block pcb_e;
     private static int count;
@@ -19,7 +19,7 @@ public class ProcessControlBlock {
     public ProcessControlBlock() {
         //jobQ = new String[];
         count = 0;
-        jobQueue = new Vector<PCB_block>();
+        jobQueue = new Stack<PCB_block>();
     }
 
     //****************************************************

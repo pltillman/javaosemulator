@@ -1,62 +1,47 @@
-import java.io.IOException;
-import java.lang.Runnable;
 
-public class Scheduler implements Runnable {
+/*The Scheduler loads programs from the disk into RAM according to the given
+scheduling policy. The scheduler must note in the PCB, which physical
+addresses in RAM each program/job begins. This ‘start’ address must be
+stored in the base-register of the process. It must also use the
+Input/Output buffer size information (in the control cards) for
+allocating space in RAM. The Scheduler method either loads one program
+at a time (in a simple batching system) or multiple programs
+(in a multiprogramming system) depending on passed parameter(s). Thus,
+the Scheduler works closely with the Memory manager and the
+Effective-Address method.*/
 
-            public static LongTermScheduler LTS;
-            public static shortTermScheduler STS;
-             public static boolean DONE = false;
+public class Scheduler {
 
-          //private List list;
+    
+    public Scheduler() {
 
-          public Scheduler() {
-              //list = pList;
-          }
+        //for (int i=0; i<2048; i++) {
+            String hexString = OSDriver.MemManager.readDiskData(0);
+            System.out.println("hexString: " + hexString);
+            hexString = hexString.substring(2);
+            System.out.println("hexString: " + hexString);
+            //String binaryBits = Integer.toBinaryString(Integer.parseInt(hexString, 16));
+            //System.out.println("binaryBits: " + binaryBits);
 
-          public void run() {
+            String t = "0xC050005C";
+            String p = OSDriver.tools.hexToByte(t);
+            System.out.println("binary " + p);
+            //int t1 = Integer.parseInt(t, 16);
+            //System.out.println(t1);
+            //String tt = Integer.toBinaryString(Integer.parseInt(t,16));
+            //System.out.println(tt);
+        //}
+    }
 
-        LTS = new LongTermScheduler();
+    
+    
+    /*
+     * The Dispatcher method assigns a process to the CPU. It is also 
+     responsible for context switching of jobs when necessary (more on this 
+     later!). For now, the dispatcher will extract parameter data from the PCB 
+     and accordingly set the CPU’s PC, and other registers, before the OS calls 
+     the CPU to execute it.*/
+    public void dispatchJob() {
 
-
-        int numberOfProcess = LongTermScheduler.readyQueue.size();
-
-        int[] jMeta = new int[6];
-        CPU cpu1 = null;
-
-        try {
-           cpu1 = new CPU();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
-        STS = new shortTermScheduler();
-
-
-         while(!DONE) {
-             if (!LongTermScheduler.readyQueue.isEmpty()) {
-
-                for(int i=0; i<numberOfProcess; i++){
-
-                    jMeta = STS.Store(i);
-               //     STS.Remove(i);
-                    try {
-                        cpu1.load(jMeta);
-                    } catch (IOException ioe) {
-                        ioe.printStackTrace();
-                    }
-                    //System.out.println("Assign job to CPU: " + cpu1);
-                }
-
-              //  System.out.println("Size of ArrayList before removing elements : "+ LongTermScheduler.readyQueue.size());
-                LongTermScheduler.readyQueue.clear();
-               // System.out.println("Size of ArrayList after removing elements : "+ LongTermScheduler.readyQueue.size());
-                LTS.start();
-
-                System.out.println("ADDING MORE JOBS");
-             //   numberOfProcess = LongTermScheduler.readyQueue.size();
-
-          }
-      }
-
-          }
-      }
+    }
+}
