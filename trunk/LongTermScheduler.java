@@ -1,7 +1,8 @@
-import java.util.ArrayList;
+
+import java.util.Vector;
 
 public class LongTermScheduler {
-    public static ArrayList<PCB_block> readyQueue;
+    public static Vector<PCB_block> readyQueue;
     //CircularArray jobQ;
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
@@ -20,7 +21,7 @@ public class LongTermScheduler {
 
     public LongTermScheduler() {
        //jobQ = new CircularArray(10);
-        readyQueue= new ArrayList<PCB_block>();
+        readyQueue= new Vector<PCB_block>();
 
         CURRJOB = 0;
         start();
@@ -41,9 +42,10 @@ public class LongTermScheduler {
             System.out.println("Start: " + jobStart);
             System.out.println("Size: " + jobSize);
         } else {
-            OSDriver.DONE = true;
+            Scheduler.DONE = true;
             System.out.println("There are no more jobs ");
             return;
+
         }
 
         while ((Memleft>=(jobSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
@@ -105,20 +107,22 @@ public class LongTermScheduler {
                     jobStart + "-" + loc);
             
             CURRJOB++;
+
             job.set_mem_end(loc);
             job.setStatus(loaded);
             System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
             
            // System.out.println("job count: "+ jobCount);
             readyQueue.add(job);
-            job.setinQueueTime(System.nanoTime());
+
+          //  job.setinQueueTime(System.nanoTime());
             System.out.println("CURRJOB=" + CURRJOB);
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();
             jobSize = job.getJobSize();
            
             if(CURRJOB==OSDriver.PCB.getJobCount()) {
-               OSDriver.DONE=true;
+               Scheduler.DONE=true;
                return;
             }
         }
