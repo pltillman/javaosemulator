@@ -59,6 +59,8 @@ public class CPU {
         out.append("\n|||||||||||||||||");
         out.append("\nJob #" + j[0]);
 
+        System.out.println("\nJob #" + j[0]);
+
         //set the pc counter & buffer sizes
         pc = j[1];
         oBufferSize = j[3]; //size in # of words
@@ -66,7 +68,7 @@ public class CPU {
         tBufferSize = j[5];
 
 
-        System.out.println("Program Counter set to: " + pc);
+        System.out.println("Program Counter starting at: " + pc + "\n");
         //run the duration of the job
         while (pc < j[2]) {
             String instr = fetch(pc);
@@ -76,6 +78,8 @@ public class CPU {
                 ioe.printStackTrace();
             }
             pc += 4;
+            out.append("\n\nPROGRAM COUNTER=" + pc);
+            System.out.println("PROGRAM COUNTER=" + pc);
         }     
     }
     
@@ -96,10 +100,6 @@ public class CPU {
         String instruction = new String();
         String returnedInst = new String();
 
-        int k=pc;
-        for (int j=0; j<4; j++) {
-            System.out.println("Ram: " + OSDriver.MemManager.readRamData(k++));
-        }
         //loop 4 times to get all pieces of the word
         for (int i=0; i<4; i++) {
 
@@ -109,7 +109,7 @@ public class CPU {
             //get binary represenation of value.
             instruction = Integer.toBinaryString(OSDriver.MemManager.readRamData(pc++));
 
-            System.out.println("AFTER EXTRACTION " + instruction);
+            //System.out.println("AFTER EXTRACTION " + instruction);
 
             //add any leading zeros that were left off by the previous operation
             int b = instruction.length();
@@ -121,7 +121,7 @@ public class CPU {
             } else {
                 returnedInst = returnedInst + "" + instruction;
             }
-            System.out.println("AFTER EXTRACTION & APPENDING " + returnedInst);
+            //System.out.println("AFTER EXTRACTION & APPENDING " + returnedInst);
         }
         return returnedInst;
         
@@ -129,11 +129,16 @@ public class CPU {
 
 
 
-    //************************************************
-    // DECODE() TAKES THE BINARY STRING REPRESENTATION OF
-    // THE INSTRUCTION SET AND EXTRACTS THE APPROPRIATE
-    // COMPONENTS. RETURNS THE OPCODE TO BE USED BY EXECUTE
-    //************************************************
+    /************************************************
+     * 
+     * @param instr_req
+     * @return
+     * @throws java.io.IOException
+
+     * DECODE() TAKES THE BINARY STRING REPRESENTATION OF
+     * THE INSTRUCTION SET AND EXTRACTS THE APPROPRIATE
+     * COMPONENTS. RETURNS THE OPCODE TO BE USED BY EXECUTE
+     ************************************************/
     protected int decode(String instr_req) throws IOException {
 
         //CHECK HERE IF ANYTHING IS WRONG WITH CALCULATED RESULTS!
@@ -142,41 +147,48 @@ public class CPU {
 
         System.out.println("Binary instruction: " + instr_req );
         
-        out.append("decoding instruction....");
+        out.append("decoding instruction.... " + instr_req);
        
         //EXTRACT THE TYPE AND OPCODE FROM THE INSTRUCTION
-        this.type = Short.parseShort(instr_req.substring(0,1),2);
-        this.opCode = Short.parseShort(instr_req.substring(2,6),2);
+        this.type = Short.parseShort(instr_req.substring(0,2),2);
+        this.opCode = Short.parseShort(instr_req.substring(2,8),2);
 
+        out.append("\nTYPE: " + type + "\tOPCODE: " + opCode);
         //USE TYPE TO DETERMINE HOW TO EXTRACT THE REMAINING COMPONENTS
         out.append("\nInstruction type:");
         switch (type) {
 
-            case 00:
+            case 0:
                 out.append(" arithmetic");
-                s1_reg = Short.parseShort(instr_req.substring(7,10),2);
-                s2_reg = Short.parseShort(instr_req.substring(10,14),2);
-                d_reg = Short.parseShort(instr_req.substring(14,18),2);
+                s1_reg = Short.parseShort(instr_req.substring(8,12),2);
+                s2_reg = Short.parseShort(instr_req.substring(12,16),2);
+                d_reg = Short.parseShort(instr_req.substring(16,20),2);
+                long dataCHK = Long.parseLong(instr_req.substring(20,32),2);
+                if (dataCHK > 0) {
+                    System.err.println("Invalid instruction data field");
+                    System.exit(0);
+                }
                 break;
-            case 01:
+            case 1:
                 out.append(" branch of immediate");
-                b_reg = Short.parseShort(instr_req.substring(7,10),2);
-                d_reg = Short.parseShort(instr_req.substring(10,14),2);
-                address = Long.parseLong(instr_req.substring(14,32),2);
+                b_reg = Short.parseShort(instr_req.substring(8,12),2);
+                d_reg = Short.parseShort(instr_req.substring(12,16),2);
+                address = Long.parseLong(instr_req.substring(16,32),2);
                 if (address > 0) {
                     b_reg = 0;
                 }
                 break;
-            case 10:
+            case 2:
                 out.append(" jump");
-                address = Integer.parseInt(instr_req.substring(7,31));
+                address = Integer.parseInt(instr_req.substring(8,32));
                 break;
-            case 11:
+            case 3:
                 out.append(" IO");
                 ioCount++;
                 break;
             default:
-                System.out.println("hit default decode");
+                System.err.println("ERROR: HIT DEFAULT DECODE TYPE");
+                out.append("\nERROR: HIT DEFAULT DECODE TYPE");
                 break;
         }
         
@@ -184,11 +196,13 @@ public class CPU {
     }
 
 
-    //************************************************
-    //
-    //************************************************
+    /************************************************
+     *
+     * @param o
+     * @throws java.io.IOException
+     ************************************************/
     protected void execute(int o) throws IOException {
-        out.append("\nexecuting instruction....");
+        out.append("\nExecuting instruction...." + " OPCODE= " + o);
 
         if (opCode != 0) {
             //out.append("\nOPCODE =" + opCode);
@@ -308,7 +322,7 @@ public class CPU {
                 case 20:
                     out.append("\nJumping to another location");
                     //Jumps to a specified location
-                    pc = (int)address;
+                    //pc = (int)address;
                     out.append("\nProgram counter set to " + pc);
                     //OSDriver.tools.effective_addr(address));
                     break;
@@ -316,7 +330,7 @@ public class CPU {
                     out.append("\nChecking if b_reg = d_reg, then branch");
                     //Branches to an address when content of B-reg = D-reg
                     if (d_reg == b_reg) {
-                        pc = (int)address;
+                        //pc = (int)address;
                         out.append("\nProgram counter set to " + pc);
                     }
                     break;
@@ -324,7 +338,7 @@ public class CPU {
                     out.append("\nChecking if b_reg != d_reg, then branch");
                     //Branches to an address when content of B-reg <> D-reg
                     if (b_reg != d_reg) {
-                        pc = (int)address;
+                        //pc = (int)address;
                         out.append("\nProgram counter set to " + pc);
                     }
                     break;
@@ -332,7 +346,7 @@ public class CPU {
                     out.append("\nChecking if d_reg is 0, then branch");
                     //Branches to an address when content of D-reg = 0
                     if (d_reg == 0) {
-                        pc = (int)address;
+                        //pc = (int)address;
                         out.append("\nProgram counter set to " + pc);
                     }
                     break;
@@ -340,7 +354,7 @@ public class CPU {
                     out.append("\nChecking if b_reg != 0, then branch");
                     //Branches to an address when content of B-reg <> 0
                     if (b_reg != 0) {
-                        pc = (int)address;
+                        //pc = (int)address;
                         out.append("\nProgram counter set to " + pc);
                     }
                     break;
@@ -348,7 +362,7 @@ public class CPU {
                     out.append("\nChecking if b_reg > 0, then branch");
                     //Branches to an address when content of B-reg > 0
                     if (b_reg > 0) {
-                        pc = (int)address;
+                        //pc = (int)address;
                         out.append("\nProgram counter set to " + pc);
                     }
                     break;
@@ -356,7 +370,7 @@ public class CPU {
                     out.append("\nChecking if b_reg < 0, then branch");
                     //Branches to an address when content of B-reg < 0
                     if (b_reg < 0) {
-                        pc = (int)address;
+                        //pc = (int)address;
                         out.append("\nProgram counter set to " + pc);
                     }
                     break;
@@ -366,7 +380,7 @@ public class CPU {
 
 
 
-    private void calc_arith(int i) {
+    private void calc_arith(int i) throws IOException {
 
         // i=0 - ADD
         // i=1 - SUBTRACT
@@ -379,29 +393,38 @@ public class CPU {
         switch (i) {
             case 0:
                 d_reg = (short)(s1_reg + s2_reg);
+                out.append("\nd_reg is now: " + d_reg);
                 break;
             case 1:
                 d_reg = (short)(s1_reg - s2_reg);
+                out.append("\nd_reg is now: " + d_reg);
                 break;
             case 2:
                 d_reg = (short)(s1_reg * s2_reg);
+                out.append("\nd_reg is now: " + d_reg);
                 break;
             case 3:
                 if (s2_reg == 0)
                     return;
-                else
+                else {
                     d_reg = (short)(s1_reg / s2_reg);
+                    out.append("\nd_reg is now: " + d_reg);
+                }
                 break;
             case 4:
                 d_reg = (short)(s1_reg & s2_reg);
+                out.append("\nd_reg is now: " + d_reg);
                 break;
             case 5:
                 d_reg = (short)(s1_reg | s2_reg);
+                out.append("\nd_reg is now: " + d_reg);
                 break;
             case 6:
                 short tmp_reg = s1_reg;
                 s1_reg = s2_reg;
                 s2_reg = tmp_reg;
+                out.append("\ns1_reg is now: " + s1_reg);
+                out.append("\ns2_reg is now: " + s2_reg);
                 break;
             default:
                 break;
