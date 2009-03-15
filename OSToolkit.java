@@ -20,7 +20,12 @@ public class OSToolkit {
         DIRECT = 1;
     }
 
+    public short effective_address(short i, short b) {
 
+        return (short)(i + b);
+
+    }
+    
     /******************************************
      * Used to calculate the effective address for a given
      * instruction using either direct or indirect methoods.
@@ -56,29 +61,12 @@ public class OSToolkit {
         System.out.println(bin);
         return bin;
 
-
-
-
-
-
-//        while (!h.equals("")) {
-//
-//            for (int i = 0,j = h.length(); i < j; i++){
-//                //you may want to just append each byte instead of printing it
-//                hexByte[i] = Integer.toBinaryString(Character.digit(h.charAt(i),16));
-//            }
-//
-//            System.out.println();
-//        }
-
-
-
     }
 
 
 
     
-    protected int content(byte b) {
+    protected int content(short b) {
 
         return OSDriver.MemManager.readRamData(b);
         

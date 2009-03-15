@@ -6,10 +6,15 @@ public class PCB_block {
     private int jobSize;
     private int address;
     private int jobPriority;
-    private int input_buffer;
-    private int output_buffer;
-    private int tmp_buffer;
+    private int input_buffer_size;
+    private int output_buffer_size;
+    private int tmp_buffer_size;
+    private int dataSize;
     private int status;
+
+    private String[] IP_buffer;
+    private String[] OP_buffer;
+    private String[] TMP_buffer;
 
     private final int READY = 0;
     private final int FINISHED = 1;
@@ -35,9 +40,36 @@ public class PCB_block {
         this.address = a;
     }
     public void addMetadata(int i, int o, int t) {
-        this.input_buffer = i;
-        this.output_buffer = o;
-        this.tmp_buffer = t;
+        this.input_buffer_size = i;
+        this.output_buffer_size = o;
+        this.tmp_buffer_size = t;
+        this.IP_buffer = new String[i];
+        this.OP_buffer = new String[o];
+        this.TMP_buffer = new String[t];
+    }
+    public void setDataSize(int s) {
+        this.dataSize = s;
+    }
+    public int getDataSize() {
+        return this.dataSize;
+    }
+    public void setIPBuffer(String[] i) {
+        this.IP_buffer = i;
+    }
+    public void setOPBuffer(String[] o) {
+        this.OP_buffer = o;
+    }
+    public void setTMPBuffer(String[] t) {
+        this.TMP_buffer = t;
+    }
+    public String[] getIPBuffer() {
+        return this.IP_buffer;
+    }
+    public String[] getOPBuffer() {
+        return this.OP_buffer;
+    }
+    public String[] getTMPBuffer() {
+        return this.TMP_buffer;
     }
     public int getJobID() {
         return this.jobID;
@@ -65,14 +97,23 @@ public class PCB_block {
         }
         return false;
     }
-    public int get_Input_buffer(int jID) {
-        return this.input_buffer;
+    public int get_Input_buffer_size(int jID) {
+        return this.input_buffer_size;
     }
-    public int get_Output_buffer(int jID) {
-        return this.output_buffer;
+    public int get_Output_buffer_size(int jID) {
+        return this.output_buffer_size;
     }
-    public int get_tmp_buffer(int jID) {
-        return this.tmp_buffer;
+    public int get_tmp_buffer_size(int jID) {
+        return this.tmp_buffer_size;
+    }
+    public int get_Input_buffer_size() {
+        return this.input_buffer_size;
+    }
+    public int get_Output_buffer_size() {
+        return this.output_buffer_size;
+    }
+    public int get_tmp_buffer_size() {
+        return this.tmp_buffer_size;
     }
     public void terminate(int s) {
         this.status = s;

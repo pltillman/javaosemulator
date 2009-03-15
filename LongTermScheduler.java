@@ -10,6 +10,10 @@ public class LongTermScheduler {
     private int CURRJOB;
     private int jobStart;
     private int jobSize;
+    private int dataSize;
+    private int jobIBSize;
+    private int jobOBSize;
+    private int jobTBSize;
     private int cJobStart;
     private int cJobEnd;
     private final int loaded = 2;
@@ -27,6 +31,10 @@ public class LongTermScheduler {
         printQ();
     }
 
+
+    /*****************************************************
+     *
+     ****************************************************/
     public void start() {
         loc = 0;
         Memleft = 1024;
@@ -37,44 +45,32 @@ public class LongTermScheduler {
 
             jobStart = job.getDiskAddress();
             jobSize = job.getJobSize();
+            jobIBSize = job.get_Input_buffer_size(job.getJobID());
+            jobOBSize = job.get_Output_buffer_size(job.getJobID());
+            jobTBSize = job.get_tmp_buffer_size(job.getJobID());
+            dataSize = job.getDataSize();
 
             System.out.println("Start: " + jobStart);
             System.out.println("Size: " + jobSize);
+            System.out.println("IP Buffer Size: " + jobIBSize);
+            System.out.println("OP Buffer Size: " + jobOBSize);
+            System.out.println("TMP Buffer Size: " + jobTBSize);
+
         } else {
             OSDriver.DONE = true;
             System.out.println("There are no more jobs ");
             return;
         }
 
-        while ((Memleft>=(jobSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
-            job.set_mem_start(loc);
+        while (Memleft>=((jobSize*4)+(dataSize*4)) && CURRJOB<OSDriver.PCB.getJobCount()) {
 
-            // int s = jobStart;
+            job.set_mem_start(loc);
             int v = jobStart+jobSize;
-            
             //System.out.println("Threshold: " + (jobSize*4) + " of " + v);
 
             for (int p=jobStart; p<v; p++){
-                String hexString = OSDriver.MemManager.readDiskData(p);
-                hexString = hexString.substring(2,10);  // so we need to strip of the prefix 0x
 
-                System.out.println("Adding hexString: " + hexString);  // then print again to see that it's just 0000dd99
-
-                long t = Long.parseLong(hexString, 16);
-                
-                String binaryBits = Long.toBinaryString(t);
-
-                //System.out.println("BINARY STRING " + binaryBits + "\t Next memory start=" + p + "\t Next memory end=" + v);// then convert it to a string of bits
-
-                int length = binaryBits.length();
-
-                if (length < 32) {
-                    int diff = 32 - length;
-                    for (int i=0; i<diff; i++) {
-                        binaryBits = 0 + "" + binaryBits;
-                    }
-                }
-                
+                String binaryBits = getBinaryData(p);
                 //System.out.println("BINARY STRING AFTER " + binaryBits);// then convert it to a string of bits
                 //System.out.println("Binary bits: " + binaryBits);
 
@@ -94,13 +90,23 @@ public class LongTermScheduler {
                 //System.out.println(binaryBits4);
                 //System.out.println("Decimal: " + binaryBits4 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits4);
-                //loc += 4;
 
                 Memleft -= 4;
-                //s++;
-                
             }
-             
+
+            dataSize = job.getDataSize();
+            System.out.println("Data Size: " + dataSize + " and location is " + loc);
+            int z = 0;
+            String[] tmp = new String[job.get_Input_buffer_size()];
+            //v += job.get_Input_buffer_size();
+            
+            while ( z < job.get_Input_buffer_size() ) {
+                System.out.println("GETTING JOB DATA...");
+                String binaryDataBits = getBinaryData(v++);
+                tmp[z++] = binaryDataBits;
+            }
+            job.setIPBuffer(tmp);
+
             System.out.println("Added job: " + CURRJOB + " at address: " +
                     jobStart + "-" + v + "\n");
             
@@ -109,7 +115,7 @@ public class LongTermScheduler {
             job.setStatus(loaded);
             //System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
             
-           // System.out.println("job count: "+ jobCount);
+            // System.out.println("job count: "+ jobCount);
             readyQueue.add(job);
             job.setinQueueTime(System.nanoTime());
             System.out.println("CURRJOB=" + CURRJOB);
@@ -146,6 +152,55 @@ public class LongTermScheduler {
 
 
     }
+
+
+    /*****************************************************
+     *
+     * @param index
+     * @return
+     ****************************************************/
+    public String getBinaryData(int index) {
+        System.out.println("index:" + index);
+        String hexString = OSDriver.MemManager.readDiskData(index);
+        
+        // so we need to strip of the prefix 0x
+        hexString = hexString.substring(2,10);
+
+        // then print again to see that it's just 0000dd99
+        System.out.println("Adding hexString: " + hexString); 
+
+        long t = Long.parseLong(hexString, 16);
+
+        String binaryBits = Long.toBinaryString(t);
+
+        // then convert it to a string of bits
+        //System.out.println("BINARY STRING " + binaryBits + "\t Next memory start=" + p + "\t Next memory end=" + v);
+
+        int length = binaryBits.length();
+
+        if (length < 32) {
+            int diff = 32 - length;
+            for (int i=0; i<diff; i++) {
+                binaryBits = "0" + binaryBits;
+            }
+        }
+        return binaryBits;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
     public void checkJob(int j)
     {
        PCB_block cJob= OSDriver.PCB.getJob(j);
