@@ -8,32 +8,31 @@ public class shortTermScheduler{
 
         public shortTermScheduler(){
 
-
-
         }
 
-        public void SJF(){
+        public void SJF() {
 
-         //Sort readyQueue in priority order
+            //Sort readyQueue in priority order
 
-         int n = LongTermScheduler.readyQueue.size();
-         //int p = LongTermScheduler.readyQueue
-         boolean doMore = true;
+            int n = LongTermScheduler.readyQueue.size();
+            //int p = LongTermScheduler.readyQueue
+            boolean doMore = true;
 
-         while (doMore) {
-             n--;
-             doMore = false;
-             for (int i=0; i<n; i++) {
+            while (doMore) {
+                n--;
+                doMore = false;
+                for (int i=0; i<n; i++) {
 
-                 if (LongTermScheduler.readyQueue.get(i).getJobPriority() < LongTermScheduler.readyQueue.get(i+1).getJobPriority()){
+                    if (LongTermScheduler.readyQueue.get(i).getJobPriority() <
+                            LongTermScheduler.readyQueue.get(i+1).getJobPriority()) {
 
                         pcb_e = LongTermScheduler.readyQueue.get(i);
                         LongTermScheduler.readyQueue.set(i, LongTermScheduler.readyQueue.get(i+1));
                         LongTermScheduler.readyQueue.set(i+1, pcb_e);
                         doMore = true;
+                    }
                 }
             }
-         }
         }
 
         
@@ -45,9 +44,9 @@ public class shortTermScheduler{
             value[0] = tmp.getJobID();
             value[1] = tmp.get_mem_start(jID);
             value[2] = tmp.get_mem_end(jID);
-            value[3] = tmp.get_Input_buffer(jID);
-            value[4] = tmp.get_Output_buffer(jID);
-            value[5] = tmp.get_tmp_buffer(jID);
+            value[3] = tmp.get_Input_buffer_size(jID);
+            value[4] = tmp.get_Output_buffer_size(jID);
+            value[5] = tmp.get_tmp_buffer_size(jID);
 
             return value;
         }

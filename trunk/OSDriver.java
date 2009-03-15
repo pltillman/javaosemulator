@@ -86,7 +86,7 @@ import java.io.*;
                 }
                 //System.out.println("Assign job to CPU: " + cpu1);
             }
-            System.err.println("ADDING MORE JOBS");
+            System.out.println("\nADDING MORE JOBS........\n");
             LTS.start();
             numberOfProcess = LongTermScheduler.readyQueue.size();
 

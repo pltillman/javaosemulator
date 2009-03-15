@@ -117,6 +117,7 @@ public class Loader {
             int output = Integer.parseInt(token.nextToken(),16);
             int temp = Integer.parseInt(token.nextToken(),16);
             OSDriver.PCB.addMeta(input, output, temp);
+            OSDriver.PCB.setDataSize(input + output + temp);
             //addr++;
         }
         //System.out.println("job added");

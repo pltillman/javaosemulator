@@ -45,7 +45,10 @@ public class ProcessControlBlock {
         count++;
 
     }
-
+    public void setDataSize(int s) {
+        pcb_e.setDataSize(s);
+    }
+    
     public int getJobCount() {
         return count;
     }
