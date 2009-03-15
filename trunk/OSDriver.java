@@ -10,13 +10,14 @@ import java.io.*;
       public static MemoryManager MemManager;
       public static ProcessControlBlock PCB;
       public static OSToolkit tools;
-     // public static Scheduler sched;
+      public static LongTermScheduler LTS;
+      public static shortTermScheduler STS;
       public static RamMemory ram;
       public static int RamJobSize;
       public static DiskMemory disk;
       private static int jobSize;
       private static int totalJobSize=0;
-     
+      public static boolean DONE = false;
 //      public static ShortestJobFirst SJF;
 
 //     private static int currentProcess;
@@ -57,14 +58,39 @@ import java.io.*;
               ioe.printStackTrace();
           }
 
-          //sched = new Scheduler();
-          for (int i = 0; i < 10; i++) {
-              Thread p1 = new Thread(new Scheduler());
-              p1.start();
-          }
+        LTS = new LongTermScheduler();
+        STS = new shortTermScheduler();
+        STS.SJF();
 
-             
-         }
-    
+        int numberOfProcess = LongTermScheduler.readyQueue.size();
 
-      }
+        int[] jMeta = new int[6];
+        CPU cpu1 = null;
+
+        try {
+            cpu1 = new CPU();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+
+        while(!DONE) {
+            if (!LongTermScheduler.readyQueue.isEmpty()) {
+
+            for(int i=0; i<numberOfProcess; i++){
+                jMeta = STS.Store(i);
+                try {
+                    cpu1.load(jMeta);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+                //System.out.println("Assign job to CPU: " + cpu1);
+            }
+            System.err.println("ADDING MORE JOBS");
+            LTS.start();
+            numberOfProcess = LongTermScheduler.readyQueue.size();
+
+            }
+        }
+    }
+ }
