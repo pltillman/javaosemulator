@@ -2,6 +2,7 @@
 //  This is a template for an individual PCB entry
 //****************************************************
 public class PCB_block {
+
     private int jobID;
     private int jobSize;
     private int address;
@@ -19,16 +20,13 @@ public class PCB_block {
     private final int READY = 0;
     private final int FINISHED = 1;
     private final int LOADED = 2;
-    private final int COMPLETE = 3;
+    private final int WAITING = 3;
 
     private long inqueueTime = 0;
     private long outqueueTime = 0;
     private long cpuStartTime = 0;
     private long cpuEndTime = 0;
 
-    private int mem_loc; //added by the schedule once the job is
-                         //placed in memory. indicates what
-                         //physical address in ram the job begins.
     private int mem_start;
     private int mem_end;
     
@@ -97,15 +95,6 @@ public class PCB_block {
         }
         return false;
     }
-    public int get_Input_buffer_size(int jID) {
-        return this.input_buffer_size;
-    }
-    public int get_Output_buffer_size(int jID) {
-        return this.output_buffer_size;
-    }
-    public int get_tmp_buffer_size(int jID) {
-        return this.tmp_buffer_size;
-    }
     public int get_Input_buffer_size() {
         return this.input_buffer_size;
     }
@@ -121,13 +110,13 @@ public class PCB_block {
     public void set_mem_start(int k) {
         this.mem_start = k;
     }
-    public int get_mem_start(int jID) {
+    public int get_mem_start() {
         return this.mem_start;
     }
     public void set_mem_end(int k) {
         this.mem_end = k;
     }
-    public int get_mem_end(int jID) {
+    public int get_mem_end() {
         return this.mem_end;
     }
     public void setCpuEndTime(long t) {

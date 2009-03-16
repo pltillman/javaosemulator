@@ -36,9 +36,15 @@ public class LongTermScheduler {
      *
      ****************************************************/
     public void start() {
-        loc = 0;
-        Memleft = 1024;
 
+        if (hasLoadedAllJobs()) {
+            System.err.println("ALL JOBS HAVE LOADED");
+            System.exit(1);
+        } else {
+            loc = 0;
+            Memleft = 1024;
+        }
+        
         job = OSDriver.PCB.getJob(CURRJOB);
         //System.out.println("job count: " + OSDriver.PCB.getJobCount());
 
@@ -108,7 +114,7 @@ public class LongTermScheduler {
 
 
             System.out.println("Added job: " + CURRJOB + " at address: " +
-                    jobStart + "-" + v + "\n");
+                    job.get_mem_start() + "-" + job.get_mem_end() + "\n");
 
 
             if (CURRJOB > OSDriver.PCB.getJobCount() ) {
@@ -142,6 +148,10 @@ public class LongTermScheduler {
 
             
         }
+
+//        } else {
+//            System.exit(1);
+//        }
 
     }
 
@@ -177,6 +187,24 @@ public class LongTermScheduler {
             }
         }
         return binaryBits;
+    }
+
+
+
+    /*****************************************************
+     * 
+     * @return
+     ****************************************************/
+    public Boolean hasLoadedAllJobs() {
+
+        for (int i=0; i<OSDriver.PCB.getJobCount(); i++) {
+            PCB_block tmp = OSDriver.PCB.getJob(i);
+            if (tmp.getStatus() == 0) {
+                return false;
+            }
+        }
+        return true;
+
     }
 
 }

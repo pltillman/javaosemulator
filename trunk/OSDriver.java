@@ -62,7 +62,7 @@ import java.io.*;
         STS = new shortTermScheduler();
         STS.SJF();
 
-        int numberOfProcess = LongTermScheduler.readyQueue.size();
+        //int numberOfProcess = LongTermScheduler.readyQueue.size();
 
         int[] jMeta = new int[6];
         CPU cpu1 = null;
@@ -78,9 +78,9 @@ import java.io.*;
 
             if (!LongTermScheduler.readyQueue.isEmpty()) {
 
-                System.out.println("NUMBER OF JOBS: " + numberOfProcess);
-                for(int i=0; i<LongTermScheduler.readyQueue.size(); i++){
-                    jMeta = STS.Store(i);
+                System.out.println("NUMBER OF JOBS: " + LongTermScheduler.readyQueue.size());
+                while (LongTermScheduler.readyQueue.size() > 0){
+                    jMeta = STS.Store(0);
                     try {
                         cpu1.load(jMeta);
                     } catch (IOException ioe) {
@@ -89,8 +89,8 @@ import java.io.*;
                     //System.out.println("Assign job to CPU: " + cpu1);
                 }
                 System.out.println("\nADDING MORE JOBS........\n");
-                //LTS.start();
-                numberOfProcess = LongTermScheduler.readyQueue.size();
+                LTS.start();
+                //numberOfProcess = LongTermScheduler.readyQueue.size();
 
             }
         }
