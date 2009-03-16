@@ -53,7 +53,7 @@ public class ProcessControlBlock {
         return count;
     }
     public PCB_block getJob(int i) {
-        System.out.println("JOB_COUNT: " + getJobCount());
+        //System.out.println("JOB_COUNT: " + getJobCount());
         return jobQueue.get(i);
     }
     

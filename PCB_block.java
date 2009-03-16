@@ -13,9 +13,9 @@ public class PCB_block {
     private int dataSize;
     private int status;
 
-    private String[] IP_buffer;
-    private String[] OP_buffer;
-    private String[] TMP_buffer;
+    private short[] IP_buffer;
+    private short[] OP_buffer;
+    private short[] TMP_buffer;
 
     private final int READY = 0;
     private final int FINISHED = 1;
@@ -41,9 +41,9 @@ public class PCB_block {
         this.input_buffer_size = i;
         this.output_buffer_size = o;
         this.tmp_buffer_size = t;
-        this.IP_buffer = new String[i];
-        this.OP_buffer = new String[o];
-        this.TMP_buffer = new String[t];
+        this.IP_buffer = new short[i];
+        this.OP_buffer = new short[o];
+        this.TMP_buffer = new short[t];
     }
     public void setDataSize(int s) {
         this.dataSize = s;
@@ -51,22 +51,22 @@ public class PCB_block {
     public int getDataSize() {
         return this.dataSize;
     }
-    public void setIPBuffer(String[] i) {
+    public void setIPBuffer(short[] i) {
         this.IP_buffer = i;
     }
-    public void setOPBuffer(String[] o) {
+    public void setOPBuffer(short[] o) {
         this.OP_buffer = o;
     }
-    public void setTMPBuffer(String[] t) {
+    public void setTMPBuffer(short[] t) {
         this.TMP_buffer = t;
     }
-    public String[] getIPBuffer() {
+    public short[] getIPBuffer() {
         return this.IP_buffer;
     }
-    public String[] getOPBuffer() {
+    public short[] getOPBuffer() {
         return this.OP_buffer;
     }
-    public String[] getTMPBuffer() {
+    public short[] getTMPBuffer() {
         return this.TMP_buffer;
     }
     public int getJobID() {

@@ -14,7 +14,6 @@ public class CPU {
 
     private final int data = 0;
 
-    
     private int oBufferSize;
     private int iBufferSize;
     private int tBufferSize;
@@ -59,7 +58,7 @@ public class CPU {
         out.append("\n|||||||||||||||||");
         out.append("\nJob #" + j[0]);
 
-        System.out.println("\nJob #" + j[0]);
+        System.out.println("\nJob #" + j[0] + " EXECUTING");
 
         //set the pc counter & buffer sizes
         pc = j[1];
@@ -73,7 +72,7 @@ public class CPU {
         while (pc < j[2]) {
             String instr = fetch(pc);
             try {
-                execute(decode(instr));
+                execute(decode(instr),j[0]);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
@@ -201,7 +200,7 @@ public class CPU {
      * @param o
      * @throws java.io.IOException
      ************************************************/
-    protected void execute(int o) throws IOException {
+    protected void execute(int o, int jID) throws IOException {
         out.append("\nExecuting instruction...." + " OPCODE = " + o);
         System.out.println("\nExecuting instruction...." + " OPCODE = " + o);
         
@@ -342,6 +341,22 @@ public class CPU {
                     //Logical end of program
                     //int job =0;
                     System.out.println("END OF PROGRAM - OPCODE " + opCode);
+                    PCB_block tmp = OSDriver.PCB.getJob(jID-1);
+                    tmp.setCpuEndTime(System.nanoTime());
+                    tmp.setStatus(1);
+
+                    String avgs = "JOB #" + jID + " was waiting for " +
+                            (double)(tmp.getoutQueueTime() - tmp.getinQueueTime())/1000000 +
+                            " milliseconds and had a CPU time of " +
+                            (double)(tmp.getCpuEndTime() - tmp.getCpuStartTime())/1000000 +
+                            " milliseconds.";
+                    System.out.println(avgs);
+                    out.append("\n" + avgs);
+
+                    String ios = "There were " + ioCount + " IO requests in job # " + jID;
+                    System.out.println(ios);
+                    out.append("\n" + ios);
+                    
                     break;
                 case 19:
                     out.append("\nMoving to the next instruction");
