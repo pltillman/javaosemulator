@@ -54,11 +54,11 @@ public class shortTermScheduler{
             PCB_block tmp = LongTermScheduler.readyQueue.get(jID);
 
             value[0] = tmp.getJobID();
-            value[1] = tmp.get_mem_start(jID);
-            value[2] = tmp.get_mem_end(jID);
-            value[3] = tmp.get_Input_buffer_size(jID);
-            value[4] = tmp.get_Output_buffer_size(jID);
-            value[5] = tmp.get_tmp_buffer_size(jID);
+            value[1] = tmp.get_mem_start();
+            value[2] = tmp.get_mem_end();
+            value[3] = tmp.get_Input_buffer_size();
+            value[4] = tmp.get_Output_buffer_size();
+            value[5] = tmp.get_tmp_buffer_size();
             
             LongTermScheduler.readyQueue.remove(tmp);
 
