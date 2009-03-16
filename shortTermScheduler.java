@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+
+/*************************************************************
+ *
+ * @author Patrick Tillman, Bin Zhou, Rebecca Andrews
+ ************************************************************/
 public class shortTermScheduler{
 
         private PCB_block pcb_e;
@@ -10,6 +15,9 @@ public class shortTermScheduler{
 
         }
 
+        /*************************************************************
+         *
+         ************************************************************/
         public void SJF() {
 
             //Sort readyQueue in priority order
@@ -35,7 +43,11 @@ public class shortTermScheduler{
             }
         }
 
-        
+        /************************************************************
+         *
+         * @param jID
+         * @return
+         ************************************************************/
         public int[] Store(int jID){
 
             int[] value = new int[6];
@@ -47,6 +59,11 @@ public class shortTermScheduler{
             value[3] = tmp.get_Input_buffer_size(jID);
             value[4] = tmp.get_Output_buffer_size(jID);
             value[5] = tmp.get_tmp_buffer_size(jID);
+            
+            LongTermScheduler.readyQueue.remove(tmp);
+
+            System.out.println("REMOVED JOB FROM READY Q.. SIZE IS NOW " +
+                    LongTermScheduler.readyQueue.size());
 
             return value;
         }

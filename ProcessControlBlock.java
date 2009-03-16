@@ -53,9 +53,10 @@ public class ProcessControlBlock {
         return count;
     }
     public PCB_block getJob(int i) {
-
-        return jobQueue.get(--i);
+        System.out.println("JOB_COUNT: " + getJobCount());
+        return jobQueue.get(i);
     }
+    
     //****************************************************
     //  Returns the next job in the queue.
     //****************************************************

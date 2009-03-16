@@ -17,30 +17,22 @@ public class Loader {
 
     public Loader(FileReader f1, FileReader f2) {
 
-        this.file_1 = f1;
-        this.file_2 = f2;
+        this.file_2 = f1;
+        this.file_1 = f2;
 
     }
     //****************************************************
     //
     //****************************************************
     protected void load() throws IOException {
-        System.out.println("load() called");
 
         try {
-            System.out.println("trying to load datafile");
             BufferedReader input =  new BufferedReader(file_1);
             BufferedReader input2 = new BufferedReader(file_2);
 
             if (readDataFile(input2) ) {
                 input2.close();
-                //readDataFile(input2);
-                //System.out.println("loading 2nd data file");
             }
-            
-            //System.out.println(str.toString());
-            
-            //input2.close();
 
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -85,7 +77,6 @@ public class Loader {
                     }
                 } else {
                     str = in.readLine();
-                    System.out.println("trying to load datafile");
                     System.out.println("Read data: " + str);
                 }
             }
