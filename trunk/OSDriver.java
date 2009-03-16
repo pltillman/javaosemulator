@@ -18,6 +18,9 @@ import java.io.*;
       private static int jobSize;
       private static int totalJobSize=0;
       public static boolean DONE = false;
+      public static double sumPercent;
+      public static int counter=0;
+      public static double totalPercent;
 //      public static ShortestJobFirst SJF;
 
 //     private static int currentProcess;
@@ -93,6 +96,11 @@ import java.io.*;
                 //numberOfProcess = LongTermScheduler.readyQueue.size();
 
             }
+
+            sumPercent +=LongTermScheduler.percent;
+            counter++;
         }
+
+    
     }
  }
