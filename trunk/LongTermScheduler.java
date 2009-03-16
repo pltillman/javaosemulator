@@ -23,13 +23,13 @@ public class LongTermScheduler {
     
 
     public LongTermScheduler() {
-       //jobQ = new CircularArray(10);
+        
         readyQueue= new ArrayList<PCB_block>();
-
         CURRJOB = 0;
         start();
-        printQ();
+        //printQ();
     }
+
 
 
     /*****************************************************
@@ -39,36 +39,32 @@ public class LongTermScheduler {
         loc = 0;
         Memleft = 1024;
 
-        if (CURRJOB<OSDriver.PCB.getJobCount()) {
-            job = OSDriver.PCB.getJob(++CURRJOB);
-            //System.out.println("job count: " + OSDriver.PCB.getJobCount());
+        job = OSDriver.PCB.getJob(CURRJOB);
+        //System.out.println("job count: " + OSDriver.PCB.getJobCount());
 
-            jobStart = job.getDiskAddress();
-            jobSize = job.getJobSize();
-            jobIBSize = job.get_Input_buffer_size(job.getJobID());
-            jobOBSize = job.get_Output_buffer_size(job.getJobID());
-            jobTBSize = job.get_tmp_buffer_size(job.getJobID());
-            dataSize = job.getDataSize();
+        jobStart = job.getDiskAddress();
+        jobSize = job.getJobSize();
+        jobIBSize = job.get_Input_buffer_size();
+        jobOBSize = job.get_Output_buffer_size();
+        jobTBSize = job.get_tmp_buffer_size();
+        dataSize = job.getDataSize();
 
-            System.out.println("Start: " + jobStart);
-            System.out.println("Size: " + jobSize);
-            System.out.println("IP Buffer Size: " + jobIBSize);
-            System.out.println("OP Buffer Size: " + jobOBSize);
-            System.out.println("TMP Buffer Size: " + jobTBSize);
+        System.out.println("Start: " + jobStart);
+        System.out.println("Size: " + jobSize);
+        System.out.println("IP Buffer Size: " + jobIBSize);
+        System.out.println("OP Buffer Size: " + jobOBSize);
+        System.out.println("TMP Buffer Size: " + jobTBSize);
 
-        } else {
-            OSDriver.DONE = true;
-            System.out.println("There are no more jobs ");
-            return;
-        }
+        System.out.println("\nIs there enough memory left for the next job? " + (Memleft>=((jobSize*4)+(jobIBSize*4))));
+        System.out.println("Have we reached the end of the job list? " + (CURRJOB<OSDriver.PCB.getJobCount()+1));
 
-        while (Memleft>=((jobSize*4)+(dataSize*4)) && CURRJOB<OSDriver.PCB.getJobCount()) {
+        while (Memleft>=((jobSize*4)+(jobIBSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
 
             job.set_mem_start(loc);
             int v = jobStart+jobSize;
             //System.out.println("Threshold: " + (jobSize*4) + " of " + v);
 
-            for (int p=jobStart; p<v; p++){
+            for (int p=jobStart; p<v; p++) {
 
                 String binaryBits = getBinaryData(p);
                 //System.out.println("BINARY STRING AFTER " + binaryBits);// then convert it to a string of bits
@@ -94,62 +90,55 @@ public class LongTermScheduler {
                 Memleft -= 4;
             }
 
-            dataSize = job.getDataSize();
             System.out.println("Data Size: " + dataSize + " and location is " + loc);
             int z = 0;
-            String[] tmp = new String[job.get_Input_buffer_size()];
-            //v += job.get_Input_buffer_size();
+            String[] tmp = new String[jobIBSize];
             
             while ( z < job.get_Input_buffer_size() ) {
                 System.out.println("GETTING JOB DATA...");
                 String binaryDataBits = getBinaryData(v++);
                 tmp[z++] = binaryDataBits;
             }
+
             job.setIPBuffer(tmp);
 
             System.out.println("Added job: " + CURRJOB + " at address: " +
                     jobStart + "-" + v + "\n");
-            
-            CURRJOB++;
-            job.set_mem_end(loc);
-            job.setStatus(loaded);
-            //System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
-            
-            // System.out.println("job count: "+ jobCount);
-            readyQueue.add(job);
-            job.setinQueueTime(System.nanoTime());
-            System.out.println("CURRJOB=" + CURRJOB);
-            job = OSDriver.PCB.getJob(CURRJOB);
-            jobStart = job.getDiskAddress();
-            jobSize = job.getJobSize();
-           
-            if(CURRJOB==OSDriver.PCB.getJobCount()) {
+
+
+            if (CURRJOB > OSDriver.PCB.getJobCount() ) {
                OSDriver.DONE=true;
                return;
             }
+
+            CURRJOB++;
+
+            System.out.println("Is the current job < total jobs " + (CURRJOB < OSDriver.PCB.getJobCount()));
+            System.out.println("Current job: " + CURRJOB + "\tTotal jobs: " + OSDriver.PCB.getJobCount());
+            
+            if (CURRJOB < OSDriver.PCB.getJobCount() ) {
+
+                System.out.println("CURRENT JOB: " + CURRJOB);
+                
+                job.set_mem_end(loc);
+                job.setStatus(loaded);
+                //System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
+
+                // System.out.println("job count: "+ jobCount);
+                readyQueue.add(job);
+                job.setinQueueTime(System.nanoTime());
+                //System.out.println("CURRJOB=" + CURRJOB);
+                job = OSDriver.PCB.getJob(CURRJOB);
+                jobStart = job.getDiskAddress();
+                jobSize = job.getJobSize();
+                dataSize = job.getDataSize();
+                jobIBSize = job.get_Input_buffer_size();
+            } else {
+                OSDriver.DONE = true;
+            }
+
+            
         }
-        
-       //  percentRam();
-        //double percent= Memleft/RAMSIZE;
-         //System.out.println("Percentage of RAM used: " + percent*100);
-        //average percentage of RAM used based on total
-        //System.out.println(OSDriver.MemManager.printRam());
-
-//      for (int j=0; j<1; j++)
-//      {
-//       String hexString = OSDriver.MemManager.readDiskData(5);  // this will be a loop where 3 is some variable i
-//       System.out.println("hexString: " + hexString);   // this just shows the string as 0x0000dd99
-//
-//
-//       System.out.println("binaryBits: " + binaryBits1 + "\n" + binaryBits2 +
-//               "\n" + binaryBits3 + "\n" + binaryBits4);   // print it to verify
-//       //byte it = Byte.parseByte(binaryBits, 2);
-//
-//        //System.out.println(it);
-//       }
-//
-//       jobQueue.AddQueue(pcbq);
-
 
     }
 
@@ -187,6 +176,7 @@ public class LongTermScheduler {
         return binaryBits;
     }
 
+}
 
 
 
@@ -198,35 +188,61 @@ public class LongTermScheduler {
 
 
 
+
+
+
+
+
+
+
+       //  percentRam();
+        //double percent= Memleft/RAMSIZE;
+         //System.out.println("Percentage of RAM used: " + percent*100);
+        //average percentage of RAM used based on total
+        //System.out.println(OSDriver.MemManager.printRam());
+
+//      for (int j=0; j<1; j++)
+//      {
+//       String hexString = OSDriver.MemManager.readDiskData(5);  // this will be a loop where 3 is some variable i
+//       System.out.println("hexString: " + hexString);   // this just shows the string as 0x0000dd99
+//
+//
+//       System.out.println("binaryBits: " + binaryBits1 + "\n" + binaryBits2 +
+//               "\n" + binaryBits3 + "\n" + binaryBits4);   // print it to verify
+//       //byte it = Byte.parseByte(binaryBits, 2);
+//
+//        //System.out.println(it);
+//       }
+//
+//       jobQueue.AddQueue(pcbq);
 
     
 
-    public void checkJob(int j)
-    {
-       PCB_block cJob= OSDriver.PCB.getJob(j);
-       if (cJob.getStatus() == loaded)
-       {
-           cJobStart = cJob.get_mem_start(j);
-           cJobEnd= cJob.get_mem_end(j);
-
-       }
-    }
-
-    public void printQ()
-    {
-       for (PCB_block t: readyQueue)
-         System.out.println("id: " + t.getJobID());
-     
-    }
-
-    public void percentRam()
-    {  
-        double average;
-        double avg;
-        average= (RAMSIZE-Memleft);
-
-        //avg= average/RAMSIZE;
-           percRam+=average/RAMSIZE;
-           
-    }
-}
+//    public void checkJob(int j)
+//    {
+//       PCB_block cJob= OSDriver.PCB.getJob(j);
+//       if (cJob.getStatus() == loaded)
+//       {
+//           cJobStart = cJob.get_mem_start(j);
+//           cJobEnd= cJob.get_mem_end(j);
+//
+//       }
+//    }
+//
+//    public void printQ()
+//    {
+//       for (PCB_block t: readyQueue)
+//         System.out.println("id: " + t.getJobID());
+//
+//    }
+//
+//    public void percentRam()
+//    {
+//        double average;
+//        double avg;
+//        average= (RAMSIZE-Memleft);
+//
+//        //avg= average/RAMSIZE;
+//           percRam+=average/RAMSIZE;
+//
+//    }

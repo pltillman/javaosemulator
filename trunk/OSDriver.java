@@ -74,21 +74,23 @@ import java.io.*;
         }
 
 
-        while(!DONE) {
+        while (!DONE || !LongTermScheduler.readyQueue.isEmpty()) {
+
             if (!LongTermScheduler.readyQueue.isEmpty()) {
 
-            for(int i=0; i<numberOfProcess; i++){
-                jMeta = STS.Store(i);
-                try {
-                    cpu1.load(jMeta);
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
+                System.out.println("NUMBER OF JOBS: " + numberOfProcess);
+                for(int i=0; i<numberOfProcess; i++){
+                    jMeta = STS.Store(i);
+                    try {
+                        cpu1.load(jMeta);
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                    //System.out.println("Assign job to CPU: " + cpu1);
                 }
-                //System.out.println("Assign job to CPU: " + cpu1);
-            }
-            System.out.println("\nADDING MORE JOBS........\n");
-            LTS.start();
-            numberOfProcess = LongTermScheduler.readyQueue.size();
+                System.out.println("\nADDING MORE JOBS........\n");
+                //LTS.start();
+                numberOfProcess = LongTermScheduler.readyQueue.size();
 
             }
         }
