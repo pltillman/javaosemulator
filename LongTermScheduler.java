@@ -16,7 +16,7 @@ public class LongTermScheduler {
     private int jobTBSize;
     private int cJobStart;
     private int cJobEnd;
-    private final int loaded = 2;
+    private final int ready = 0;
     private int jobCount=0;
     PCB_block job;
     double percRam = 0;
@@ -101,6 +101,11 @@ public class LongTermScheduler {
             }
 
             job.setIPBuffer(tmp);
+            job.set_mem_end(loc);
+            job.setStatus(ready);
+            readyQueue.add(job);
+            job.setinQueueTime(System.nanoTime());
+
 
             System.out.println("Added job: " + CURRJOB + " at address: " +
                     jobStart + "-" + v + "\n");
@@ -110,8 +115,9 @@ public class LongTermScheduler {
                OSDriver.DONE=true;
                return;
             }
-
+            
             CURRJOB++;
+            
 
             System.out.println("Is the current job < total jobs " + (CURRJOB < OSDriver.PCB.getJobCount()));
             System.out.println("Current job: " + CURRJOB + "\tTotal jobs: " + OSDriver.PCB.getJobCount());
@@ -120,13 +126,10 @@ public class LongTermScheduler {
 
                 System.out.println("CURRENT JOB: " + CURRJOB);
                 
-                job.set_mem_end(loc);
-                job.setStatus(loaded);
                 //System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
 
                 // System.out.println("job count: "+ jobCount);
-                readyQueue.add(job);
-                job.setinQueueTime(System.nanoTime());
+                
                 //System.out.println("CURRJOB=" + CURRJOB);
                 job = OSDriver.PCB.getJob(CURRJOB);
                 jobStart = job.getDiskAddress();

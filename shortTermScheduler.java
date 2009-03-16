@@ -62,6 +62,7 @@ public class shortTermScheduler{
             
             LongTermScheduler.readyQueue.remove(tmp);
 
+
             System.out.println("REMOVED JOB FROM READY Q.. SIZE IS NOW " +
                     LongTermScheduler.readyQueue.size());
 

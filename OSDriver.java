@@ -79,7 +79,7 @@ import java.io.*;
             if (!LongTermScheduler.readyQueue.isEmpty()) {
 
                 System.out.println("NUMBER OF JOBS: " + numberOfProcess);
-                for(int i=0; i<numberOfProcess; i++){
+                for(int i=0; i<LongTermScheduler.readyQueue.size(); i++){
                     jMeta = STS.Store(i);
                     try {
                         cpu1.load(jMeta);
