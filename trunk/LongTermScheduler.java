@@ -38,7 +38,7 @@ public class LongTermScheduler {
     public void start() {
 
         if (hasLoadedAllJobs()) {
-            System.err.println("ALL JOBS HAVE LOADED");
+            System.out.println("ALL JOBS HAVE COMPLETED.");
             System.exit(1);
         } else {
             loc = 0;
@@ -64,7 +64,7 @@ public class LongTermScheduler {
         System.out.println("\nIs there enough memory left for the next job? " + (Memleft>=((jobSize*4)+(jobIBSize*4))));
         System.out.println("Have we reached the end of the job list? " + (CURRJOB<OSDriver.PCB.getJobCount()+1));
 
-        while (Memleft>=((jobSize*4)+(jobIBSize*4)) && (CURRJOB<OSDriver.PCB.getJobCount())) {
+        while (Memleft>=(jobSize*4) && (CURRJOB<OSDriver.PCB.getJobCount())) {
 
             job.set_mem_start(loc);
             int v = jobStart+jobSize;
@@ -98,17 +98,23 @@ public class LongTermScheduler {
 
             System.out.println("Data Size: " + dataSize + " and location is " + loc);
             int z = 0;
-            String[] tmp = new String[jobIBSize];
-            
+            short[] tmp = new short[jobIBSize*4];
+
+            //Get input buffer from datafile and save it in PCB
             while ( z < job.get_Input_buffer_size() ) {
                 System.out.println("GETTING JOB DATA...");
                 String binaryDataBits = getBinaryData(v++);
-                tmp[z++] = binaryDataBits;
-            }
+                tmp[z++] = Short.valueOf(binaryDataBits.substring(0,8), 2);
+                tmp[z++] = Short.valueOf(binaryDataBits.substring(8,16), 2);
+                tmp[z++] = Short.valueOf(binaryDataBits.substring(16,24), 2);
+                tmp[z++] = Short.valueOf(binaryDataBits.substring(24,32), 2);
 
+            }
             job.setIPBuffer(tmp);
             job.set_mem_end(loc);
             job.setStatus(ready);
+            
+            //Add the job to the ready queue and record the time.
             readyQueue.add(job);
             job.setinQueueTime(System.nanoTime());
 
@@ -133,25 +139,21 @@ public class LongTermScheduler {
                 System.out.println("CURRENT JOB: " + CURRJOB);
                 
                 //System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
-
-                // System.out.println("job count: "+ jobCount);
-                
+                //System.out.println("job count: "+ jobCount);
                 //System.out.println("CURRJOB=" + CURRJOB);
+
                 job = OSDriver.PCB.getJob(CURRJOB);
                 jobStart = job.getDiskAddress();
                 jobSize = job.getJobSize();
                 dataSize = job.getDataSize();
                 jobIBSize = job.get_Input_buffer_size();
+                
             } else {
                 OSDriver.DONE = true;
             }
 
             
         }
-
-//        } else {
-//            System.exit(1);
-//        }
 
     }
 

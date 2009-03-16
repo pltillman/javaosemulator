@@ -50,8 +50,10 @@ public class shortTermScheduler{
          ************************************************************/
         public int[] Store(int jID){
 
-            int[] value = new int[6];
             PCB_block tmp = LongTermScheduler.readyQueue.get(jID);
+            int[] value = new int[6+tmp.getIPBuffer().length];
+
+
 
             value[0] = tmp.getJobID();
             value[1] = tmp.get_mem_start();
@@ -59,9 +61,14 @@ public class shortTermScheduler{
             value[3] = tmp.get_Input_buffer_size();
             value[4] = tmp.get_Output_buffer_size();
             value[5] = tmp.get_tmp_buffer_size();
+
+            for (int i=6; i<value.length; i++) {
+                //value[i] =
+            }
             
             LongTermScheduler.readyQueue.remove(tmp);
-
+            tmp.setoutQueueTime(System.nanoTime());
+            tmp.setCpuStartTime(System.nanoTime());
 
             System.out.println("REMOVED JOB FROM READY Q.. SIZE IS NOW " +
                     LongTermScheduler.readyQueue.size());
