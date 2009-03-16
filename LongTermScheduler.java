@@ -20,6 +20,8 @@ public class LongTermScheduler {
     private int jobCount=0;
     PCB_block job;
     double percRam = 0;
+    public static  double average;
+    public static  double percent;
     
 
     public LongTermScheduler() {
@@ -39,6 +41,9 @@ public class LongTermScheduler {
 
         if (hasLoadedAllJobs()) {
             System.out.println("ALL JOBS HAVE COMPLETED.");
+
+            OSDriver.totalPercent=OSDriver.sumPercent/OSDriver.counter;
+            System.out.println("total percent of RAM used:  " + OSDriver.totalPercent);
             System.exit(1);
         } else {
             loc = 0;
@@ -149,12 +154,15 @@ public class LongTermScheduler {
                 jobIBSize = job.get_Input_buffer_size();
                 
             } else {
+                percentRam(1);
                 OSDriver.DONE = true;
+
             }
 
             
         }
 
+        percentRam(0);
     }
 
 
@@ -208,6 +216,32 @@ public class LongTermScheduler {
         return true;
 
     }
+
+
+    public void percentRam(int f){
+
+ 
+
+        switch (f) {
+            case 0:
+                 average= (RAMSIZE-Memleft);
+                 percent= average/RAMSIZE;
+
+                System.out.println("Percentage of RAM used: " + percent*100);
+
+                break;
+            case 1:
+
+                break;
+        }
+
+
+
+
+
+
+   }
+
 
 }
 
