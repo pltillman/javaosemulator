@@ -67,7 +67,8 @@ import java.io.*;
 
         //int numberOfProcess = LongTermScheduler.readyQueue.size();
 
-        int[] jMeta = new int[6];
+        PCB_block jMeta;
+        
         CPU cpu1 = null;
 
         try {
@@ -93,6 +94,7 @@ import java.io.*;
                 }
                 System.out.println("\nADDING MORE JOBS........\n");
                 LTS.start();
+                STS.SJF();
                 //numberOfProcess = LongTermScheduler.readyQueue.size();
 
             }

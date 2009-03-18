@@ -93,7 +93,7 @@ public class LongTermScheduler {
                 //System.out.println(binaryBits3);
                 //System.out.println("Decimal: " + binaryBits3 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits3);
-                short binaryBits4 = Short.valueOf(binaryBits.substring(24,31), 2);
+                short binaryBits4 = Short.valueOf(binaryBits.substring(24,32), 2);
                 //System.out.println(binaryBits4);
                 //System.out.println("Decimal: " + binaryBits4 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits4);
@@ -103,19 +103,40 @@ public class LongTermScheduler {
 
             System.out.println("Data Size: " + dataSize + " and location is " + loc);
             int z = 0;
-            short[] tmp = new short[jobIBSize*4];
+            short[] tmp = new short[dataSize*4];
 
+            String binaryDataBits;
             //Get input buffer from datafile and save it in PCB
-            while ( z < job.get_Input_buffer_size() ) {
+            while ( z < job.getDataSize()*4 ) {
                 System.out.println("GETTING JOB DATA...");
-                String binaryDataBits = getBinaryData(v++);
-                tmp[z++] = Short.valueOf(binaryDataBits.substring(0,8), 2);
-                tmp[z++] = Short.valueOf(binaryDataBits.substring(8,16), 2);
-                tmp[z++] = Short.valueOf(binaryDataBits.substring(16,24), 2);
+                binaryDataBits = getBinaryData(v++);
+                
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(0,4), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(4,8), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(8,12), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(12,16), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(16,20), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(20,24), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(24,28), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(28,32), 2);
+
                 tmp[z++] = Short.valueOf(binaryDataBits.substring(24,32), 2);
+                tmp[z++] = Short.valueOf(binaryDataBits.substring(16,24), 2);
+                tmp[z++] = Short.valueOf(binaryDataBits.substring(8,16), 2);
+                tmp[z++] = Short.valueOf(binaryDataBits.substring(0,8), 2);
+
+
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(28,32), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(24,28), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(20,24), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(16,20), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(12,16), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(8,12), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(4,8), 2);
+//                tmp[z++] = Short.valueOf(binaryDataBits.substring(0,4), 2);
 
             }
-            job.setIPBuffer(tmp);
+            job.setCPUBuffer(tmp);
             job.set_mem_end(loc);
             job.setStatus(ready);
             
