@@ -15,9 +15,10 @@ public class shortTermScheduler{
 
         }
 
-        /*************************************************************
-         *
-         ************************************************************/
+
+        /**
+         * 
+         */
         public void SJF() {
 
             //Sort readyQueue in priority order
