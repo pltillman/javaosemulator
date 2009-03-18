@@ -51,7 +51,7 @@ public class PCB_block {
     public int getDataSize() {
         return this.dataSize;
     }
-    public void setIPBuffer(short[] i) {
+    public void setCPUBuffer(short[] i) {
         this.IP_buffer = i;
     }
     public void setOPBuffer(short[] o) {
@@ -60,7 +60,7 @@ public class PCB_block {
     public void setTMPBuffer(short[] t) {
         this.TMP_buffer = t;
     }
-    public short[] getIPBuffer() {
+    public short[] getCPUBuffer() {
         return this.IP_buffer;
     }
     public short[] getOPBuffer() {

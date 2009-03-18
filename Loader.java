@@ -17,8 +17,8 @@ public class Loader {
 
     public Loader(FileReader f1, FileReader f2) {
 
-        this.file_1 = f1;
-        this.file_2 = f2;
+        this.file_2 = f1;
+        this.file_1 = f2;
 
     }
     //****************************************************
