@@ -31,12 +31,26 @@ public class PCB_block {
     private int mem_end;
     
 
+    /**
+     *
+     * @param i
+     * @param s
+     * @param p
+     * @param a
+     */
     PCB_block(int i, int s, int p, int a) {
         this.jobID = i;
         this.jobSize = s;
         this.jobPriority = p;
         this.address = a;
     }
+
+    /**
+     *
+     * @param i
+     * @param o
+     * @param t
+     */
     public void addMetadata(int i, int o, int t) {
         this.input_buffer_size = i;
         this.output_buffer_size = o;
@@ -45,6 +59,11 @@ public class PCB_block {
         this.OP_buffer = new short[o];
         this.TMP_buffer = new short[t];
     }
+
+    /**
+     *
+     * @param s - data size to be set
+     */
     public void setDataSize(int s) {
         this.dataSize = s;
     }

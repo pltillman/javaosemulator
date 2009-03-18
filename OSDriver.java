@@ -80,6 +80,9 @@ import java.io.*;
 
         while (!DONE || !LongTermScheduler.readyQueue.isEmpty()) {
 
+            sumPercent += LongTermScheduler.percent;
+            counter++;
+            
             if (!LongTermScheduler.readyQueue.isEmpty()) {
 
                 System.out.println("NUMBER OF JOBS: " + LongTermScheduler.readyQueue.size());
@@ -99,8 +102,7 @@ import java.io.*;
 
             }
 
-            sumPercent +=LongTermScheduler.percent;
-            counter++;
+
         }
 
     
