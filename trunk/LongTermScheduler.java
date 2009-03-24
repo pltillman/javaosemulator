@@ -42,7 +42,9 @@ public class LongTermScheduler {
         if (hasLoadedAllJobs()) {
             System.out.println("ALL JOBS HAVE COMPLETED.");
             percentRam(1);
-            System.exit(1);
+            OSDriver.DONE = true;
+            return;
+            //System.exit(1);
         } else {
             loc = 0;
             Memleft = 1024;
@@ -77,23 +79,23 @@ public class LongTermScheduler {
 
                 String binaryBits = getBinaryData(p);
                 //System.out.println("BINARY STRING AFTER " + binaryBits);// then convert it to a string of bits
-                //System.out.println("Binary bits: " + binaryBits);
+                System.out.println("Binary bits: " + binaryBits);
 
                 short binaryBits1 = Short.valueOf(binaryBits.substring(0,8), 2);
-                //System.out.println(binaryBits1);
-                //System.out.println("Decimal: " + binaryBits1 + "\t added at location: " + loc);
+                System.out.println(binaryBits1);
+                System.out.println("Decimal: " + binaryBits1 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits1);
                 short binaryBits2 = Short.valueOf(binaryBits.substring(8,16), 2);
-                //System.out.println(binaryBits2);
-                //System.out.println("Decimal: " + binaryBits2 + "\t added at location: " + loc);
+                System.out.println(binaryBits2);
+                System.out.println("Decimal: " + binaryBits2 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits2);
                 short binaryBits3 = Short.valueOf(binaryBits.substring(16,24), 2);
-                //System.out.println(binaryBits3);
-                //System.out.println("Decimal: " + binaryBits3 + "\t added at location: " + loc);
+                System.out.println(binaryBits3);
+                System.out.println("Decimal: " + binaryBits3 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits3);
                 short binaryBits4 = Short.valueOf(binaryBits.substring(24,32), 2);
-                //System.out.println(binaryBits4);
-                //System.out.println("Decimal: " + binaryBits4 + "\t added at location: " + loc);
+                System.out.println(binaryBits4);
+                System.out.println("Decimal: " + binaryBits4 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits4);
 
                 Memleft -= 4;
@@ -124,14 +126,6 @@ public class LongTermScheduler {
                 tmp[z++] = Short.valueOf(binaryDataBits.substring(0,8), 2);
 
 
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(28,32), 2);
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(24,28), 2);
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(20,24), 2);
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(16,20), 2);
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(12,16), 2);
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(8,12), 2);
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(4,8), 2);
-//                tmp[z++] = Short.valueOf(binaryDataBits.substring(0,4), 2);
 
             }
             job.setCPUBuffer(tmp);
@@ -205,7 +199,7 @@ public class LongTermScheduler {
         String binaryBits = Long.toBinaryString(t);
 
         // then convert it to a string of bits
-        //System.out.println("BINARY STRING " + binaryBits + "\t Next memory start=" + p + "\t Next memory end=" + v);
+        System.out.println("BINARY STRING " + binaryBits);
 
         int length = binaryBits.length();
 

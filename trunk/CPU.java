@@ -10,16 +10,19 @@ public class CPU {
     private short s2_reg;
     private short d_reg;
     private short b_reg;
+    private short reg1;
+    private short reg2;
 
+    private Boolean jumped;
 
     private final int data = 0;
+    private int jobSize;
 
     private int oBufferSize;
     private int iBufferSize;
     private int tBufferSize;
     
     private short[] cpu_buffer;
-
 
     private long address;
 
@@ -46,6 +49,7 @@ public class CPU {
     public CPU() throws IOException {
         ioCount = 0;
 
+        jumped = false;
         //Create registers and make the accumulator
         reg_Array = new int[16];
         reg_Array[ZERO] = 0;
@@ -67,11 +71,11 @@ public class CPU {
         iBufferSize = j.get_Input_buffer_size();
         tBufferSize = j.get_Output_buffer_size();
         cpu_buffer = j.getCPUBuffer();
+        jobSize = j.getJobSize();
 
-
-        for (int i=0; i<cpu_buffer.length; i++) {
-            System.out.println("INPUT BUFFER: " + i + " " + cpu_buffer[i]);
-        }
+//        for (int i=0; i<cpu_buffer.length; i++) {
+//            System.out.println("INPUT BUFFER: " + i + " " + cpu_buffer[i]);
+//        }
 
         System.out.println("Program Counter starting at: " + pc + "\n");
         //run the duration of the job
@@ -82,7 +86,11 @@ public class CPU {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
-            pc += 4;
+            if (!jumped)
+                pc += 4;
+            else 
+                jumped = false;
+
             out.append("\n\nPROGRAM COUNTER=" + pc);
             System.out.println("PROGRAM COUNTER=" + pc);
         }     
@@ -195,10 +203,10 @@ public class CPU {
 
             case 3:
                 out.append(" IO");
-                reg_Array[2] = Short.parseShort(instr_req.substring(8,12),2);
-                reg_Array[3] = Short.parseShort(instr_req.substring(12,16),2);
+                reg1 = Short.parseShort(instr_req.substring(8,12),2);
+                reg2 = Short.parseShort(instr_req.substring(12,16),2);
                 address = Long.parseLong(instr_req.substring(16,32),2);
-                System.out.println("Reg1: " + reg_Array[2] + " Reg2: " + reg_Array[3] + " Address: " + address);
+                System.out.println("Reg1: " + reg1 + " Reg2: " + reg2 + " Address: " + address);
                 ioCount++;
                 break;
 
@@ -230,30 +238,30 @@ public class CPU {
                     out.append("\nPutting input buffer contents into accumulator");
                     //Reads content of I/P buffer into a accumulator
                     //reg_Array[ACCUM] = (int)in_buffer[(int)address];
-                    
+                    reg_Array[ACCUM] = cpu_buffer[buff_address((int)address)];
                     break;
 
                 case 1:
                     out.append("\nWriting content of accumulator " + reg_Array[ACCUM] + " into output buffer");
                     System.out.println("Writing content of accumulator into output buffer");
                     //Writes the content of accumulator into O/P buffer
-                    //out_buffer[(int)address] = (short)reg_Array[ACCUM];
+                    cpu_buffer[buff_address((int)address)] = (short)reg_Array[ACCUM];
                     break;
 
                 case 2:
                     out.append("\nStoring register in address");
                     System.out.println("Storing register in address");
-
                     //Stores content of a reg.  into an address
-                    //OSDriver.MemManager.writeRamData((int)address);
+                    reg_Array[d_reg] = effective_address(b_reg,address);
+                    System.out.println("d_reg now contains " + reg_Array[d_reg]);
                     break;
 
                 case 3:
                     out.append("\nLoading address into register");
                     System.out.println("Loading address into register");
                     //Loads the content of an address into a reg.
-                    s1_reg = OSDriver.MemManager.readRamData((short)address);
-                    System.out.println("s1_reg now contains " + s1_reg);
+                    reg_Array[s1_reg] = cpu_buffer[buff_address((int)address)];
+                    System.out.println("s1_reg now contains " + reg_Array[s1_reg]);
                     break;
 
                 case 4:
@@ -308,15 +316,17 @@ public class CPU {
                 case 11:
                     out.append("\nTransferring data into register");
                     System.out.println("Transferring data into register");
-                    d_reg = (short)address;
+                    reg_Array[d_reg] = cpu_buffer[buff_address((int)address)];
                     //Transfers address/data directly into a register
+                    System.out.println("d_reg now contains " + reg_Array[d_reg]);
                     //immediate - MOVI
                     break;
 
                 case 12:
                     out.append("\nAdding data into register");
                     System.out.println("Adding data into register");
-                    d_reg += (short)address;
+                    reg_Array[d_reg] += cpu_buffer[buff_address((int)address)];
+                    System.out.println("d_reg now contains " + reg_Array[d_reg]);
                     //Adds a data directly to the content of a register
                     //ADDI
                     break;
@@ -324,15 +334,17 @@ public class CPU {
                 case 13:
                     out.append("\nMultiplying data into register");
                     System.out.println("Multiplying data into register");
-                    d_reg *= (short)address;
+                    reg_Array[d_reg] *= cpu_buffer[buff_address((int)address)];
                     //Multiplies a data directly to the content of a register
+                    System.out.println("d_reg now contains " + reg_Array[d_reg]);
                     //MULI
                     break;
 
                 case 14:
                     out.append("\nDividing data into register");
                     System.out.println("Dividing data into register");
-                    d_reg /= (short)address;
+                    reg_Array[d_reg] /= cpu_buffer[buff_address((int)address)];
+                    System.out.println("d_reg now contains " + reg_Array[d_reg]);
                     //Divides a data directly to the content of a register
                     //DIVI
                     break;
@@ -340,8 +352,8 @@ public class CPU {
                 case 15:
                     out.append("\nLoading data/address into register");
                     System.out.println("Loading data/address into register");
-                    short e_addr = OSDriver.tools.effective_address((short)b_reg, (short)address);
-                    String dataVal = OSDriver.MemManager.readDiskData((int)e_addr);
+                    reg_Array[d_reg] = cpu_buffer[buff_address((int)address)];
+                    System.out.println("d_reg now contains " + reg_Array[d_reg]);
                     //Loads a data/address directly to the content of a register
                     //immediate - LDI
                     break;
@@ -350,23 +362,23 @@ public class CPU {
                     //Sets the D-reg to 1 if first S-reg is less than second S-reg, and 0 otherwise
                     out.append("\nChecking if " + s1_reg + " < " + s2_reg);
                     System.out.println("Checking if " + s1_reg + " < " + s2_reg);
-                    if (s1_reg < s2_reg) {
-                        d_reg = 1;
+                    if (reg_Array[s1_reg] < reg_Array[s2_reg]) {
+                        reg_Array[d_reg] = 1;
                     } else {
-                        d_reg = 0;
+                        reg_Array[d_reg] = 0;
                     }
-                    out.append("\nd_reg is now " + d_reg);
-                    System.out.println("d_reg is now " + d_reg);
+                    out.append("\nd_reg is now " + reg_Array[d_reg]);
+                    System.out.println("d_reg is now " + reg_Array[d_reg]);
                     break;
 
                 case 17:
                     //Sets the D-reg to 1 if first S-reg is less than a data, and 0 otherwise
                     out.append("\nChecking if " + s1_reg + " < " + data);
                     System.out.println("Checking if " + s1_reg + " < " + data);
-                    if (s1_reg < data) {
-                        d_reg = 1;
+                    if (reg_Array[s1_reg] < address) {
+                        reg_Array[d_reg] = 1;
                     } else {
-                        d_reg = 0;
+                        reg_Array[d_reg] = 0;
                     }
                     out.append("\nd_reg is now " + d_reg);
                     System.out.println("d_reg is now " + d_reg);
@@ -399,14 +411,14 @@ public class CPU {
                     out.append("\nMoving to the next instruction");
                     System.out.println("Moving to the next instruction");
                     //Does nothing and moves to next instruction
-                    pc += 4;
                     break;
 
                 case 20:
                     out.append("\nJumping to another location");
                     System.out.println("Jumping to another location");
                     //Jumps to a specified location
-                    //pc = (int)address;
+                    pc = (int)address;
+                    jumped = true;
                     out.append("\nProgram counter set to " + pc);
                     System.out.println("Program counter set to " + pc);
                     //OSDriver.tools.effective_addr(address));
@@ -414,10 +426,11 @@ public class CPU {
 
                 case 21:
                     out.append("\nChecking if b_reg = d_reg, then branch");
-                    System.out.println("Checking if b_reg = d_reg, then branch");
+                    System.out.println("Checking if " + reg_Array[b_reg] + " = " + reg_Array[d_reg] + " , then branch");
                     //Branches to an address when content of B-reg = D-reg
-                    if (d_reg == b_reg) {
-                        //pc = (int)address;
+                    if (reg_Array[d_reg] == reg_Array[b_reg]) {
+                        pc = (int)address;
+                        jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -427,8 +440,9 @@ public class CPU {
                     out.append("\nChecking if b_reg != d_reg, then branch");
                     System.out.println("Checking if b_reg != d_reg, then branch");
                     //Branches to an address when content of B-reg <> D-reg
-                    if (b_reg != d_reg) {
-                        //pc = (int)address;
+                    if (reg_Array[b_reg] != reg_Array[d_reg]) {
+                        pc = (int)address;
+                        jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -438,8 +452,9 @@ public class CPU {
                     out.append("\nChecking if d_reg is 0, then branch");
                     System.out.println("Checking if d_reg is 0, then branch");
                     //Branches to an address when content of D-reg = 0
-                    if (d_reg == 0) {
-                        //pc = (int)address;
+                    if (reg_Array[d_reg] == 0) {
+                        pc = (int)address;
+                        jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -449,8 +464,8 @@ public class CPU {
                     out.append("\nChecking if b_reg != 0, then branch");
                     System.out.println("Checking if b_reg != 0, then branch");
                     //Branches to an address when content of B-reg <> 0
-                    if (b_reg != 0) {
-                        //pc = (int)address;
+                    if (reg_Array[b_reg] != 0) {
+                        pc = (int)address;
                         out.append("\nProgram counter set to " + pc);
                         System.out.println("Program counter set to " + pc);
                     }
@@ -460,8 +475,8 @@ public class CPU {
                     out.append("\nChecking if b_reg > 0, then branch");
                     System.out.println("Checking if b_reg > 0, then branch");
                     //Branches to an address when content of B-reg > 0
-                    if (b_reg > 0) {
-                        //pc = (int)address;
+                    if (reg_Array[b_reg] > 0) {
+                        pc = (int)address;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -471,8 +486,8 @@ public class CPU {
                     out.append("\nChecking if b_reg < 0, then branch");
                     System.out.println("Checking if b_reg < 0, then branch");
                     //Branches to an address when content of B-reg < 0
-                    if (b_reg < 0) {
-                        //pc = (int)address;
+                    if (reg_Array[b_reg] < 0) {
+                        pc = (int)address;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -567,8 +582,11 @@ public class CPU {
     private void jump(int i) {
         
     }
-    private int effective_address(PCB_block j, int a) {
-        return (a-j.getJobSize()*4);
+    private int buff_address(int a) {
+        return Math.abs(a-jobSize*4);
+    }
+    private int effective_address(short i, long a) {
+        return reg_Array[i] + (int)a;
     }
     
 }
