@@ -257,7 +257,7 @@ public class CPU implements Runnable {
                         //reg_Array[ACCUM] = (int)in_buffer[(int)address];
                         reg_Array[reg1] = cpu_buffer[buff_address((int)address)];
                     } else {
-                        reg_Array[reg1] = reg_Array[reg2];
+                        reg_Array[reg1] = (int)cpu_buffer[buff_address(reg_Array[reg2])];
                     }
                     System.out.println("Register " + reg1 + " now contains " + reg_Array[reg1]);
                     break;
@@ -268,13 +268,15 @@ public class CPU implements Runnable {
                     //Writes the content of accumulator into O/P buffer
                     cpu_buffer[buff_address((int)address)] = (short)reg_Array[reg2];
                     System.out.println("Writing " + reg_Array[ACCUM] + " into output buffer");
+                    out.append("Writing " + reg_Array[ACCUM] + " into output buffer");
                     break;
 
                 case 2:
                     out.append("\nStoring register in address");
                     System.out.println("Storing register in address");
                     //Stores content of a reg.  into an address
-                    reg_Array[(int)address] = reg_Array[(int)d_reg];
+                    //reg_Array[(int)address] = reg_Array[(int)d_reg];
+                    cpu_buffer[buff_address(reg_Array[d_reg])] = (short)reg_Array[b_reg];
                     System.out.println("r_index: " + address + " now contains " + reg_Array[(int)d_reg]);
                     break;
 
@@ -339,7 +341,7 @@ public class CPU implements Runnable {
                 case 11:
                     out.append("\nTransferring data into register");
                     System.out.println("Transferring data into register");
-                    reg_Array[d_reg] = cpu_buffer[buff_address((int)address)];
+                    reg_Array[d_reg] = (int)address;
                     //Transfers address/data directly into a register
                     System.out.println("r_index: " + d_reg + " now contains " + reg_Array[d_reg]);
                     //immediate - MOVI
