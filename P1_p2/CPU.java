@@ -277,7 +277,7 @@ public class CPU implements Runnable {
                     //Stores content of a reg.  into an address
                     //reg_Array[(int)address] = reg_Array[(int)d_reg];
                     cpu_buffer[buff_address(reg_Array[d_reg])] = (short)reg_Array[b_reg];
-                    System.out.println("r_index: " + address + " now contains " + reg_Array[(int)d_reg]);
+                    System.out.println("CPU buffer: " + reg_Array[d_reg] + " now contains " + reg_Array[b_reg]);
                     break;
 
                 case 3:
@@ -285,7 +285,7 @@ public class CPU implements Runnable {
                     System.out.println("Loading address into register");
                     //Loads the content of an address into a reg.
 
-                    reg_Array[d_reg] = (int)address;
+                    reg_Array[d_reg] = cpu_buffer[buff_address(reg_Array[b_reg])];
                     System.out.println("r_index: " + d_reg + " now contains " + reg_Array[d_reg]);
                     break;
 
@@ -456,7 +456,7 @@ public class CPU implements Runnable {
                     if (reg_Array[d_reg] == reg_Array[b_reg]) {
                         pc = (int)address;
                         pc += j.get_mem_start();
-                        //jumped = true;
+                        jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -470,7 +470,7 @@ public class CPU implements Runnable {
                     if (reg_Array[b_reg] != reg_Array[d_reg]) {
                         pc = (int)address;
                         pc += j.get_mem_start();
-                        //jumped = true;
+                        jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -483,7 +483,7 @@ public class CPU implements Runnable {
                     if (reg_Array[d_reg] == 0) {
                         pc = (int)address;
                         pc += j.get_mem_start();
-                        //jumped = true;
+                        jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -550,45 +550,59 @@ public class CPU implements Runnable {
         
         switch (i) {
             case 0:
-                d_reg = (short)(s1_reg + s2_reg);
-                out.append("\ns1_reg: " + s1_reg + " + s2_reg: " + s2_reg +
-                        "\tmakes d_reg: " + d_reg);
+                reg_Array[d_reg] = (short)(reg_Array[s1_reg] + reg_Array[s2_reg]);
+                out.append("\ns1_reg: " + reg_Array[s1_reg] + " + s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + (reg_Array[s1_reg] + reg_Array[s2_reg]));
+                System.out.println("s1_reg: " + reg_Array[s1_reg] + " + s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 1:
-                d_reg = (short)(s1_reg - s2_reg);
-                out.append("\ns1_reg: " + s1_reg + " - s2_reg: " + s2_reg +
-                        "\tmakes d_reg: " + d_reg);
+                reg_Array[d_reg] = (short)(reg_Array[s1_reg] - reg_Array[s2_reg]);
+                out.append("\ns1_reg: " + reg_Array[s1_reg] + " - s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
+                System.out.println("s1_reg: " + reg_Array[s1_reg] + " - s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 2:
-                d_reg = (short)(s1_reg * s2_reg);
-                out.append("\ns1_reg: " + s1_reg + " * s2_reg: " + s2_reg +
-                        "\tmakes d_reg: " + d_reg);
+                reg_Array[d_reg] = (short)(reg_Array[s1_reg] * reg_Array[s2_reg]);
+                out.append("\ns1_reg: " + reg_Array[s1_reg] + " * s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
+                System.out.println("s1_reg: " + reg_Array[s1_reg] + " * s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 3:
-                if (s2_reg == 0)
+                if (reg_Array[s2_reg] == 0)
                     return;
                 else {
-                    d_reg = (short)(s1_reg / s2_reg);
-                    out.append("\ns1_reg: " + s1_reg + " / s2_reg: " + s2_reg +
-                            "\tmakes d_reg: " + d_reg);
+                    reg_Array[d_reg] = (short)(reg_Array[s1_reg] / reg_Array[s2_reg]);
+                    out.append("\ns1_reg: " + reg_Array[s1_reg] + " / s2_reg: " + reg_Array[s2_reg] +
+                            "\tmakes d_reg: " + reg_Array[d_reg]);
+                    System.out.println("s1_reg: " + reg_Array[s1_reg] + " / s2_reg: " + reg_Array[s2_reg] +
+                            "\tmakes d_reg: " + reg_Array[d_reg]);
                 }
                 break;
             case 4:
-                d_reg = (short)(s1_reg & s2_reg);
-                out.append("\ns1_reg: " + s1_reg + " LOGICAL AND'd with s2_reg: " + s2_reg +
-                        "\tmakes d_reg: " + d_reg);
+                reg_Array[d_reg] = (short)(reg_Array[s1_reg] & reg_Array[s2_reg]);
+                out.append("\ns1_reg: " + reg_Array[s1_reg] + " LOGICAL AND'd with s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
+                System.out.println("s1_reg: " + reg_Array[s1_reg] + " LOGICAL AND'd with s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 5:
-                d_reg = (short)(s1_reg | s2_reg);
-                out.append("\ns1_reg: " + s1_reg + " LOGICAL OR'd with s2_reg: " + s2_reg +
-                        "\tmakes d_reg: " + d_reg);
+                reg_Array[d_reg] = (short)(reg_Array[s1_reg] | reg_Array[s2_reg]);
+                out.append("\ns1_reg: " + reg_Array[s1_reg] + " LOGICAL OR'd with s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
+                System.out.println("s1_reg: " + reg_Array[s1_reg] + " LOGICAL OR'd with s2_reg: " + reg_Array[s2_reg] +
+                        "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 6:
-                short tmp_reg = s1_reg;
-                s1_reg = s2_reg;
-                s2_reg = tmp_reg;
-                out.append("\ns1_reg is now: " + s1_reg);
-                out.append("\ns2_reg is now: " + s2_reg);
+                int tmp_reg = reg_Array[s1_reg];
+                reg_Array[s1_reg] = reg_Array[s2_reg];
+                reg_Array[s2_reg] = tmp_reg;
+                out.append("\ns1_reg is now: " + reg_Array[s1_reg]);
+                out.append("\ns2_reg is now: " + reg_Array[s2_reg]);
+                System.out.println("s1_reg is now: " + reg_Array[s1_reg]);
+                System.out.println("s2_reg is now: " + reg_Array[s2_reg]);
                 break;
             default:
                 out.append("\nDEFAULT CALC_ARITH SWITCH REACHED");
@@ -600,6 +614,7 @@ public class CPU implements Runnable {
     //************************************************
     //
     //************************************************
+
 
     private synchronized int buff_address(int a) {
         return Math.abs(a-jobSize*4);
