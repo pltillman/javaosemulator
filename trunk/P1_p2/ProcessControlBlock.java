@@ -11,11 +11,11 @@ public class ProcessControlBlock {
 
     private static Stack<PCB_block> jobQueue;
     private static pageTableEntry[] pageTable;
-    private static frameTableEntry[] frameTable;
+    
     //private static String [][] jobQ;
     private PCB_block pcb_e;
     private pageTableEntry pageTable_e;
-    private frameTableEntry frameTable_e;
+    
     private static int count;
     
     //****************************************************
@@ -26,7 +26,7 @@ public class ProcessControlBlock {
         count = 0;
         jobQueue = new Stack<PCB_block>();
         pageTable = new pageTableEntry[128];
-        frameTable = new frameTableEntry[128];
+        
 
         for (int j=0; j<128; j++) {
             createPage(j);
@@ -50,11 +50,7 @@ public class ProcessControlBlock {
         pageTable[pageIndex] = new pageTableEntry();
     }
 
-     public void createFrame(int f, boolean a) {
 
-        frameTable_e = new frameTableEntry(f, a);
-
-    }
     //****************************************************
     //  Adds the data metadata to the object and then adds
     //  the object to the queue.
@@ -78,7 +74,7 @@ public class ProcessControlBlock {
 //
 //    }
 
-    public int getFrame(int a){
+    public int getFrame(int a) {
 
         try {
             pageTable[a].getValid();
