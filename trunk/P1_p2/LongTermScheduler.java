@@ -135,8 +135,7 @@ public class LongTermScheduler {
             CURRJOB++;
 
 
-            
-
+      
             System.out.println("Is the current job < total jobs " + (CURRJOB < OSDriver.PCB.getJobCount()));
             System.out.println("Current job: " + CURRJOB + "\tTotal jobs: " + OSDriver.PCB.getJobCount());
             

@@ -91,6 +91,33 @@ import java.io.*;
         cpu_Array[3] = cpu3;
 
 
+//        while (!DONE || !LongTermScheduler.readyQueue.isEmpty()) {
+//
+//            sumPercent += LongTermScheduler.percent;
+//            counter++;
+//
+//            if (!LongTermScheduler.readyQueue.isEmpty()) {
+//
+//                while (LongTermScheduler.readyQueue.size() > 0) {
+//
+//                    jMeta = STS.Store(0);
+//
+//                    try {
+//                        cpu1.loadJob(jMeta);
+//                    } catch (IOException ioe) {
+//                        ioe.printStackTrace();
+//                    }
+//
+//                }
+//
+//                LTS.start();
+//                STS.SJF();
+//
+//            }
+//        }
+
+
+
 
         do {
 
@@ -110,7 +137,7 @@ import java.io.*;
 
                         case 0:
                             try {
-                                
+
                                 if (!LongTermScheduler.readyQueue.isEmpty()){
                                     cpu_Array[y].loadJob(STS.Store(0));
                                     new Thread(cpu_Array[y]).start();
@@ -134,6 +161,10 @@ import java.io.*;
                     ready = (cpu0.status == 0) || (cpu1.status == 0) || (cpu2.status == 0) || (cpu3.status == 0);
 
                 }
+                
+            } 
+            
+        } while (!LongTermScheduler.readyQueue.isEmpty());
 
 
 
@@ -168,16 +199,16 @@ import java.io.*;
 //                    //numberOfProcess = LongTermScheduler.readyQueue.size();
 //
 //                }
-
+//
 //                if (tools.hasLoadedAllJobs()) {
 //                    return;
 //                } else {
 //                    System.out.println("EFF THIS APPLICATION");
 //                }
+//
+//            }
 
-            }
-
-        } while (!LongTermScheduler.readyQueue.isEmpty());
+       
 
     
     }
