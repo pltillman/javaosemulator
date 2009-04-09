@@ -47,6 +47,10 @@ public class MemoryManager {
         }
     }
 
+    public void updateFrameTable(int frameNum, int pageNum, Boolean alloc, int jID) {
+        frameTable[frameNum].updateFrameEntry(pageNum, jID, alloc);
+    }
+    
     private int getPhysicalAddress(int p) {
         String pageNum;
         int page;
