@@ -1,4 +1,5 @@
 
+//import java.util.Array;
 import java.util.Stack;
 
 //****************************************************
@@ -9,8 +10,12 @@ import java.util.Stack;
 public class ProcessControlBlock {
 
     private static Stack<PCB_block> jobQueue;
-    private static String [][] jobQ;
+    private static pageTableEntry[] pageTable;
+    private static frameTableEntry[] frameTable;
+    //private static String [][] jobQ;
     private PCB_block pcb_e;
+    private pageTableEntry pageTable_e;
+    private frameTableEntry frameTable_e;
     private static int count;
     
     //****************************************************
@@ -20,6 +25,12 @@ public class ProcessControlBlock {
         //jobQ = new String[];
         count = 0;
         jobQueue = new Stack<PCB_block>();
+        pageTable = new pageTableEntry[128];
+        frameTable = new frameTableEntry[128];
+
+        for (int j=0; j<128; j++) {
+            createPage(j);
+        }
     }
 
     //****************************************************
@@ -34,6 +45,16 @@ public class ProcessControlBlock {
 
     }
 
+     public void createPage(int pageIndex) {
+
+        pageTable[pageIndex] = new pageTableEntry();
+    }
+
+     public void createFrame(int f, boolean a) {
+
+        frameTable_e = new frameTableEntry(f, a);
+
+    }
     //****************************************************
     //  Adds the data metadata to the object and then adds
     //  the object to the queue.
@@ -45,6 +66,47 @@ public class ProcessControlBlock {
         count++;
 
     }
+
+    public void updateTableEntry(int pIndex, int frameNumber, Boolean validFlag) {
+        pageTable[pIndex].updatePageEntry(frameNumber, validFlag);
+    }
+
+//    public void addFrameTableEntry (int f, boolean a){
+//
+//        frameTable_e.addFrameTable(f, a);
+//        frameTable.add(frameTable_e);
+//
+//    }
+
+    public int getFrame(int a){
+
+        try {
+            pageTable[a].getValid();
+            return pageTable[a].getFrameNumber();
+        } catch (PageFault p) {
+            OSDriver.MemManager.getPage(a);
+            return pageTable[a].getFrameNumber();
+        }
+
+    }
+
+//    public void searchFrameTable(int index) {
+//
+//         for (int i = 0; i < pageTable.length; i++){
+//                    boolean a = false;
+//                   // boolean b = true;
+//                    pageTable_e.setValid(a);
+//        }
+//
+//        Boolean b = true;
+//
+//        for (int i = 0; i < pageTable.length; i++){
+//            if (index == (pageTable[index].getPageJobID()%index) +   )
+//                    pageTable_e.setValid(b);
+//        }
+//    }
+
+
     public void setDataSize(int s) {
         pcb_e.setDataSize(s);
     }
