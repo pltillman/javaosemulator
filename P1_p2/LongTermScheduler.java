@@ -6,7 +6,9 @@ public class LongTermScheduler {
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
     private static int Memleft = 1024;
-    private int loc = 0;
+    private int loc;
+    private int pageNum;
+    private int frameNum=0;
     private int CURRJOB;
     private int jobStart;
     private int jobSize;
@@ -60,12 +62,18 @@ public class LongTermScheduler {
         System.out.println("\nIs there enough memory left for the next job? " + (Memleft>=((jobSize*4)+(jobIBSize*4))));
         System.out.println("Have we reached the end of the job list? " + (CURRJOB<OSDriver.PCB.getJobCount()+1));
 
-        while (Memleft>=(jobSize*4) && (CURRJOB<OSDriver.PCB.getJobCount())) {
-
+       while (Memleft>=(jobSize*4) && (CURRJOB<OSDriver.PCB.getJobCount())) {
+        
+         frameNum=OSDriver.MemManager.getNextFrame();
+         System.out.println("**** frame num "+ frameNum + "****");
+         loc=frameNum*16;
+         
+         
             job.set_mem_start(loc);
-            int v = jobStart+jobSize;
-            //System.out.println("Threshold: " + (jobSize*4) + " of " + v);
+            int v = jobStart+16;
 
+            //System.out.println("Threshold: " + (jobSize*4) + " of " + v);
+       
             for (int p=jobStart; p<v; p++) {
 
                 String binaryBits = getBinaryData(p);
@@ -88,10 +96,29 @@ public class LongTermScheduler {
                 System.out.println(binaryBits4);
                 System.out.println("Decimal: " + binaryBits4 + "\t added at location: " + loc);
                 OSDriver.MemManager.writeRamData(loc++, binaryBits4);
-
+                
+                
+                
+                
                 Memleft -= 4;
+                
+            if((p%3)==0){
+                pageNum=p/4;
+               OSDriver.MemManager.updateFrameTable(frameNum, pageNum, true, job.getJobID());
+               System.out.println("****** Page Num "+ pageNum+ "******");
+            
+           }
+            
             }
+          
+            
+            
+            
 
+            
+            OSDriver.PCB.updateTableEntry(pageNum, frameNum, true);
+            //OSDriver.MemManager.getNextFrame();
+         
             System.out.println("Data Size: " + dataSize + " and location is " + loc);
             int z = 0;
             short[] tmp = new short[dataSize*4];
@@ -135,7 +162,8 @@ public class LongTermScheduler {
             CURRJOB++;
 
 
-      
+            
+
             System.out.println("Is the current job < total jobs " + (CURRJOB < OSDriver.PCB.getJobCount()));
             System.out.println("Current job: " + CURRJOB + "\tTotal jobs: " + OSDriver.PCB.getJobCount());
             
