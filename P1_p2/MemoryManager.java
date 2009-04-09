@@ -42,10 +42,14 @@ public class MemoryManager {
     }
     public void getPage(int x) {
         int index = x*4;
+        for (int i=index; i<index+4; i++) {
+            this.readDiskData(x);
+        }
     }
 
     private int getPhysicalAddress(int p) {
         String pageNum;
+        int page;
         String offset;
         int frameNum;
         int newPC;
@@ -58,8 +62,9 @@ public class MemoryManager {
             logAddress = "0" + logAddress;
         }
         pageNum = logAddress.substring(0, 6);
+        page = Integer.valueOf(pageNum);
         offset = logAddress.substring(7, 10);
-        frameNum = OSDriver.PCB.getFrame(pageNum);
+        frameNum = OSDriver.PCB.getFrame(page);
         newPC = (frameNum * 16)+ Integer.getInteger(offset);
         return newPC;
     }
