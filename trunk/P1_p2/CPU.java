@@ -28,7 +28,7 @@ public class CPU implements Runnable {
     private long address;
 
     private int[] reg_Array;
-    private int pc, logicalEnd;
+    private int pc;
 
     private final int ACCUM = 0;
     private final int ZERO = 1;
@@ -41,7 +41,7 @@ public class CPU implements Runnable {
     private PCB_block j;
 
     // status 0 = ready; status 1 = busy
-    public int status = 0;
+    public int status;
     //NEED SOMETHING TO HOLD THE JOB SIZE IN RAM
 
 
@@ -49,13 +49,20 @@ public class CPU implements Runnable {
     //
     //} thrown into a big while (not 'halt' opcode).
     //************************************************
+
+
     public CPU () {
         status = 0;
     }
 
-
-
-    public synchronized void loadJob(PCB_block job) throws IOException {
+    /**
+     * Sets the given job's status to "loaded," creates registers and
+     *  accumulator
+     *
+     * @param job PCB_block object contains all data relating to a job
+     * @throws java.io.IOException  If an input or output exception occurs
+     */
+    public void loadJob(PCB_block job) throws IOException {
 
         status = 1;
         j = job;
@@ -72,7 +79,8 @@ public class CPU implements Runnable {
         
     }
 
-    public synchronized void run ()  {
+
+    public void run ()  {
         
         ioCount = 0;
         try {
@@ -84,35 +92,30 @@ public class CPU implements Runnable {
         System.out.println("\nJob #" + j.getJobID() + " EXECUTING");
 
         //set the pc counter & buffer sizes
-        pc = 0;
-        System.out.println("Job starting at: " + pc);
-        pc = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+        pc = j.get_mem_start();
         oBufferSize = j.get_Output_buffer_size(); //size in # of words
         iBufferSize = j.get_Input_buffer_size();
         tBufferSize = j.get_Output_buffer_size();
         cpu_buffer = j.getCPUBuffer();
         jobSize = j.getJobSize();
-        //logicalEnd = j.get_mem_end();
-        //logicalEnd = OSDriver.MemManager.getPhysicalAddress(logicalEnd);
+
 //        for (int i=0; i<cpu_buffer.length; i++) {
 //            System.out.println("INPUT BUFFER: " + i + " " + cpu_buffer[i]);
 //        }
 
         System.out.println("Program Counter starting at: " + pc + "\n");
-        //run the duration of the frame
-        while (true) {
+        //run the duration of the job
+        while (pc < j.get_mem_end()) {
             String instr = fetch(pc);
             try {
                 execute(decode(instr),j.getJobID());
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
-            if (!jumped) {
+            if (!jumped)
                 pc += 4;
-                pc = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
-            } else {
+            else 
                 jumped = false;
-            }
 
             try {
                 out.append("\n\nPROGRAM COUNTER=" + pc);
@@ -124,11 +127,15 @@ public class CPU implements Runnable {
     }
     
 
-    //************************************************
-    //  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
-    //  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
-    //  STRING FOR PROCESSESING BY DECODE()
-    //************************************************
+/**
+ * 
+ * @param pc  PC value
+ * @return    32-bit binary instruction
+ * 
+ *  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
+ *  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
+ *  STRING FOR PROCESSESING BY DECODE()
+ */
     protected synchronized String fetch(int pc) {
 
         try {
@@ -167,18 +174,15 @@ public class CPU implements Runnable {
         
     }
 
-
-
-    /************************************************
-     * 
-     * @param instr_req
-     * @return
-     * @throws java.io.IOException
-
+    /**
      * DECODE() TAKES THE BINARY STRING REPRESENTATION OF
      * THE INSTRUCTION SET AND EXTRACTS THE APPROPRIATE
      * COMPONENTS. RETURNS THE OPCODE TO BE USED BY EXECUTE
-     ************************************************/
+     *
+     * @param instr_req Binary instruction to be decoded
+     * @return Opcode for the instruction to be executed
+     * @throws java.io.IOException If an input or output exception occurs
+     */
     protected synchronized int decode(String instr_req) throws IOException {
 
         //CHECK HERE IF ANYTHING IS WRONG WITH CALCULATED RESULTS!
@@ -245,11 +249,14 @@ public class CPU implements Runnable {
     }
 
 
-    /************************************************
-     *
-     * @param o
-     * @throws java.io.IOException
-     ************************************************/
+   /**
+    * Executes the instruction based on the opcode
+    *
+    * @param o                      opcode of instruction
+    * @param jID                    the job ID
+    * @throws java.io.IOException   If an input or output
+    *                                exception occurs
+    */
     protected synchronized void execute(int o, int jID) throws IOException {
         out.append("\nExecuting instruction...." + " OPCODE = " + o);
         System.out.println("\nExecuting instruction...." + " OPCODE = " + o);
@@ -437,7 +444,6 @@ public class CPU implements Runnable {
                     String ios = "There were " + ioCount + " IO requests in job # " + jID;
                     System.out.println(ios);
                     out.append("\n" + ios);
-                    System.out.println("SETTING STATUS TO 0");
                     status = 0;
                     break;
 
@@ -546,7 +552,14 @@ public class CPU implements Runnable {
     }
 
 
-
+/**
+ * Performs arithmetic operations determined by the
+ *      opcode passed to execute()
+ *
+ * @param i determines what type of arithmetic to perform
+ * @throws java.io.IOException  If an input or output exception
+ *                                occurs
+ */
     private synchronized void calc_arith(int i) throws IOException {
 
         // i=0 - ADD
@@ -620,14 +633,22 @@ public class CPU implements Runnable {
         }
     }
 
-    //************************************************
-    //
-    //************************************************
-
-
+/**
+ * Calculates buffer address
+ *
+ * @param a value
+ * @return  buffer address for a given index
+ */
     private synchronized int buff_address(int a) {
         return Math.abs(a-jobSize*4);
     }
+
+  /**
+   * Calculate the effective address
+   * @param i
+   * @param a
+   * @return
+   */
     private synchronized int effective_address(short i, long a) {
         return reg_Array[i] + (int)a;
     }
