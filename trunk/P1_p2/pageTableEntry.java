@@ -7,7 +7,6 @@ public class pageTableEntry {
     private int frameNum;
     private boolean valid;
 
-<<<<<<< .mine
     /**
     * Default Constructor
     *   Set page number and frame number to 0.
@@ -18,17 +17,8 @@ public class pageTableEntry {
             this.pageNum = 0;
             this.frameNum = 0;
             this.valid = false;
-=======
-
-    public pageTableEntry (int p){
-        //this.jobID = j;
-        this.pageNum = p;
-        this.frameNum = 0;
-        this.valid = false;
->>>>>>> .r104
     }
 
-<<<<<<< .mine
    /**
     * Updates a page table entry with the given
     *  frame number and valid or invalid
@@ -39,11 +29,6 @@ public class pageTableEntry {
    public void updatePageEntry (int f, boolean v) {
             this.frameNum = f;
             this.valid = v;
-=======
-    public void updatePageEntry (int f, boolean v) {
-        this.frameNum = f;
-        this.valid = v;
->>>>>>> .r104
 
     }
 
@@ -58,7 +43,6 @@ public class pageTableEntry {
   *Gets the page number
   * @return
   */
-    
     public int getPageNumber() {
         return this.pageNum;
     }
@@ -113,10 +97,6 @@ public class pageTableEntry {
 
     }
 
-    public String toString(){
-        return "Page Index: " + this.pageNum + "\tFrame Num: " + this.frameNum +
-                "\tvalid? " + this.valid;
-    }
 //    public int getJobID() {
 //        return this.jobID;
 //    }
