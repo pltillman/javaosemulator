@@ -5,16 +5,17 @@ public class pageTableEntry {
     private int frameNum;
     private boolean valid;
 
-   public pageTableEntry (){
-            //this.jobID = j;
-            this.pageNum = 0;
-            this.frameNum = 0;
-            this.valid = false;
+
+    public pageTableEntry (int p){
+        //this.jobID = j;
+        this.pageNum = p;
+        this.frameNum = 0;
+        this.valid = false;
     }
 
-   public void updatePageEntry (int f, boolean v) {
-            this.frameNum = f;
-            this.valid = v;
+    public void updatePageEntry (int f, boolean v) {
+        this.frameNum = f;
+        this.valid = v;
 
     }
 
@@ -26,6 +27,7 @@ public class pageTableEntry {
 //        this.pageNum = p;
 //    }
 
+    
     public int getPageNumber() {
         return this.pageNum;
     }
@@ -52,6 +54,10 @@ public class pageTableEntry {
 
     }
 
+    public String toString(){
+        return "Page Index: " + this.pageNum + "\tFrame Num: " + this.frameNum +
+                "\tvalid? " + this.valid;
+    }
 //    public int getJobID() {
 //        return this.jobID;
 //    }
