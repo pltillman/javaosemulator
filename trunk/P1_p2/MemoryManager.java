@@ -1,7 +1,8 @@
-
-//****************************************************
-//  Default constructor
-//****************************************************
+import java.util.concurrent.PriorityBlockingQueue;
+/**
+ *
+ * @author Patrick Tillman
+ */
 public class MemoryManager {
 
     private DiskMemory disk;
@@ -11,13 +12,14 @@ public class MemoryManager {
     private int pageNum;
     private int frameNum;
     private FrameTableEntry[] frameTable;
+    private PriorityBlockingQueue<Integer> framePool;
 
-
-    //****************************************************
-    //  Default constructor
-    //****************************************************
+    /**
+     * Default constructor
+     */
     public MemoryManager() {
 
+        framePool = new PriorityBlockingQueue<Integer>();
         disk = new DiskMemory(2048);
         ram = new RamMemory(1024);
         totalPageNum = 2048/16;
@@ -28,49 +30,72 @@ public class MemoryManager {
             initFrameTable(u);
         }
     }
-/**
- * Initialize frame table
- *
- * @param u frame table value to initialize
- */
+
+    /**
+     *
+     * @param u
+     */
     public void initFrameTable(int u) {
         frameTable[u] = new FrameTableEntry();
+        framePool.add(u);
     }
- /**
-  * Finds the first unallocated frame
-  *
-  * @return value of next available frame
-  */
+
+    /**
+     * 
+     * @param f
+     */
+    public void reclaimFrame(int f) {
+        framePool.add(f);
+    }
+    
+    /**
+     *
+     * @return
+     */
     public int getNextFrame() {
-        int a = 0;
-        while (frameTable[a].isAllocated()) {
-            a++;
+        if (framePool.isEmpty()) {
+            return framePool.size();
         }
-        return a;
+        return framePool.poll();
     }
-  /**
-   * Retreives the page data by calculating where
-   *   to read data from disk
-   *
-   * @param x
-   */
+
+    /**
+     *
+     * @param x
+     */
     public void getPage(int x) {
-        int index = x*4;
+        int index = x;
+        int frame = this.getNextFrame();
+        
         for (int i=index; i<index+4; i++) {
-            this.readDiskData(x);
+            String bits = OSDriver.tools.getBinaryData(i);
+
+            OSDriver.MemManager.writeRamData(frame++, Short.valueOf(bits.substring(0,8), 2));
+            OSDriver.MemManager.writeRamData(frame++, Short.valueOf(bits.substring(8,16), 2));
+            OSDriver.MemManager.writeRamData(frame++, Short.valueOf(bits.substring(16,24), 2));
+            OSDriver.MemManager.writeRamData(frame++, Short.valueOf(bits.substring(24,32), 2));
         }
     }
-/**
- * Adds or modifies an entry of the frame table at the
- *   given frame number
- *
- * @param frameNum frame number associated with job
- * @param pageNum  page number associated with job
- * @param alloc    set to true if allocated, false otherwise
- * @param jID      Job ID
- */
+
+    /**
+     *
+     * @param frameNum
+     * @param pageNum
+     * @param alloc
+     * @param jID
+     */
     public void updateFrameTable(int frameNum, int pageNum, Boolean alloc, int jID) {
         frameTable[frameNum].updateFrameEntry(pageNum, jID, alloc);
+    }
+
+    /**
+     *
+     */
+    public void printFrameTable() {
+        System.out.println("\nFRAME TABLE CONTENTS");
+        for (FrameTableEntry fte : frameTable) {
+            System.out.println(fte.toString());
+        }
     }
 
     /**
@@ -78,34 +103,47 @@ public class MemoryManager {
      * @param p
      * @return
      */
-    private int getPhysicalAddress(int p) {
-        String pageNum;
+    public int getPhysicalAddress(int p, int ptbr) {
+        System.out.println("Geting physical address for: " + p + " \tPTBR: " + ptbr);
+        
+        String pageNumber;
         int page;
         String offset;
-        int frameNum;
+        int frameNumber;
         int newPC;
         String logAddress = Integer.toBinaryString(p);
-        int offsetLength = logAddress.length();
-        while (offsetLength < 4) {
+        
+        // add prefix of 0's cutoff by the toBinaryString method above
+        while (logAddress.length() < 10) {
             logAddress = "0" + logAddress;
         }
-        while (offsetLength < 10) {
-            logAddress = "0" + logAddress;
-        }
-        pageNum = logAddress.substring(0, 6);
-        page = Integer.valueOf(pageNum);
-        offset = logAddress.substring(7, 10);
-        frameNum = OSDriver.PCB.getFrame(page);
-        newPC = (frameNum * 16)+ Integer.getInteger(offset);
+        // get the first 6 bits for the page number
+        pageNumber = logAddress.substring(0, 6);
+        page = Integer.valueOf(pageNumber,2);
+        page += ptbr;
+        
+        // get the last 2 bits for the offset
+        offset = logAddress.substring(6, 10);
+
+        System.out.println("Logical address: " + logAddress);
+        System.out.println("Page: " + page + "\tOffset: " + offset);
+
+        frameNumber = OSDriver.PCB.getFrame(page);
+        System.out.println("Frame #: " + frameNumber);
+        
+        newPC = (frameNumber * 16) + Integer.valueOf(offset,2);
+        System.out.println("Logical address: " + logAddress + "\tOffset: " + Integer.valueOf(offset,2));
+        System.out.println("NEW PC Value: " + newPC);
         return newPC;
     }
 
+
     /**
-     * This writes the given data to the disk starting at
+     *  This writes the given data to the disk starting at
      *  the location provided.
      *
-     * @param loc  location on disk to start writing data
-     * @param data data to write to disk
+     * @param loc
+     * @param data
      */
     public synchronized void writeDiskData(int loc, String data) {
 
@@ -113,77 +151,67 @@ public class MemoryManager {
 
     }
 
-    //****************************************************
-    //  Returns a string representation of the hex code
-    //****************************************************
 
     /**
-     * This reads the data from the disk starting at the
-     *  location provided
+     * Returns a string representation of the hex code
      *
-     * @param r location on disk to start reading
-     * @return data from RAM
+     * @param r
+     * @return
      */
     public synchronized String readDiskData(int r) {
-
         return disk.readData(r);
-
     }
 
 
-    //****************************************************
-    //  Default constructor
-    //****************************************************
     /**
-     * This writes the given data to RAM starting at the
-     *  location provided
-     * @param loc location in RAM to start writing data
-     * @param data data to write to RAM
+     *
+     * @param loc
+     * @param data
      */
     public synchronized void writeRamData(int loc, short data) {
-
         ram.writeData(loc, data);
-
     }
 
 
-    //****************************************************
-    //  Default constructor
-    //****************************************************
-   /**
-    * This reads data from RAM starting at the location
-    *  provided 
-    * 
-    * @param r location in RAM to start reading data
-    * @return data from RAM
-    */
+    /**
+     *
+     * @param r
+     * @return
+     */
     public synchronized short readRamData(int r) {
 
         return ram.readData(r);
 
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNextFrameNum() {
         return frameNum;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNextPageNum() {
         return pageNum;
     }
 
     /**
-     * Prints the contents of the disk
      *
-     * @return contents of the disk
+     * @return
      */
     public String printDisk() {
         return disk.toString();
     }
-  /**
-   * Prints the contents of RAM
-   *
-   * @return contents of RAM
-   */
+
+    /**
+     * 
+     * @return
+     */
     public String printRam() {
         return ram.toString();
     }

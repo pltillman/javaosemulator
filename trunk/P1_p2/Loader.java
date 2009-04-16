@@ -2,7 +2,9 @@
 import java.io.*;
 import java.util.StringTokenizer;
 
-
+//****************************************************
+//
+//****************************************************
 public class Loader {
 
     //String file_1 = "DataFile1.txt";
@@ -12,25 +14,16 @@ public class Loader {
     FileReader file_2;
     private static int count=0;
     protected int addr;
-   
-    /**
-     * Loads the program files
-     *
-     * @param f1    file 1 ("DataFile1.txt")
-     * @param f2    file 2 ("DataFile2.txt")
-     */
+
     public Loader(FileReader f1, FileReader f2) {
 
         this.file_1 = f1;
         this.file_2 = f2;
 
     }
-    
-    /**
-     * 
-     * @throws java.io.IOException  If an input or output
-     *                               exception occurs
-     */
+    //****************************************************
+    //
+    //****************************************************
     protected void load() throws IOException {
 
         try {
@@ -46,12 +39,7 @@ public class Loader {
         } 
 
     }
-    /**
-     * Reads data from the file
-     *
-     * @param in  BufferedReader to read from file
-     * @return    true if successful
-     */
+
     private Boolean readDataFile(BufferedReader in) {
 
         addr = 0;
@@ -97,17 +85,12 @@ public class Loader {
         }
             return true;
     }
-   
-    /**
-     * Adds a job or job data to the PCB
-     *
-     * @param s string read from data file
-     * @param o value that determines metadata type
-     *             o=0 indicates job metadata
-     *             o=1 indicates jobdata metadata
-     */
+    //****************************************************
+    //
+    //****************************************************
     protected void addJob(String s, int o) {
-        
+        // o=0 indicates job metadata
+        // o=1 indicates jobdata metadata
 
         StringTokenizer token = new StringTokenizer(s);
 
@@ -131,18 +114,13 @@ public class Loader {
         //System.out.println("job added");
     }
 
-    /**
-     * Writes data to the disk
-     *
-     * @param s     string read from data file
-     * @param o     value that determines data type
-     *                o=0 indicates disk data. format is string
-     *                o=1 indicates ram data. format is string
-     * @param loc   where to write the data
-     */
+    //****************************************************
+    //
+    //****************************************************
     protected void addData(String s, int o, int loc) {
 
-        
+        // o=0 indicates disk data. format is string
+        // o=1 indicates ram data. format is string
         
         if (o == 0) {
             //add data to disk
