@@ -52,7 +52,6 @@ import java.io.*;
           //Create an instance of the toolkit
           tools = new OSToolkit();
 
-
           try {
               pFile = new FileReader("DataFile1.txt");
               pFile2 = new FileReader("DataFile2.txt");
@@ -74,8 +73,11 @@ import java.io.*;
 
         LTS = new LongTermScheduler();
         STS = new shortTermScheduler();
-        STS.SJF();
+        //STS.SJF();
 
+        MemManager.printFrameTable();
+        PCB.printPageTable();
+        PCB.printPTBR();
         //int numberOfProcess = LongTermScheduler.readyQueue.size();
 
         PCB_block jMeta;
@@ -117,19 +119,19 @@ import java.io.*;
 //        }
 
 
-
+        Thread t;
 
         do {
 
-            boolean ready = (cpu0.status == 0) || (cpu1.status == 0) || (cpu2.status == 0) || (cpu3.status == 0);
-
+            //boolean ready = (cpu0.status == 0) || (cpu1.status == 0) || (cpu2.status == 0) || (cpu3.status == 0);
+            boolean ready = (cpu0.status == 0);
 
             while (ready) {
 
                 sumPercent += LongTermScheduler.percent;
                 counter++;
 
-                for (int y=0; y<4; y++) {
+                for (int y=0; y<1; y++) {
 
                     System.err.println("CPU status:::::: Y " + y + " status " + cpu_Array[y].status);
 
@@ -137,28 +139,28 @@ import java.io.*;
 
                         case 0:
                             try {
-
                                 if (!LongTermScheduler.readyQueue.isEmpty()){
                                     cpu_Array[y].loadJob(STS.Store(0));
-                                    new Thread(cpu_Array[y]).start();
+                                    t = new Thread(cpu_Array[y]);
+                                    t.start();
                                 }
-
                             } catch (IOException ioe) {
                                 ioe.printStackTrace();
                             }
 
                         default:
-                            //System.out.println("DEFAULT REACHED");
+                            System.out.println("DEFAULT REACHED");
                     }
 
                     //System.err.println("READY QUEUE SIZE....................... " + LongTermScheduler.readyQueue.size());
-                    if (LongTermScheduler.readyQueue.size() == 0 && !DONE) {
-                        System.out.println("\nADDING MORE JOBS........\n");
-                        LTS.start();
-                        STS.SJF();
-                    }
+//                    if (LongTermScheduler.readyQueue.size() == 0 && !DONE) {
+//                        System.out.println("\nADDING MORE JOBS........\n");
+//                        LTS.start();
+//                        STS.SJF();
+//                    }
 
-                    ready = (cpu0.status == 0) || (cpu1.status == 0) || (cpu2.status == 0) || (cpu3.status == 0);
+                    //ready = (cpu0.status == 0) || (cpu1.status == 0) || (cpu2.status == 0) || (cpu3.status == 0);
+                    ready = (cpu0.status == 0);
 
                 }
                 

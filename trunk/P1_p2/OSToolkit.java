@@ -60,9 +60,42 @@ public class OSToolkit {
         }
         System.out.println(bin);
         return bin;
-
     }
 
+    /*****************************************************
+     *
+     * @param index
+     * @return
+     ****************************************************/
+    public String getBinaryData(int index) {
+        System.out.println("index:" + index);
+        String hexString = OSDriver.MemManager.readDiskData(index);
+
+        // so we need to strip of the prefix 0x
+        hexString = hexString.substring(2,10);
+
+        // then print again to see that it's just 0000dd99
+        System.out.println("Adding hexString: " + hexString);
+
+        long t = Long.parseLong(hexString, 16);
+
+        String binaryBits = Long.toBinaryString(t);
+
+        // then convert it to a string of bits
+        System.out.println("BINARY STRING " + binaryBits);
+
+        int length = binaryBits.length();
+
+        if (length < 32) {
+            int diff = 32 - length;
+            for (int i=0; i<diff; i++) {
+                binaryBits = "0" + binaryBits;
+            }
+        }
+        return binaryBits;
+    }
+
+    
     /*****************************************************
      *
      * @return

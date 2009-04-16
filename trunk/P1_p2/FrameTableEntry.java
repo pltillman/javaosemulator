@@ -40,6 +40,9 @@ public class FrameTableEntry {
         return this.allocated;
     }
 
+    public String toString() {
+        return "JobID: " + this.jobID + "\tPage Num:" + this.pageNum + "\tAlloc? " + this.allocated;
+    }
 
 
 
