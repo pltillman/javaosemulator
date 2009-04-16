@@ -5,10 +5,13 @@ import java.util.ArrayList;
  * @author Patrick Tillman
  */
 public class LongTermScheduler {
+    //create ready queue
     public static ArrayList<PCB_block> readyQueue;
-    //CircularArray jobQ;
+    //create PCB_block object
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
+    //initially all RAM is available
+    // -- value decremented as jobs are added
     private static int Memleft = 1024;
     private int loc;
     private int pageNum;
@@ -41,9 +44,13 @@ public class LongTermScheduler {
         //printQ();
     }
 
+<<<<<<< .mine
+
+=======
     /**
      *
      */
+>>>>>>> .r104
     public synchronized void start() {
 
         while (Memleft>=64 && (CURRJOB<OSDriver.PCB.getJobCount())) {
@@ -77,6 +84,17 @@ public class LongTermScheduler {
                     //System.out.println("BINARY STRING AFTER " + binaryBits);// then convert it to a string of bits
                     System.out.println("Binary bits: " + binaryBits);
 
+<<<<<<< .mine
+       while (Memleft>=(jobSize*4) && (CURRJOB<OSDriver.PCB.getJobCount())) {
+        
+         frameNum=OSDriver.MemManager.getNextFrame();
+         System.out.println("**** frame num "+ frameNum + "****");
+         loc=frameNum*16;
+         
+         
+            job.set_mem_start(loc);
+            int v = jobStart+4;
+=======
                     short binaryBits1 = Short.valueOf(binaryBits.substring(0,8), 2);
                     System.out.println(binaryBits1);
                     System.out.println("Decimal: " + binaryBits1 + "\t added at location: " + loc);
@@ -93,6 +111,7 @@ public class LongTermScheduler {
                     System.out.println(binaryBits4);
                     System.out.println("Decimal: " + binaryBits4 + "\t added at location: " + loc);
                     OSDriver.MemManager.writeRamData(loc++, binaryBits4);
+>>>>>>> .r104
 
                     Memleft -= 4;
                 }
@@ -131,7 +150,21 @@ public class LongTermScheduler {
                 OSDriver.PCB.updateTableEntry(pageNum, frameNum, true);
                 frameCount++;
             }
+            System.out.println("job "+ job.getJobID() +
+                    " added to frame " + frameNum + " and page " + pageNum);
+
             
+<<<<<<< .mine
+            
+
+            
+            OSDriver.PCB.updateTableEntry(pageNum, frameNum, true);
+            //OSDriver.MemManager.getNextFrame();
+         
+            System.out.println("Data Size: " + dataSize + " and location is " + loc);
+            int z = 0;
+=======
+>>>>>>> .r104
             short[] tmp = new short[dataSize*4];
 
             String binaryDataBits;
@@ -162,8 +195,15 @@ public class LongTermScheduler {
 
             CURRJOB++;            
 
+<<<<<<< .mine
+
+            CURRJOB++;
+
+
+=======
 //            System.out.println("Is the current job < total jobs " + (CURRJOB < OSDriver.PCB.getJobCount()));
 //            System.out.println("Current job: " + CURRJOB + "\tTotal jobs: " + OSDriver.PCB.getJobCount());
+>>>>>>> .r104
             
 //            if (!OSDriver.tools.hasLoadedAllJobs() ) {
 //
@@ -204,9 +244,59 @@ public class LongTermScheduler {
 
 
     /**
+     * Gets a hex string from disk and converts it into a 
+     * binary string and adds leading zeros if converted 
+     * string is less than 32-bits
      *
+<<<<<<< .mine
+     * @param index  location on disk to read data from
+     * @return       String representation
+     ****************************************************/
+    public String getBinaryData(int index) {
+        System.out.println("index:" + index);
+        String hexString = OSDriver.MemManager.readDiskData(index);
+        
+        // so we need to strip of the prefix 0x
+        hexString = hexString.substring(2,10);
+
+        // then print again to see that it's just 0000dd99
+        System.out.println("Adding hexString: " + hexString); 
+
+        long t = Long.parseLong(hexString, 16);
+
+        String binaryBits = Long.toBinaryString(t);
+
+        // then convert it to a string of bits
+        System.out.println("BINARY STRING " + binaryBits);
+
+        int length = binaryBits.length();
+
+        if (length < 32) {
+            int diff = 32 - length;
+            for (int i=0; i<diff; i++) {
+                binaryBits = "0" + binaryBits;
+            }
+        }
+        return binaryBits;
+    }
+
+
+
+
+
+ /**
+  * Computes percentage of RAM used by jobs
+  *
+  * @param f  determines how percentage is calculated
+  *             f=0 percentage is calculated for a single job
+  *             f=1 total percentage is calculated via counters
+  *                   in OSDriver class
+  *
+  */
+=======
      * @param f -
      */
+>>>>>>> .r104
     public void percentRam(int f){
 
         switch (f) {

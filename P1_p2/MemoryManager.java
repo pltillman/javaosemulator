@@ -30,7 +30,11 @@ public class MemoryManager {
             initFrameTable(u);
         }
     }
-
+/**
+ * Initialize frame table
+ *
+ * @param u frame table value to initialize
+ */
     /**
      *
      * @param u
@@ -39,6 +43,13 @@ public class MemoryManager {
         frameTable[u] = new FrameTableEntry();
         framePool.add(u);
     }
+<<<<<<< .mine
+ /**
+  * Finds the first unallocated frame
+  *
+  * @return value of next available frame
+  */
+=======
 
     /**
      * 
@@ -48,6 +59,7 @@ public class MemoryManager {
         framePool.add(f);
     }
     
+>>>>>>> .r104
     /**
      *
      * @return
@@ -58,11 +70,20 @@ public class MemoryManager {
         }
         return framePool.poll();
     }
+<<<<<<< .mine
+  /**
+   * Retreives the page data by calculating where
+   *   to read data from disk
+   *
+   * @param x
+   */
+=======
 
     /**
      *
      * @param x
      */
+>>>>>>> .r104
     public void getPage(int x) {
         int index = x;
         int frame = this.getNextFrame();
@@ -76,7 +97,15 @@ public class MemoryManager {
             OSDriver.MemManager.writeRamData(frame++, Short.valueOf(bits.substring(24,32), 2));
         }
     }
-
+/**
+ * Adds or modifies an entry of the frame table at the
+ *   given frame number
+ *
+ * @param frameNum frame number associated with job
+ * @param pageNum  page number associated with job
+ * @param alloc    set to true if allocated, false otherwise
+ * @param jID      Job ID
+ */
     /**
      *
      * @param frameNum
@@ -87,6 +116,16 @@ public class MemoryManager {
     public void updateFrameTable(int frameNum, int pageNum, Boolean alloc, int jID) {
         frameTable[frameNum].updateFrameEntry(pageNum, jID, alloc);
     }
+<<<<<<< .mine
+
+    /**
+     *
+     * @param p
+     * @return
+     */
+    private int getPhysicalAddress(int p) {
+        String pageNum;
+=======
 
     /**
      *
@@ -107,6 +146,7 @@ public class MemoryManager {
         System.out.println("Geting physical address for: " + p + " \tPTBR: " + ptbr);
         
         String pageNumber;
+>>>>>>> .r104
         int page;
         String offset;
         int frameNumber;
@@ -136,6 +176,16 @@ public class MemoryManager {
         System.out.println("NEW PC Value: " + newPC);
         return newPC;
     }
+<<<<<<< .mine
+
+    /**
+     * This writes the given data to the disk starting at
+     *  the location provided.
+     *
+     * @param loc  location on disk to start writing data
+     * @param data data to write to disk
+     */
+=======
 
 
     /**
@@ -145,6 +195,7 @@ public class MemoryManager {
      * @param loc
      * @param data
      */
+>>>>>>> .r104
     public synchronized void writeDiskData(int loc, String data) {
 
         disk.writeData(loc, data);
@@ -158,6 +209,14 @@ public class MemoryManager {
      * @param r
      * @return
      */
+
+    /**
+     * This reads the data from the disk starting at the
+     *  location provided
+     *
+     * @param r location on disk to start reading
+     * @return data from RAM
+     */
     public synchronized String readDiskData(int r) {
         return disk.readData(r);
     }
@@ -167,6 +226,12 @@ public class MemoryManager {
      *
      * @param loc
      * @param data
+     */
+    /**
+     * This writes the given data to RAM starting at the
+     *  location provided
+     * @param loc location in RAM to start writing data
+     * @param data data to write to RAM
      */
     public synchronized void writeRamData(int loc, short data) {
         ram.writeData(loc, data);
@@ -178,6 +243,13 @@ public class MemoryManager {
      * @param r
      * @return
      */
+   /**
+    * This reads data from RAM starting at the location
+    *  provided 
+    * 
+    * @param r location in RAM to start reading data
+    * @return data from RAM
+    */
     public synchronized short readRamData(int r) {
 
         return ram.readData(r);
@@ -200,14 +272,26 @@ public class MemoryManager {
         return pageNum;
     }
 
+<<<<<<< .mine
+    /**
+     * Prints the contents of the disk
+     *
+     * @return contents of the disk
+     */
+=======
     /**
      *
      * @return
      */
+>>>>>>> .r104
     public String printDisk() {
         return disk.toString();
     }
-
+  /**
+   * Prints the contents of RAM
+   *
+   * @return contents of RAM
+   */
     /**
      * 
      * @return
