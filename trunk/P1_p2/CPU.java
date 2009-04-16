@@ -28,7 +28,7 @@ public class CPU implements Runnable {
     private long address;
 
     private int[] reg_Array;
-    private int pc, logicalEnd;
+    private int pc;
 
     private final int ACCUM = 0;
     private final int ZERO = 1;
@@ -41,7 +41,7 @@ public class CPU implements Runnable {
     private PCB_block j;
 
     // status 0 = ready; status 1 = busy
-    public int status = 0;
+    public int status;
     //NEED SOMETHING TO HOLD THE JOB SIZE IN RAM
 
 
@@ -54,7 +54,6 @@ public class CPU implements Runnable {
     public CPU () {
         status = 0;
     }
-<<<<<<< .mine
 
     /**
      * Sets the given job's status to "loaded," creates registers and
@@ -64,12 +63,6 @@ public class CPU implements Runnable {
      * @throws java.io.IOException  If an input or output exception occurs
      */
     public void loadJob(PCB_block job) throws IOException {
-=======
->>>>>>> .r104
-
-
-
-    public synchronized void loadJob(PCB_block job) throws IOException {
 
         status = 1;
         j = job;
@@ -86,12 +79,8 @@ public class CPU implements Runnable {
         
     }
 
-<<<<<<< .mine
 
     public void run ()  {
-=======
-    public synchronized void run ()  {
->>>>>>> .r104
         
         ioCount = 0;
         try {
@@ -103,35 +92,30 @@ public class CPU implements Runnable {
         System.out.println("\nJob #" + j.getJobID() + " EXECUTING");
 
         //set the pc counter & buffer sizes
-        pc = 0;
-        System.out.println("Job starting at: " + pc);
-        pc = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+        pc = j.get_mem_start();
         oBufferSize = j.get_Output_buffer_size(); //size in # of words
         iBufferSize = j.get_Input_buffer_size();
         tBufferSize = j.get_Output_buffer_size();
         cpu_buffer = j.getCPUBuffer();
         jobSize = j.getJobSize();
-        //logicalEnd = j.get_mem_end();
-        //logicalEnd = OSDriver.MemManager.getPhysicalAddress(logicalEnd);
+
 //        for (int i=0; i<cpu_buffer.length; i++) {
 //            System.out.println("INPUT BUFFER: " + i + " " + cpu_buffer[i]);
 //        }
 
         System.out.println("Program Counter starting at: " + pc + "\n");
-        //run the duration of the frame
-        while (true) {
+        //run the duration of the job
+        while (pc < j.get_mem_end()) {
             String instr = fetch(pc);
             try {
                 execute(decode(instr),j.getJobID());
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
-            if (!jumped) {
+            if (!jumped)
                 pc += 4;
-                pc = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
-            } else {
+            else 
                 jumped = false;
-            }
 
             try {
                 out.append("\n\nPROGRAM COUNTER=" + pc);
@@ -460,7 +444,6 @@ public class CPU implements Runnable {
                     String ios = "There were " + ioCount + " IO requests in job # " + jID;
                     System.out.println(ios);
                     out.append("\n" + ios);
-                    System.out.println("SETTING STATUS TO 0");
                     status = 0;
                     break;
 
