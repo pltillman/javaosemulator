@@ -49,9 +49,23 @@ public class CPU implements Runnable {
     //
     //} thrown into a big while (not 'halt' opcode).
     //************************************************
+
+
     public CPU () {
         status = 0;
     }
+<<<<<<< .mine
+
+    /**
+     * Sets the given job's status to "loaded," creates registers and
+     *  accumulator
+     *
+     * @param job PCB_block object contains all data relating to a job
+     * @throws java.io.IOException  If an input or output exception occurs
+     */
+    public void loadJob(PCB_block job) throws IOException {
+=======
+>>>>>>> .r104
 
 
 
@@ -72,7 +86,12 @@ public class CPU implements Runnable {
         
     }
 
+<<<<<<< .mine
+
+    public void run ()  {
+=======
     public synchronized void run ()  {
+>>>>>>> .r104
         
         ioCount = 0;
         try {
@@ -124,11 +143,15 @@ public class CPU implements Runnable {
     }
     
 
-    //************************************************
-    //  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
-    //  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
-    //  STRING FOR PROCESSESING BY DECODE()
-    //************************************************
+/**
+ * 
+ * @param pc  PC value
+ * @return    32-bit binary instruction
+ * 
+ *  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
+ *  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
+ *  STRING FOR PROCESSESING BY DECODE()
+ */
     protected synchronized String fetch(int pc) {
 
         try {
@@ -167,18 +190,15 @@ public class CPU implements Runnable {
         
     }
 
-
-
-    /************************************************
-     * 
-     * @param instr_req
-     * @return
-     * @throws java.io.IOException
-
+    /**
      * DECODE() TAKES THE BINARY STRING REPRESENTATION OF
      * THE INSTRUCTION SET AND EXTRACTS THE APPROPRIATE
      * COMPONENTS. RETURNS THE OPCODE TO BE USED BY EXECUTE
-     ************************************************/
+     *
+     * @param instr_req Binary instruction to be decoded
+     * @return Opcode for the instruction to be executed
+     * @throws java.io.IOException If an input or output exception occurs
+     */
     protected synchronized int decode(String instr_req) throws IOException {
 
         //CHECK HERE IF ANYTHING IS WRONG WITH CALCULATED RESULTS!
@@ -245,11 +265,14 @@ public class CPU implements Runnable {
     }
 
 
-    /************************************************
-     *
-     * @param o
-     * @throws java.io.IOException
-     ************************************************/
+   /**
+    * Executes the instruction based on the opcode
+    *
+    * @param o                      opcode of instruction
+    * @param jID                    the job ID
+    * @throws java.io.IOException   If an input or output
+    *                                exception occurs
+    */
     protected synchronized void execute(int o, int jID) throws IOException {
         out.append("\nExecuting instruction...." + " OPCODE = " + o);
         System.out.println("\nExecuting instruction...." + " OPCODE = " + o);
@@ -546,7 +569,14 @@ public class CPU implements Runnable {
     }
 
 
-
+/**
+ * Performs arithmetic operations determined by the
+ *      opcode passed to execute()
+ *
+ * @param i determines what type of arithmetic to perform
+ * @throws java.io.IOException  If an input or output exception
+ *                                occurs
+ */
     private synchronized void calc_arith(int i) throws IOException {
 
         // i=0 - ADD
@@ -620,14 +650,22 @@ public class CPU implements Runnable {
         }
     }
 
-    //************************************************
-    //
-    //************************************************
-
-
+/**
+ * Calculates buffer address
+ *
+ * @param a value
+ * @return  buffer address for a given index
+ */
     private synchronized int buff_address(int a) {
         return Math.abs(a-jobSize*4);
     }
+
+  /**
+   * Calculate the effective address
+   * @param i
+   * @param a
+   * @return
+   */
     private synchronized int effective_address(short i, long a) {
         return reg_Array[i] + (int)a;
     }
