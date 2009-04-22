@@ -3,7 +3,8 @@ public class PageFault extends Exception {
 
 
     public PageFault() {
-        System.err.println("Page Fault Detected.... recovering now...");
+        System.out.println("||||||||PAGE FAULT DETECTED.... attempting recovery||||||||");
+        //OSDriver.MemManager.printRam();
     }
 
 }

@@ -29,7 +29,7 @@ public class PCB_block {
 
     private int mem_start;
     private int mem_end;
-    
+    private int PTBR;
 
     /**
      *
@@ -61,6 +61,13 @@ public class PCB_block {
         this.status = -1;
     }
 
+
+    public void setPTBR(int i) {
+        this.PTBR = i;
+    }
+    public int getPTBR() {
+        return this.PTBR;
+    }
     /**
      *
      * @param s - data size to be set

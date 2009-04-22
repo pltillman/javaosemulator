@@ -28,7 +28,7 @@ public class CPU implements Runnable {
     private long address;
 
     private int[] reg_Array;
-    private int pc;
+    private int pc, logicalEnd;
 
     private final int ACCUM = 0;
     private final int ZERO = 1;
@@ -41,7 +41,7 @@ public class CPU implements Runnable {
     private PCB_block j;
 
     // status 0 = ready; status 1 = busy
-    public int status;
+    public int status = 0;
     //NEED SOMETHING TO HOLD THE JOB SIZE IN RAM
 
 
@@ -49,20 +49,13 @@ public class CPU implements Runnable {
     //
     //} thrown into a big while (not 'halt' opcode).
     //************************************************
-
-
     public CPU () {
         status = 0;
     }
 
-    /**
-     * Sets the given job's status to "loaded," creates registers and
-     *  accumulator
-     *
-     * @param job PCB_block object contains all data relating to a job
-     * @throws java.io.IOException  If an input or output exception occurs
-     */
-    public void loadJob(PCB_block job) throws IOException {
+
+
+    public synchronized void loadJob(PCB_block job) throws IOException {
 
         status = 1;
         j = job;
@@ -79,8 +72,7 @@ public class CPU implements Runnable {
         
     }
 
-
-    public void run ()  {
+    public synchronized void run ()  {
         
         ioCount = 0;
         try {
@@ -92,30 +84,37 @@ public class CPU implements Runnable {
         System.out.println("\nJob #" + j.getJobID() + " EXECUTING");
 
         //set the pc counter & buffer sizes
-        pc = j.get_mem_start();
+        pc = 0;
+        System.out.println("Job starting at: " + pc);
+        pc = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
         oBufferSize = j.get_Output_buffer_size(); //size in # of words
         iBufferSize = j.get_Input_buffer_size();
         tBufferSize = j.get_Output_buffer_size();
         cpu_buffer = j.getCPUBuffer();
         jobSize = j.getJobSize();
-
+        //logicalEnd = j.get_mem_end();
+        //logicalEnd = OSDriver.MemManager.getPhysicalAddress(logicalEnd);
 //        for (int i=0; i<cpu_buffer.length; i++) {
 //            System.out.println("INPUT BUFFER: " + i + " " + cpu_buffer[i]);
 //        }
 
         System.out.println("Program Counter starting at: " + pc + "\n");
-        //run the duration of the job
-        while (pc < j.get_mem_end()) {
+        //run the duration of the frame
+        while (true) {
+            System.out.println("Fetching instruction at PC=" + pc);
             String instr = fetch(pc);
             try {
                 execute(decode(instr),j.getJobID());
             } catch (IOException ioe) {
+                System.out.println("EXCEPTION: occurred while trying to execute the instruction");
                 ioe.printStackTrace();
             }
-            if (!jumped)
+            if (!jumped) {
                 pc += 4;
-            else 
+                pc = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+            } else {
                 jumped = false;
+            }
 
             try {
                 out.append("\n\nPROGRAM COUNTER=" + pc);
@@ -123,19 +122,20 @@ public class CPU implements Runnable {
                 ioe.printStackTrace();
             }
             System.out.println("PROGRAM COUNTER=" + pc);
-        }     
+
+            if (pc % 16 == 0) {
+                OSDriver.MemManager.reclaimFrame(pc/16);
+            }
+        }
+
     }
     
 
-/**
- * 
- * @param pc  PC value
- * @return    32-bit binary instruction
- * 
- *  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
- *  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
- *  STRING FOR PROCESSESING BY DECODE()
- */
+    //************************************************
+    //  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
+    //  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
+    //  STRING FOR PROCESSESING BY DECODE()
+    //************************************************
     protected synchronized String fetch(int pc) {
 
         try {
@@ -154,35 +154,36 @@ public class CPU implements Runnable {
             //short line = ;
 
             //get binary represenation of value.
-            instruction = Integer.toBinaryString(OSDriver.MemManager.readRamData(pc++));
+            int s = OSDriver.MemManager.readRamData(pc++);
 
-            //System.out.println("AFTER EXTRACTION " + instruction);
+            instruction = Integer.toBinaryString(s);
+
+            System.out.println("\tRAW: " + s + "\tAFTER CONVERSION " + instruction);
 
             //add any leading zeros that were left off by the previous operation
-            int b = instruction.length();
-            if (instruction.length() < 8) {
-                for (int y = 0; y < 8-b; y++) {
-                    instruction = "0" + instruction;
-                }
-                returnedInst =  returnedInst + "" + instruction;
-            } else {
-                returnedInst = returnedInst + "" + instruction;
+            
+            while (instruction.length() < 8) {
+                instruction = "0" + instruction;
             }
+            returnedInst =  returnedInst + "" + instruction;
             //System.out.println("AFTER EXTRACTION & APPENDING " + returnedInst);
         }
         return returnedInst;
         
     }
 
-    /**
+
+
+    /************************************************
+     * 
+     * @param instr_req
+     * @return
+     * @throws java.io.IOException
+
      * DECODE() TAKES THE BINARY STRING REPRESENTATION OF
      * THE INSTRUCTION SET AND EXTRACTS THE APPROPRIATE
      * COMPONENTS. RETURNS THE OPCODE TO BE USED BY EXECUTE
-     *
-     * @param instr_req Binary instruction to be decoded
-     * @return Opcode for the instruction to be executed
-     * @throws java.io.IOException If an input or output exception occurs
-     */
+     ************************************************/
     protected synchronized int decode(String instr_req) throws IOException {
 
         //CHECK HERE IF ANYTHING IS WRONG WITH CALCULATED RESULTS!
@@ -210,7 +211,7 @@ public class CPU implements Runnable {
                 System.out.println("s1_reg:" + s1_reg + " s2_reg:" + s2_reg + " d_reg:" + d_reg);
                 long dataCHK = Long.parseLong(instr_req.substring(20,32),2);
                 if (dataCHK > 0) {
-                    System.err.println("Invalid instruction data field");
+                    System.out.println("INVALID INSTRUCTION DATA FIELD DETECTED.. EXITING");
                     System.exit(0);
                 }
                 break;
@@ -249,14 +250,11 @@ public class CPU implements Runnable {
     }
 
 
-   /**
-    * Executes the instruction based on the opcode
-    *
-    * @param o                      opcode of instruction
-    * @param jID                    the job ID
-    * @throws java.io.IOException   If an input or output
-    *                                exception occurs
-    */
+    /************************************************
+     *
+     * @param o
+     * @throws java.io.IOException
+     ************************************************/
     protected synchronized void execute(int o, int jID) throws IOException {
         out.append("\nExecuting instruction...." + " OPCODE = " + o);
         System.out.println("\nExecuting instruction...." + " OPCODE = " + o);
@@ -444,6 +442,7 @@ public class CPU implements Runnable {
                     String ios = "There were " + ioCount + " IO requests in job # " + jID;
                     System.out.println(ios);
                     out.append("\n" + ios);
+                    System.out.println("SETTING STATUS TO 0");
                     status = 0;
                     break;
 
@@ -457,7 +456,7 @@ public class CPU implements Runnable {
                     out.append("\nJumping to another location");
                     System.out.println("Jumping to another location");
                     //Jumps to a specified location
-                    pc = (int)address;
+                    pc = OSDriver.MemManager.getPhysicalAddress((int)address, j.getPTBR());
                     jumped = true;
                     out.append("\nProgram counter set to " + pc);
                     System.out.println("Program counter set to " + pc);
@@ -469,8 +468,8 @@ public class CPU implements Runnable {
                     System.out.println("Checking if " + reg_Array[b_reg] + " = " + reg_Array[d_reg] + " , then branch");
                     //Branches to an address when content of B-reg = D-reg
                     if (reg_Array[d_reg] == reg_Array[b_reg]) {
-                        pc = (int)address;
-                        pc += j.get_mem_start();
+                        pc = OSDriver.MemManager.getPhysicalAddress((int)address, j.getPTBR());
+                        //pc += j.get_mem_start();
                         jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
@@ -483,8 +482,8 @@ public class CPU implements Runnable {
                     //Branches to an address when content of B-reg <> D-reg
                     System.out.println("b_reg: " + reg_Array[b_reg] + " d_reg:" + reg_Array[d_reg]);
                     if (reg_Array[b_reg] != reg_Array[d_reg]) {
-                        pc = (int)address;
-                        pc += j.get_mem_start();
+                        pc = OSDriver.MemManager.getPhysicalAddress((int)address, j.getPTBR());
+                        //pc += j.get_mem_start();
                         jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
@@ -496,8 +495,8 @@ public class CPU implements Runnable {
                     System.out.println("Checking if d_reg is 0, then branch");
                     //Branches to an address when content of D-reg = 0
                     if (reg_Array[d_reg] == 0) {
-                        pc = (int)address;
-                        pc += j.get_mem_start();
+                        pc = OSDriver.MemManager.getPhysicalAddress((int)address, j.getPTBR());
+                        //pc += j.get_mem_start();
                         jumped = true;
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
@@ -509,8 +508,8 @@ public class CPU implements Runnable {
                     System.out.println("Checking if b_reg != 0, then branch");
                     //Branches to an address when content of B-reg <> 0
                     if (reg_Array[b_reg] != 0) {
-                        pc = (int)address;
-                        pc += j.get_mem_start();
+                        pc = OSDriver.MemManager.getPhysicalAddress((int)address, j.getPTBR());
+                        //pc += j.get_mem_start();
                         out.append("\nProgram counter set to " + pc);
                         System.out.println("Program counter set to " + pc);
                     }
@@ -521,8 +520,8 @@ public class CPU implements Runnable {
                     System.out.println("Checking if b_reg > 0, then branch");
                     //Branches to an address when content of B-reg > 0
                     if (reg_Array[b_reg] > 0) {
-                        pc = (int)address;
-                        pc += j.get_mem_start();
+                        pc = OSDriver.MemManager.getPhysicalAddress((int)address, j.getPTBR());
+                        //pc += j.get_mem_start();
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -533,8 +532,8 @@ public class CPU implements Runnable {
                     System.out.println("Checking if b_reg < 0, then branch");
                     //Branches to an address when content of B-reg < 0
                     if (reg_Array[b_reg] < 0) {
-                        pc = (int)address;
-                        pc += j.get_mem_start();
+                        pc = OSDriver.MemManager.getPhysicalAddress((int)address, j.getPTBR());
+                        //pc += j.get_mem_start();
                         System.out.println("Program counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
                     }
@@ -552,14 +551,7 @@ public class CPU implements Runnable {
     }
 
 
-/**
- * Performs arithmetic operations determined by the
- *      opcode passed to execute()
- *
- * @param i determines what type of arithmetic to perform
- * @throws java.io.IOException  If an input or output exception
- *                                occurs
- */
+
     private synchronized void calc_arith(int i) throws IOException {
 
         // i=0 - ADD
@@ -633,22 +625,14 @@ public class CPU implements Runnable {
         }
     }
 
-/**
- * Calculates buffer address
- *
- * @param a value
- * @return  buffer address for a given index
- */
+    //************************************************
+    //
+    //************************************************
+
+
     private synchronized int buff_address(int a) {
         return Math.abs(a-jobSize*4);
     }
-
-  /**
-   * Calculate the effective address
-   * @param i
-   * @param a
-   * @return
-   */
     private synchronized int effective_address(short i, long a) {
         return reg_Array[i] + (int)a;
     }
