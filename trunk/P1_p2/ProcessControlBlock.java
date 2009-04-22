@@ -25,10 +25,9 @@ public class ProcessControlBlock {
         //jobQ = new String[];
         count = 0;
         jobQueue = new Stack<PCB_block>();
-        pageTable = new pageTableEntry[128];
+        pageTable = new pageTableEntry[512];
         
-
-        for (int j=0; j<128; j++) {
+        for (int j=0; j<512; j++) {
             createPage(j);
         }
     }
@@ -38,16 +37,16 @@ public class ProcessControlBlock {
     //  added to the queue once the data related data
     //  to the object.
     //****************************************************
-    public void createJob(int i, int s, int p, int a) {
+    public synchronized void createJob(int i, int s, int p, int a) {
 
         //Integer.parseInt(s,16)
         pcb_e = new PCB_block(i, s, p, a);
 
     }
 
-     public void createPage(int pageIndex) {
+     public synchronized void createPage(int pageIndex) {
 
-        pageTable[pageIndex] = new pageTableEntry();
+        pageTable[pageIndex] = new pageTableEntry(pageIndex);
     }
 
 
@@ -55,7 +54,7 @@ public class ProcessControlBlock {
     //  Adds the data metadata to the object and then adds
     //  the object to the queue.
     //****************************************************
-    public void addMeta(int i, int o, int t) {
+    public synchronized void addMeta(int i, int o, int t) {
 
         pcb_e.addMetadata(i, o, t);
         jobQueue.add(pcb_e);
@@ -63,7 +62,7 @@ public class ProcessControlBlock {
 
     }
 
-    public void updateTableEntry(int pIndex, int frameNumber, Boolean validFlag) {
+    public synchronized void updateTableEntry(int pIndex, int frameNumber, Boolean validFlag) {
         pageTable[pIndex].updatePageEntry(frameNumber, validFlag);
     }
 
@@ -74,34 +73,41 @@ public class ProcessControlBlock {
 //
 //    }
 
-    public int getFrame(int a) {
-
+    public void printPTBR() {
+        System.out.println("\n\tPAGE TABLE BASE REGISTER");
+        for (PCB_block p : jobQueue) {
+            System.out.println("\tJOB: " + p.getJobID() + "\tPTBR: " + p.getPTBR());
+        }
+        System.out.println("");
+    }
+    public void printPageTable() {
+        System.out.println("\n\tPAGE TABLE CONTENTS");
+        for (pageTableEntry pte : pageTable) {
+            System.out.println(pte.toString());
+        }
+        System.out.println("");
+    }
+    public synchronized int getFrame(int a) {
+        System.out.println("\n\tGETTING FRAME AT INDEX: " + a);
         try {
             pageTable[a].getValid();
             return pageTable[a].getFrameNumber();
         } catch (PageFault p) {
-            OSDriver.MemManager.getPage(a);
+            updateTableEntry(a, OSDriver.MemManager.getPage(a), true);
+            //OSDriver.MemManager.printRam();
             return pageTable[a].getFrameNumber();
         }
-
     }
 
-//    public void searchFrameTable(int index) {
-//
-//         for (int i = 0; i < pageTable.length; i++){
-//                    boolean a = false;
-//                   // boolean b = true;
-//                    pageTable_e.setValid(a);
-//        }
-//
-//        Boolean b = true;
-//
-//        for (int i = 0; i < pageTable.length; i++){
-//            if (index == (pageTable[index].getPageJobID()%index) +   )
-//                    pageTable_e.setValid(b);
-//        }
-//    }
 
+    public int searchForPage(int page) {
+        for (pageTableEntry pte : pageTable) {
+            if (pte.getPageNumber() == page) {
+                return pte.getFrameNumber();
+            }
+        }
+        return -1;
+    }
 
     public void setDataSize(int s) {
         pcb_e.setDataSize(s);
@@ -146,27 +152,5 @@ public class ProcessControlBlock {
                     v.getJobPriority() + "\tJobSize: " + v.getJobSize());
         }
     }
-//    public PCB_block findJob(int i) {
-//
-//        for (PCB_block tmp : jobQueue) {
-//            if (tmp.getJobID() == i) {
-//                return tmp;
-//            } else {
-//                break;
-//            }
-//        }
-//
-//    }
-//    public Object getShortestJob() {
-//        int target = 0;
-//
-//        for (int i=0; i<jobQueue.size(); i++) {
-//            if ( jobQueue(i).getJobSize() > target)
-//                target = jobQueue[i].getJobSize();
-//        }
-//        return jobQueue.offer(target);
-//    }
-
-
 
 }
