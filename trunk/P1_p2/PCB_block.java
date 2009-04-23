@@ -60,14 +60,23 @@ public class PCB_block {
         this.TMP_buffer = new short[t];
         this.status = -1;
     }
-
-
+    
+    /**
+     *
+     * @param i
+     */
     public void setPTBR(int i) {
         this.PTBR = i;
     }
+
+    /**
+     *
+     * @return
+     */
     public int getPTBR() {
         return this.PTBR;
     }
+
     /**
      *
      * @param s - data size to be set
