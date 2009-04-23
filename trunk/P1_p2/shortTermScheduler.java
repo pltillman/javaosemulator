@@ -58,7 +58,7 @@ public class shortTermScheduler{
             tmp.setoutQueueTime(System.nanoTime());
             tmp.setCpuStartTime(System.nanoTime());
 
-            System.out.println("\tJOB REMOVED FROM READY Q.. SIZE IS NOW " +
+            System.out.println("REMOVED JOB FROM READY Q.. SIZE IS NOW " +
                     LongTermScheduler.readyQueue.size());
 
             return tmp;
