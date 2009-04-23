@@ -41,7 +41,7 @@ public class CPU implements Runnable {
     private PCB_block j;
 
     // status 0 = ready; status 1 = busy
-    public int status = 0;
+    public int status=0;
     //NEED SOMETHING TO HOLD THE JOB SIZE IN RAM
 
 
@@ -49,13 +49,20 @@ public class CPU implements Runnable {
     //
     //} thrown into a big while (not 'halt' opcode).
     //************************************************
+
+
     public CPU () {
         status = 0;
     }
 
-
-
-    public synchronized void loadJob(PCB_block job) throws IOException {
+    /**
+     * Sets the given job's status to "loaded," creates registers and
+     *  accumulator
+     *
+     * @param job PCB_block object contains all data relating to a job
+     * @throws java.io.IOException  If an input or output exception occurs
+     */
+    public void loadJob(PCB_block job) throws IOException {
 
         status = 1;
         j = job;
@@ -69,11 +76,13 @@ public class CPU implements Runnable {
         out = new BufferedWriter(new FileWriter("CPU_log.txt"));
         out.append("CPU LOG FILE");
 
+        
     }
 
-    public synchronized void run ()  {
+
+    public void run ()  {
         
-        ioCount = 0;
+                ioCount = 0;
         try {
             out.append("\n|||||||||||||||||");
             out.append("\nJob #" + j.getJobID());
@@ -131,13 +140,17 @@ public class CPU implements Runnable {
         }
 
     }
-    
 
-    //************************************************
-    //  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
-    //  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
-    //  STRING FOR PROCESSESING BY DECODE()
-    //************************************************
+
+/**
+ * 
+ * @param pc  PC value
+ * @return    32-bit binary instruction
+ * 
+ *  FETCH() TAKES THE PC VALUE AND GRABS THE NEXT INSTRUCTION
+ *  AND APPENDS THE BYTES TOGETHER INTO A 32 BIT BINARY
+ *  STRING FOR PROCESSESING BY DECODE()
+ */
     protected synchronized String fetch(int pc) {
 
         try {
@@ -163,7 +176,7 @@ public class CPU implements Runnable {
             System.out.println("\tRAW: " + s + "\tAFTER CONVERSION " + instruction);
 
             //add any leading zeros that were left off by the previous operation
-            
+
             while (instruction.length() < 8) {
                 instruction = "0" + instruction;
             }
@@ -171,31 +184,29 @@ public class CPU implements Runnable {
             //System.out.println("AFTER EXTRACTION & APPENDING " + returnedInst);
         }
         return returnedInst;
-        
+
     }
 
 
-
-    /************************************************
-     * 
-     * @param instr_req
-     * @return
-     * @throws java.io.IOException
-
+    /**
      * DECODE() TAKES THE BINARY STRING REPRESENTATION OF
      * THE INSTRUCTION SET AND EXTRACTS THE APPROPRIATE
      * COMPONENTS. RETURNS THE OPCODE TO BE USED BY EXECUTE
-     ************************************************/
+     *
+     * @param instr_req Binary instruction to be decoded
+     * @return Opcode for the instruction to be executed
+     * @throws java.io.IOException If an input or output exception occurs
+     */
     protected synchronized int decode(String instr_req) throws IOException {
 
-        //CHECK HERE IF ANYTHING IS WRONG WITH CALCULATED RESULTS!
+         //CHECK HERE IF ANYTHING IS WRONG WITH CALCULATED RESULTS!
         //String binInstr = Integer.toBinaryString(instr_req);
         //Integer.toBinaryString(Character.digit(line.charAt(i),16))
 
         System.out.println("\tBinary instruction: " + instr_req );
-        
+
         out.append("decoding instruction.... " + instr_req);
-       
+
         //EXTRACT THE TYPE AND OPCODE FROM THE INSTRUCTION
         this.type = Short.parseShort(instr_req.substring(0,2),2);
         this.opCode = Short.parseShort(instr_req.substring(2,8),2);
@@ -245,22 +256,25 @@ public class CPU implements Runnable {
                 System.err.println("\tERROR: HIT DEFAULT DECODE TYPE");
                 out.append("\nERROR: HIT DEFAULT DECODE TYPE");
                 break;
-                
+
         }
-        
+
         return opCode;
     }
 
 
-    /************************************************
-     *
-     * @param o
-     * @throws java.io.IOException
-     ************************************************/
+   /**
+    * Executes the instruction based on the opcode
+    *
+    * @param o                      opcode of instruction
+    * @param jID                    the job ID
+    * @throws java.io.IOException   If an input or output
+    *                                exception occurs
+    */
     protected synchronized void execute(int o, int jID) throws IOException {
-        out.append("\nExecuting instruction...." + " OPCODE = " + o);
+          out.append("\nExecuting instruction...." + " OPCODE = " + o);
         System.out.println("\n\tExecuting instruction...." + " OPCODE = " + o);
-        
+
         if (!(opCode < 0) || (opCode > 26)) {
             //out.append("\nOPCODE =" + opCode);
             switch (opCode) {
@@ -552,7 +566,7 @@ public class CPU implements Runnable {
                 default:
                     System.err.println("UNKNOWN OPCODE");
                     break;
-                    
+
             }
         } else {
             out.append("\nDIDN'T DECODE... OPCODE = " + opCode);
@@ -561,7 +575,14 @@ public class CPU implements Runnable {
     }
 
 
-
+/**
+ * Performs arithmetic operations determined by the
+ *      opcode passed to execute()
+ *
+ * @param i determines what type of arithmetic to perform
+ * @throws java.io.IOException  If an input or output exception
+ *                                occurs
+ */
     private synchronized void calc_arith(int i) throws IOException {
 
         // i=0 - ADD
@@ -571,7 +592,7 @@ public class CPU implements Runnable {
         // i=4 - LOGICAL 'AND'
         // I=5 - LOGICAL 'OR'
         // i=6 - SWAP REGISTERS
-        
+
         switch (i) {
             case 0:
                 reg_Array[d_reg] = (short)(reg_Array[s1_reg] + reg_Array[s2_reg]);
@@ -635,14 +656,22 @@ public class CPU implements Runnable {
         }
     }
 
-    //************************************************
-    //
-    //************************************************
-
-
+/**
+ * Calculates buffer address
+ *
+ * @param a value
+ * @return  buffer address for a given index
+ */
     private synchronized int buff_address(int a) {
         return Math.abs(a-jobSize*4);
     }
+
+  /**
+   * Calculate the effective address
+   * @param i
+   * @param a
+   * @return
+   */
     private synchronized int effective_address(short i, long a) {
         return reg_Array[i] + (int)a;
     }
