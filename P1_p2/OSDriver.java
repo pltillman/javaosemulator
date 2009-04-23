@@ -22,6 +22,8 @@ import java.io.*;
         public static int counter=0;
         public static double totalPercent;
 
+        private static Boolean DEBUG = true;
+        
         private static CPU cpu0;
         private static CPU cpu1;
         private static CPU cpu2;
@@ -75,18 +77,19 @@ import java.io.*;
 
 
             System.out.println("\nKERNEL:::CALLING LONG TERM SCHEDULER...\n");
-          
+
             LTS = new LongTermScheduler();
 
             System.out.println("\nKERNEL:::CALLING SHORT TERM SCHEDULER...");
             STS = new shortTermScheduler();
             //STS.SJF();
 
-            MemManager.printFrameTable();
-            PCB.printPageTable();
-            PCB.printPTBR();
+            if (DEBUG) {
+                MemManager.printFrameTable();
+                PCB.printPageTable();
+                PCB.printPTBR();
+            }
             
-
             PCB_block jMeta;
 
             cpu0 = new CPU();
@@ -126,7 +129,7 @@ import java.io.*;
 //        }
 
 
-            System.out.println("KERNEL: EXECUTING JOBS...");
+            System.out.println("\nKERNEL: EXECUTING JOBS...");
             Thread t;
 
             do {
@@ -147,7 +150,7 @@ import java.io.*;
 
                             case 0:
                                 try {
-                                    if (!LongTermScheduler.readyQueue.isEmpty()){
+                                    if (!LongTermScheduler.readyQueue.isEmpty()) {
                                         cpu_Array[y].loadJob(STS.Store(0));
                                         t = new Thread(cpu_Array[y]);
                                         t.start();
@@ -157,7 +160,7 @@ import java.io.*;
                                 }
 
                             default:
-                                System.out.println("DEFAULT REACHED");
+                                System.out.println("\tDEFAULT REACHED");
                         }
 
                         //System.err.println("READY QUEUE SIZE....................... " + LongTermScheduler.readyQueue.size());

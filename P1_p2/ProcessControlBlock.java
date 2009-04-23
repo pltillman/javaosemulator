@@ -88,7 +88,7 @@ public class ProcessControlBlock {
         System.out.println("");
     }
     public synchronized int getFrame(int a) {
-        System.out.println("\n\tGETTING FRAME AT INDEX: " + a);
+        System.out.println("\tGETTING FRAME AT INDEX: " + a);
         try {
             pageTable[a].getValid();
             return pageTable[a].getFrameNumber();
