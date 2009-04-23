@@ -9,10 +9,11 @@ public class OSToolkit {
     protected int INDIRECT;
     protected int DIRECT;
 
-    /******************************************
+
+    /**
      * This class is just a set of tools used by
      * other components in the OS.
-     ******************************************/
+     */
     public OSToolkit() {
 
         effective_addr = 0;
@@ -26,10 +27,18 @@ public class OSToolkit {
 
     }
     
-    /******************************************
+
+    /**
      * Used to calculate the effective address for a given
-     * instruction using either direct or indirect methoods.
-     ******************************************/
+     *  instruction using either direct or indirect methods.
+     *
+     * @param flag Denotes which type of addressing method
+     *         0=Indirect, 1= Direct
+     * @param b byte array containing the data
+     * @param D
+     * @return calculated effective address
+     */
+
     private int effective_addr(int flag, byte[] b, String D) {
 
         int offset = Integer.parseInt(D, 2);
@@ -45,7 +54,11 @@ public class OSToolkit {
         return effective_addr;
     }
 
-
+/**
+ *
+ * @param h
+ * @return
+ */
     protected String hexToByte(String h) {
 
         byte[] hexByte = new byte[4];
@@ -60,14 +73,18 @@ public class OSToolkit {
         }
         System.out.println(bin);
         return bin;
+
     }
 
-    /*****************************************************
+     /*****************************************************
+     * Gets a hex string from disk and converts it into a
+     * binary string and adds leading zeros if converted
+     * string is less than 32-bits
      *
-     * @param index
-     * @return
+     * @param index  location on disk to read data from
+     * @return       String representation
      ****************************************************/
-    public String getBinaryData(int index) {
+     public String getBinaryData(int index) {
         //System.out.println("index:" + index);
         String hexString = OSDriver.MemManager.readDiskData(index);
 
@@ -96,11 +113,13 @@ public class OSToolkit {
         return binaryBits;
     }
 
-    
-    /*****************************************************
-     *
-     * @return
-     ****************************************************/
+/**
+ * Loops through all of the jobs checking their status
+ *  If a job's status is less than 0, it is either ready and has not
+ *   been loaded, or is not yet ready or loaded.
+ *
+ * @return true if all jobs have been loaded, false otherwise
+ */
     public Boolean hasLoadedAllJobs() {
 
         for (int i=0; i<OSDriver.PCB.getJobCount(); i++) {
@@ -115,7 +134,12 @@ public class OSToolkit {
 
     }
 
-    
+    /**
+     * Get data from RAM at a given index.
+     *
+     * @param b Index in RAM to read data from
+     * @return the content of index b in RAM
+     */
     protected int content(short b) {
 
         return OSDriver.MemManager.readRamData(b);
