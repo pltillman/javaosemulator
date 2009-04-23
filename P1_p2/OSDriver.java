@@ -4,66 +4,66 @@ import java.io.*;
   //****************************************************
   //  Default constructor
   //****************************************************
-    public class OSDriver {
+  public class OSDriver {
 
-        private static Loader loader;
-        public static MemoryManager MemManager;
-        public static ProcessControlBlock PCB;
-        public static OSToolkit tools;
-        public static LongTermScheduler LTS;
-        public static shortTermScheduler STS;
-        public static RamMemory ram;
-        public static int RamJobSize;
-        public static DiskMemory disk;
-        private static int jobSize;
-        private static int totalJobSize=0;
-        public static boolean DONE = false;
-        public static double sumPercent;
-        public static int counter=0;
-        public static double totalPercent;
+      private static Loader loader;
+      public static MemoryManager MemManager;
+      public static ProcessControlBlock PCB;
+      public static OSToolkit tools;
+      public static LongTermScheduler LTS;
+      public static shortTermScheduler STS;
+      public static RamMemory ram;
+      public static int RamJobSize;
+      public static DiskMemory disk;
+      private static int jobSize;
+      private static int totalJobSize=0;
+      public static boolean DONE = false;
+      public static double sumPercent;
+      public static int counter=0;
+      public static double totalPercent;
 
-        private static Boolean DEBUG = true;
-        
-        private static CPU cpu0;
-        private static CPU cpu1;
-        private static CPU cpu2;
-        private static CPU cpu3;
+      private static Boolean DEBUG = true;
 
-        private static CPU[] cpu_Array;
+      private static CPU cpu0;
+      private static CPU cpu1;
+      private static CPU cpu2;
+      private static CPU cpu3;
 
-        private static Thread t;
-        //      public static ShortestJobFirst SJF;
+      private static CPU[] cpu_Array;
 
-        //     private static int currentProcess;
+      private static Thread t;
+//      public static ShortestJobFirst SJF;
 
-        //****************************************************
-        //  Begin main()
-        //****************************************************
-        public static void main(String[] args) {
+//     private static int currentProcess;
 
-            cpu_Array = new CPU[4];
+      //****************************************************
+      //  Begin main()
+      //****************************************************
+      public static void main(String[] args) {
 
-            FileReader pFile;
-            FileReader pFile2;
-            //Create Memory Manager -- disk, ram,
-            MemManager = new MemoryManager();
+          cpu_Array = new CPU[4];
+          
+          FileReader pFile;
+          FileReader pFile2;
+          //Create Memory Manager -- disk, ram,
+          MemManager = new MemoryManager();
 
-            //Create the Process Control Block
-            PCB = new ProcessControlBlock();
+          //Create the Process Control Block
+          PCB = new ProcessControlBlock();
 
-            //Create an instance of the toolkit
-            tools = new OSToolkit();
+          //Create an instance of the toolkit
+          tools = new OSToolkit();
 
-            System.out.println("KERNEL:::VIRTUAL SYSTEM INITIALIZING...\n\nKERNEL:::VIRTUAL SYSTEM INITIALIZING...COMPLETE");
-            try {
-                pFile = new FileReader("DataFile1.txt");
-                pFile2 = new FileReader("DataFile2.txt");
+          System.out.println("KERNEL:::VIRTUAL SYSTEM INITIALIZING...\n\nKERNEL:::VIRTUAL SYSTEM INITIALIZING...COMPLETE");
+          try {
+              pFile = new FileReader("DataFile1.txt");
+              pFile2 = new FileReader("DataFile2.txt");
+               
+			  System.out.println("\nKERNEL:::CALLING LOADER...");
+              //load the program files
+              loader = new Loader(pFile, pFile2);
 
-                System.out.println("\nKERNEL:::CALLING LOADER...");
-                //load the program files
-                loader = new Loader(pFile, pFile2);
-
-                try {
+              try {
                   loader.load();
                 } catch (IOException ioe) {
                   ioe.printStackTrace();
@@ -89,7 +89,7 @@ import java.io.*;
                 PCB.printPageTable();
                 PCB.printPTBR();
             }
-            
+
             PCB_block jMeta;
 
             cpu0 = new CPU();
@@ -178,6 +178,6 @@ import java.io.*;
                 }
 
             } while (!LongTermScheduler.readyQueue.isEmpty());
-    
+
     }
  }
