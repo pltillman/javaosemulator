@@ -27,6 +27,7 @@ public class ProcessControlBlock {
         jobQueue = new Stack<PCB_block>();
         pageTable = new pageTableEntry[512];
         
+
         for (int j=0; j<512; j++) {
             createPage(j);
         }
@@ -73,13 +74,14 @@ public class ProcessControlBlock {
 //
 //    }
 
-    public void printPTBR() {
-        System.out.println("\n\tPAGE TABLE BASE REGISTER");
-        for (PCB_block p : jobQueue) {
-            System.out.println("\tJOB: " + p.getJobID() + "\tPTBR: " + p.getPTBR());
-        }
+     public void printPTBR() {
+       System.out.println("\n\tPAGE TABLE BASE REGISTER");
+       for (PCB_block p : jobQueue) {
+         System.out.println("\tJOB: " + p.getJobID() + "\tPTBR: " + p.getPTBR());
+       }
         System.out.println("");
     }
+
     public void printPageTable() {
         System.out.println("\n\tPAGE TABLE CONTENTS");
         for (pageTableEntry pte : pageTable) {
@@ -87,27 +89,28 @@ public class ProcessControlBlock {
         }
         System.out.println("");
     }
+
     public synchronized int getFrame(int a) {
-        System.out.println("\tGETTING FRAME AT INDEX: " + a);
-        try {
-            pageTable[a].getValid();
-            return pageTable[a].getFrameNumber();
-        } catch (PageFault p) {
-            updateTableEntry(a, OSDriver.MemManager.getPage(a), true);
-            //OSDriver.MemManager.printRam();
-            return pageTable[a].getFrameNumber();
+       System.out.println("\tGETTING FRAME AT INDEX: " + a);
+       try {
+         pageTable[a].getValid();
+         return pageTable[a].getFrameNumber();
+       } catch (PageFault p) {
+          updateTableEntry(a, OSDriver.MemManager.getPage(a), true);
+          //OSDriver.MemManager.printRam();
+          return pageTable[a].getFrameNumber();
         }
     }
-
 
     public int searchForPage(int page) {
-        for (pageTableEntry pte : pageTable) {
-            if (pte.getPageNumber() == page) {
-                return pte.getFrameNumber();
-            }
+      for (pageTableEntry pte : pageTable) {
+        if (pte.getPageNumber() == page) {
+          return pte.getFrameNumber();
         }
+      }
         return -1;
     }
+
 
     public void setDataSize(int s) {
         pcb_e.setDataSize(s);
@@ -152,5 +155,5 @@ public class ProcessControlBlock {
                     v.getJobPriority() + "\tJobSize: " + v.getJobSize());
         }
     }
-
 }
+
