@@ -73,7 +73,7 @@ public class Loader {
                     str = in.readLine();
 
                     while ( !str.contains("//") ) {
-                        System.out.println("adding " + str + " to location " + count);
+                       // System.out.println("adding " + str + " to location " + count);
                         addData(str, 0, count++);
                         str = in.readLine();
                     }
