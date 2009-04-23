@@ -58,9 +58,10 @@ public class MemoryManager {
     * @return value of next available frame
     */
     public int getNextFrame() {
-      if (framePool.isEmpty()) {
+        System.out.println("FRAME POOL: " + framePool.toString());
+        if (framePool.isEmpty()) {
             return framePool.size();
-      }
+        }
         return framePool.poll();
     }
 
@@ -72,8 +73,9 @@ public class MemoryManager {
    *          to read data from
    */
     public int getPage(int x) {
-        System.out.println("\n\tRETRIEVING PAGE: " + x);
+        System.out.println("\tRETRIEVING PAGE: " + x);
         int beginFrame = getNextFrame();
+        System.out.println("\tPutting data in frame " + beginFrame);
         int index = beginFrame;
         index *= 16;
         //System.out.println("\n\tAdding data starting at index: " + index);
@@ -121,8 +123,8 @@ public class MemoryManager {
     * @param ptbr
     * @return
     */
-    public int getPhysicalAddress(int p, int ptbr) {
-        System.out.println("\n\tGetting physical address for: " + p + " \tPTBR: " + ptbr);
+    public int getPhysicalAddress(int p, PCB_block j) {
+        System.out.println("\n\tGetting physical address for: " + p + " \tPTBR: " + j.getPTBR());
 
         String pageNumber;
         int page;
@@ -138,15 +140,14 @@ public class MemoryManager {
         // get the first 6 bits for the page number
         pageNumber = logAddress.substring(0, 6);
         page = Integer.valueOf(pageNumber,2);
-        page += ptbr;
 
         // get the last 2 bits for the offset
         offset = logAddress.substring(6, 10);
 
-        frameNumber = OSDriver.PCB.getFrame(page);
+        frameNumber = OSDriver.PCB.getFrame(page, j.getPTBR());
         System.out.println("\tLogical address: " + logAddress);
         System.out.println("\tPage: " + page + "\tOffset: " + offset);
-        System.out.println("\tFrame #: " + frameNumber);
+        System.out.println("\tFound Frame #: " + frameNumber);
 
         newPC = (frameNumber * 16) + Integer.valueOf(offset,2);
         //System.out.println("Logical address: " + logAddress + "\tOffset: " + Integer.valueOf(offset,2));

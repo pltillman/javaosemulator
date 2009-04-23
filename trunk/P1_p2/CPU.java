@@ -121,20 +121,13 @@ public class CPU implements Runnable {
             System.out.println("Fetching instruction at PC=" + physical);
             try {
                 out.append("\n\t**********FETCHING INSTRUCTION...**********\n");
-                String instr = fetch(pc);
+                String instr = fetch(physical);
                 out.append("\n\n\t**********FETCHING INSTRUCTION...COMPLETE**********\n");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-            try {
-
-                execute(decode(instr),j.getJobID());
+                execute(decode(instr),jobID);
                 out.append("\n\n\t**********EXECUTING INSTRUCTION...COMPLETE**********\n");
-
-            } catch (IOException ioe) {
+            } catch (IOException ex) {
                 System.out.println("EXCEPTION: occurred while trying to execute the instruction");
-                ioe.printStackTrace();
+                ex.printStackTrace();
             }
             if (!jumped && status == 1) {
                 System.out.println("--------------------------------");
@@ -300,7 +293,7 @@ public class CPU implements Runnable {
     protected synchronized void execute(int o, int jID) throws IOException {
         out.append("\n\t**********EXECUTING INSTRUCTION...**********\n");
         out.append("\n\t\tINSTRUCTION OPCODE : " + o);
-        System.out.println("\nExecuting instruction...." + " OPCODE = " + o);
+        System.out.println("\n\t\tExecuting instruction...." + " OPCODE = " + o);
         out.append("\n\t\tINSTRUCTION OPRATION : ");
 
         if (!(opCode < 0) || (opCode > 26)) {
