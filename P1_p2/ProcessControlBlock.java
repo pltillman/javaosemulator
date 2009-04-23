@@ -125,15 +125,16 @@ public class ProcessControlBlock {
      * @param a index of page table to get associated frame
      * @return frame number
      */
-    public int getFrame(int a) {
-       System.out.println("\tGETTING FRAME AT INDEX: " + a);
+    public int getFrame(int p, int off) {
+       int i = p+off;
+       System.out.println("\tGETTING FRAME AT PAGE TABLE INDEX: " + i);
        try {
-         pageTable[a].getValid();
-         return pageTable[a].getFrameNumber();
-       } catch (PageFault p) {
-          updateTableEntry(a, OSDriver.MemManager.getPage(a), true);
+         pageTable[i].getValid();
+         return pageTable[i].getFrameNumber();
+       } catch (PageFault pf) {
+          updateTableEntry(i, OSDriver.MemManager.getPage(i), true);
           //OSDriver.MemManager.printRam();
-          return pageTable[a].getFrameNumber();
+          return pageTable[i].getFrameNumber();
         }
     }
 
