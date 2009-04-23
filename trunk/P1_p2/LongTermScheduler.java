@@ -1,14 +1,13 @@
 import java.util.ArrayList;
 
-/**
- * 
- * @author Patrick Tillman
- */
 public class LongTermScheduler {
+    //create ready queue
     public static ArrayList<PCB_block> readyQueue;
-    //CircularArray jobQ;
+    //create PCB_block object
     PCB_block pcbq;
     private final int RAMSIZE = 1024;
+    //initially all RAM is available
+    // -- value decremented as jobs are added
     private static int Memleft = 1024;
     private int loc;
     private int pageNum;
@@ -29,7 +28,6 @@ public class LongTermScheduler {
     public static  double average;
     public static  double percent;
     
-
     /**
      *
      */
@@ -46,6 +44,7 @@ public class LongTermScheduler {
      */
     public synchronized void start() {
 
+
         while (Memleft>=64 && (CURRJOB<OSDriver.PCB.getJobCount())) {
 
             job = OSDriver.PCB.getJob(CURRJOB);
@@ -55,7 +54,7 @@ public class LongTermScheduler {
             jobOBSize = job.get_Output_buffer_size();
             jobTBSize = job.get_tmp_buffer_size();
             dataSize = job.getDataSize();
-            
+
 //            System.out.println("CURRENT JOB: " + CURRJOB + "\nStart: " + jobStart + "\nSize: " + jobSize);
 //            System.out.println("\nIs there enough memory left for the next job? " + (Memleft>=((jobSize*4)+(jobIBSize*4))));
 //            System.out.println("Have we reached the end of the job list? " + (CURRJOB<OSDriver.PCB.getJobCount()+1));
@@ -71,7 +70,7 @@ public class LongTermScheduler {
                 loc = frameNum*16;
                 v = jobStart+4;
                 job.set_mem_start(loc);
-                
+
                 for (int p=jobStart; p<v; p++) {
 
                     String binaryBits = OSDriver.tools.getBinaryData(p);
@@ -95,7 +94,7 @@ public class LongTermScheduler {
 
                     Memleft -= 4;
                 }
-                
+
 //                // add the job's input buffer into paging system
 //                int k = jobStart+jobSize+jobIBSize;
 //                for (int d=jobStart+jobSize; d<k; d++) {
@@ -134,18 +133,18 @@ public class LongTermScheduler {
                 jobStart += 4;
                 frameCount++;
             }
-            
+
             short[] tmp = new short[dataSize*4];
 
             String binaryDataBits;
             int dataStart = job.getDiskAddress()+job.getJobSize();
-            
+
             //Get input buffer from disk and save it in PCB
             int z = 0;
             while ( z < job.getDataSize()*4 ) {
                 //System.out.println("\tGETTING JOB DATA...");
                 binaryDataBits = OSDriver.tools.getBinaryData(dataStart++);
-                
+
                 tmp[z++] = Short.valueOf(binaryDataBits.substring(24,32), 2);
                 tmp[z++] = Short.valueOf(binaryDataBits.substring(16,24), 2);
                 tmp[z++] = Short.valueOf(binaryDataBits.substring(8,16), 2);
@@ -163,11 +162,11 @@ public class LongTermScheduler {
             System.out.println("\tAdded job: " + CURRJOB + " at address: " +
                     job.get_mem_start() + "-" + job.get_mem_end() + "\n");
 
-            CURRJOB++;            
+            CURRJOB++;
 
 //            System.out.println("Is the current job < total jobs " + (CURRJOB < OSDriver.PCB.getJobCount()));
 //            System.out.println("Current job: " + CURRJOB + "\tTotal jobs: " + OSDriver.PCB.getJobCount());
-            
+
 //            if (!OSDriver.tools.hasLoadedAllJobs() ) {
 //
 //                System.out.println("CURRENT JOB: " + CURRJOB);
@@ -187,7 +186,7 @@ public class LongTermScheduler {
 //                OSDriver.DONE = true;
 //                return;
 //            }
-            
+
         }
 
         if (OSDriver.tools.hasLoadedAllJobs()) {
@@ -205,11 +204,15 @@ public class LongTermScheduler {
         percentRam(0);
     }
 
-
-    /**
-     *
-     * @param f -
-     */
+ /**
+  * Computes percentage of RAM used by jobs
+  *
+  * @param f  determines how percentage is calculated
+  *             f=0 percentage is calculated for a single job
+  *             f=1 total percentage is calculated via counters
+  *                   in OSDriver class
+  *
+  */
     public void percentRam(int f){
 
         switch (f) {
