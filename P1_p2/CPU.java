@@ -62,7 +62,7 @@ public class CPU implements Runnable {
      * @param job PCB_block object contains all data relating to a job
      * @throws java.io.IOException  If an input or output exception occurs
      */
-    public void loadJob(PCB_block job) throws IOException {
+    public synchronized void loadJob(PCB_block job) throws IOException {
 
         status = 1;
         j = job;
@@ -80,7 +80,7 @@ public class CPU implements Runnable {
     }
 
 
-    public void run ()  {
+    public synchronized void run ()  {
         
                 ioCount = 0;
         try {
