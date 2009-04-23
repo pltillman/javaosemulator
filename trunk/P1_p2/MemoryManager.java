@@ -68,7 +68,7 @@ public class MemoryManager {
         int beginFrame = getNextFrame();
         int index = beginFrame;
         index *= 16;
-        System.out.println("\n\tAdding data starting at index: " + index);
+        //System.out.println("\n\tAdding data starting at index: " + index);
 
         for (int i=x*4; i<(x*4)+4; i++) {
             String bits = OSDriver.tools.getBinaryData(i);
@@ -77,8 +77,8 @@ public class MemoryManager {
             OSDriver.MemManager.writeRamData(index++, Short.valueOf(bits.substring(8,16), 2));
             OSDriver.MemManager.writeRamData(index++, Short.valueOf(bits.substring(16,24), 2));
             OSDriver.MemManager.writeRamData(index++, Short.valueOf(bits.substring(24,32), 2));
-            System.out.println("\t" + Short.valueOf(bits.substring(0,8),2) + "\t" + Short.valueOf(bits.substring(8,16),2) + "\t" +
-                    Short.valueOf(bits.substring(16,24),2) + "\t" + Short.valueOf(bits.substring(24,32),2));
+//            System.out.println("\t" + Short.valueOf(bits.substring(0,8),2) + "\t" + Short.valueOf(bits.substring(8,16),2) + "\t" +
+//                    Short.valueOf(bits.substring(16,24),2) + "\t" + Short.valueOf(bits.substring(24,32),2));
         }
         return beginFrame;
     }
@@ -111,7 +111,7 @@ public class MemoryManager {
      * @return
      */
     public int getPhysicalAddress(int p, int ptbr) {
-        System.out.println("\tGeting physical address for: " + p + " \tPTBR: " + ptbr);
+        System.out.println("\n\tGetting physical address for: " + p + " \tPTBR: " + ptbr);
         
         String pageNumber;
         int page;
@@ -139,7 +139,7 @@ public class MemoryManager {
         
         newPC = (frameNumber * 16) + Integer.valueOf(offset,2);
         //System.out.println("Logical address: " + logAddress + "\tOffset: " + Integer.valueOf(offset,2));
-        System.out.println("NEW PC Value: " + newPC);
+        System.out.println("\tCalculated Physical index value: " + newPC);
         return newPC;
     }
 

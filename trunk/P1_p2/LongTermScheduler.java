@@ -191,7 +191,7 @@ public class LongTermScheduler {
         }
 
         if (OSDriver.tools.hasLoadedAllJobs()) {
-            System.out.println("ALL JOBS HAVE COMPLETED.");
+            System.out.println("\tALL JOBS HAVE BEEN LOADED.");
             percentRam(1);
             OSDriver.DONE = true;
             return;
@@ -224,7 +224,7 @@ public class LongTermScheduler {
             case 1:
 
                 OSDriver.totalPercent = OSDriver.sumPercent/OSDriver.counter;
-                System.out.println("Total average percent of RAM used:  " + OSDriver.totalPercent*100);
+                System.out.println("\tRAM STATS: Total average percent of RAM used:  " + OSDriver.totalPercent*100);
 
                 break;
         }
