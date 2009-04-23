@@ -28,7 +28,7 @@ public class CPU implements Runnable {
     private long address;
 
     private int[] reg_Array;
-    private int pc, logicalEnd, physical;
+    private int pc, logicalEnd, physical, jobID;
 
     private final int ACCUM = 0;
     private final int ZERO = 1;
@@ -80,21 +80,23 @@ public class CPU implements Runnable {
     }
 
 
-    public synchronized void run ()  {
+    public synchronized void run() {
         
-                ioCount = 0;
+        ioCount = 0;
+        jobID = j.getJobID();
+        
         try {
             out.append("\n|||||||||||||||||");
-            out.append("\nJob #" + j.getJobID());
+            out.append("\nJob #" + jobID);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        System.out.println("\nJob #" + j.getJobID() + " EXECUTING");
+        System.out.println("\nJob #" + jobID + " EXECUTING");
 
         //set the pc counter & buffer sizes
         pc = 0;
         System.out.println("Job starting at: " + pc);
-        physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+        physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
         oBufferSize = j.get_Output_buffer_size(); //size in # of words
         iBufferSize = j.get_Input_buffer_size();
         tBufferSize = j.get_Output_buffer_size();
@@ -120,7 +122,7 @@ public class CPU implements Runnable {
             if (!jumped && status == 1) {
                 System.out.println("--------------------------------");
                 pc += 4;
-                physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
             } else {
                 System.out.println("--------------------------------");
                 jumped = false;
@@ -474,7 +476,7 @@ public class CPU implements Runnable {
                     System.out.println("\tJumping to another location");
                     //Jumps to a specified location
                     pc = (int)address;
-                    physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                    physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
                     jumped = true;
                     out.append("\nProgram counter set to " + pc);
                     System.out.println("\tProgram counter set to " + pc);
@@ -487,7 +489,7 @@ public class CPU implements Runnable {
                     //Branches to an address when content of B-reg = D-reg
                     if (reg_Array[d_reg] == reg_Array[b_reg]) {
                         pc = (int)address;
-                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
                         //pc += j.get_mem_start();
                         jumped = true;
                         System.out.println("\tProgram counter set to " + pc);
@@ -502,7 +504,7 @@ public class CPU implements Runnable {
                     System.out.println("\tb_reg: " + reg_Array[b_reg] + " d_reg:" + reg_Array[d_reg]);
                     if (reg_Array[b_reg] != reg_Array[d_reg]) {
                         pc = (int)address;
-                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
                         //pc += j.get_mem_start();
                         jumped = true;
                         System.out.println("\tProgram counter set to " + pc);
@@ -516,7 +518,7 @@ public class CPU implements Runnable {
                     //Branches to an address when content of D-reg = 0
                     if (reg_Array[d_reg] == 0) {
                         pc = (int)address;
-                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
                         //pc += j.get_mem_start();
                         jumped = true;
                         System.out.println("\tProgram counter set to " + pc);
@@ -530,7 +532,7 @@ public class CPU implements Runnable {
                     //Branches to an address when content of B-reg <> 0
                     if (reg_Array[b_reg] != 0) {
                         pc = (int)address;
-                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
                         //pc += j.get_mem_start();
                         out.append("\nProgram counter set to " + pc);
                         System.out.println("\tProgram counter set to " + pc);
@@ -543,7 +545,7 @@ public class CPU implements Runnable {
                     //Branches to an address when content of B-reg > 0
                     if (reg_Array[b_reg] > 0) {
                         pc = (int)address;
-                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
                         //pc += j.get_mem_start();
                         System.out.println("\tProgram counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
@@ -556,7 +558,7 @@ public class CPU implements Runnable {
                     //Branches to an address when content of B-reg < 0
                     if (reg_Array[b_reg] < 0) {
                         pc = (int)address;
-                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j.getPTBR());
+                        physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
                         //pc += j.get_mem_start();
                         System.out.println("\tProgram counter set to " + pc);
                         out.append("\nProgram counter set to " + pc);
