@@ -1,7 +1,9 @@
-
-    //****************************************************
-    //  Default constructor
-    //****************************************************
+/**
+ * Implementaion of the OS's memory.
+ * Contains methods to add/modify data in
+ * memory (via the memory manager).  This class
+ * is not directly accessed.
+ */
 public class RamMemory {
 
     private short[] ram;
