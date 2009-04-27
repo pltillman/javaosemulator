@@ -2,11 +2,11 @@
 //import java.util.Array;
 import java.util.Stack;
 
-//****************************************************
-//  File                 ProcessControlBlock.java
-//  Purpose:             Contains all information related
-//                      to each process.
-//****************************************************
+/**
+ * Contains all information related to each
+ * process
+ *
+ */
 public class ProcessControlBlock {
 
     private static Stack<PCB_block> jobQueue;
@@ -17,10 +17,11 @@ public class ProcessControlBlock {
     private pageTableEntry pageTable_e;
     
     private static int count;
-    
-    //****************************************************
-    //  Default constructor
-    //****************************************************
+
+    /**
+     * Default constructor- Initializes job queue
+     * and page table
+     */
     public ProcessControlBlock() {
         //jobQ = new String[];
         count = 0;
@@ -33,14 +34,9 @@ public class ProcessControlBlock {
         }
     }
 
-    //****************************************************
-    //  Creates a new PCB_block object and it will be
-    //  added to the queue once the data related data
-    //  to the object.
-    //****************************************************
     /**
      * Creates a new PCB_block object, it will be
-     * added to the queue with it the data related to it
+     * added to the job queue
      *
      * @param i  job ID
      * @param s  job size
@@ -56,6 +52,7 @@ public class ProcessControlBlock {
      /**
       *  Creates a new page and adds it to the page
       *  table
+      *
       * @param pageIndex index of new page
       */
      public void createPage(int pageIndex) {
@@ -154,21 +151,28 @@ public class ProcessControlBlock {
     }
 
    /**
-    *  Mutator method
-    * @param s
+    *  Mutator method to set data size
+    *
+    * @param s size of data
     */
     public void setDataSize(int s) {
         pcb_e.setDataSize(s);
     }
-    
+
+    /**
+     * Accessor method for job count
+     *
+     * @return number of jobs
+     */
     public synchronized int getJobCount() {
         return count;
     }
 
     /**
-     *  Accessor method
-     * @param i
-     * @return
+     *  Accessor method for a job
+     *
+     * @param i jobID of job to retreive
+     * @return job with given ID
      */
     public synchronized PCB_block getJob(int i) {
         //System.out.println("JOB_COUNT: " + getJobCount());
@@ -193,6 +197,7 @@ public class ProcessControlBlock {
 
     /**
      * Removes a job from the job queue
+     * 
      * @param j jobID of job to remove
      */
     public synchronized void removeJob(int j) {
