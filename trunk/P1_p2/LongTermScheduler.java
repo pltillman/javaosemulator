@@ -1,5 +1,10 @@
 import java.util.ArrayList;
-
+/**
+ * Reads the job entries from the PCB and places the
+ * associated job data into RAM, updates the job's
+ * associated PCB entry and places the job into the
+ * ready queue
+ */
 public class LongTermScheduler {
     //create ready queue
     public static ArrayList<PCB_block> readyQueue;
@@ -29,7 +34,8 @@ public class LongTermScheduler {
     public static  double percent;
     
     /**
-     *
+     * Default constructor- Initializes the ready queue
+     * and current job value.
      */
     public LongTermScheduler() {
         
@@ -40,6 +46,8 @@ public class LongTermScheduler {
     }
 
     /**
+     * Gets the next job and the job data associated with it to place
+     * in RAM
      *
      */
     public synchronized void start() {
@@ -63,8 +71,9 @@ public class LongTermScheduler {
 
             System.out.println("\tStarting at:");
             while (frameCount < 4) {
-
+                //get next available frame
                 frameNum = OSDriver.MemManager.getNextFrame();
+                //page number calculated by job's starting index/4
                 pageNum = jobStart/4;
                 System.out.println("\t**** Frame Number: "+ frameNum + " ****\n\tADDING DATA...");
                 loc = frameNum*16;
