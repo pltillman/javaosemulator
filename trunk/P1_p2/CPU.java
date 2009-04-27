@@ -1,7 +1,16 @@
 
+
 import java.io.*;
 
-
+/**
+ * Reads the job and associated data from RAM via the 
+ * Memory manager.  The data is converted to a 32-bit string, 
+ * decoded and executed. Upon completion of execution, or in the event
+ * of an error (causing the CPU to halt), control is passed back
+ * to the driver.
+ * Generates cpulog.txt in project directory for testing 
+ * 
+ */
 public class CPU implements Runnable {
 
 
@@ -81,7 +90,11 @@ public class CPU implements Runnable {
         
     }
 
-
+    /**
+     * Begins the CPU cycle by getting the data of the associated
+     * job from RAM and setting the PC and buffer values.  The instruction
+     * is fetched and the decode-execution cycle begins.
+     */
     public synchronized void run() {
         
         ioCount = 0;
@@ -207,9 +220,9 @@ public class CPU implements Runnable {
 
 
     /**
-     * DECODE() TAKES THE BINARY STRING REPRESENTATION OF
-     * THE INSTRUCTION SET AND EXTRACTS THE APPROPRIATE
-     * COMPONENTS. RETURNS THE OPCODE TO BE USED BY EXECUTE
+     * Takes the binary stirng representation of the instruction
+     * set and extracts the appropriate components.  Returns the opcode
+     * to be used by execute.
      *
      * @param instr_req Binary instruction to be decoded
      * @return Opcode for the instruction to be executed
@@ -651,6 +664,14 @@ public class CPU implements Runnable {
  *      opcode passed to execute()
  *
  * @param i determines what type of arithmetic to perform
+ *          =0 - ADD
+ *          =1 - SUBTRACT
+ *          =2 - MULTIPLY
+ *          =3 - DIVIDE
+ *          =4 - LOGICAL 'AND'
+ *          =5 - LOGICAL 'OR'
+ *          =6 - SWAP REGISTERS
+ * 
  * @throws java.io.IOException  If an input or output exception
  *                                occurs
  */
@@ -739,9 +760,10 @@ private synchronized void calc_arith(int i) throws IOException {
 
   /**
    * Calculate the effective address
-   * @param i
+   *
+   * @param i index
    * @param a
-   * @return
+   * @return calculated effective-address of associated job
    */
     private synchronized int effective_address(short i, long a) {
         return reg_Array[i] + (int)a;
