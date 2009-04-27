@@ -1,6 +1,9 @@
 
 import java.util.concurrent.PriorityBlockingQueue;
-
+/**
+ * All reading and writing to and from disk and ram
+ * is done so via the memory manager
+ */
 public class MemoryManager {
 
     private DiskMemory disk;
@@ -107,7 +110,7 @@ public class MemoryManager {
     }
 
    /**
-    * 
+    * Prints the contents of the frame table
     */
     public void printFrameTable() {
       System.out.println("\n\tFRAME TABLE CONTENTS");
@@ -118,10 +121,11 @@ public class MemoryManager {
     }
     
    /**
+    * Calculates the physical address 
     *
-    * @param p
-    * @param ptbr
-    * @return
+    * @param p PC value
+    * @param ptbr page table base register
+    * @return physical address
     */
     public int getPhysicalAddress(int p, PCB_block j) {
         System.out.println("\n\tGetting physical address for: " + p + " \tPTBR: " + j.getPTBR());
