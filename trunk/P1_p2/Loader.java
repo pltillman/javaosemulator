@@ -2,7 +2,13 @@
 import java.io.*;
 import java.util.StringTokenizer;
 
-
+/**
+ * Reads the data file and adds the hex
+ * entries to the disk.
+ * The job metadata read creates a PCB object
+ * and once the associated data metadata is read,
+ * the PCB is updated and placed in the PCB array.
+ */
 public class Loader {
 
     //String file_1 = "DataFile1.txt";
@@ -14,10 +20,10 @@ public class Loader {
     protected int addr;
    
     /**
-     * Loads the program files
+     * Initializes files
      *
-     * @param f1    file 1 ("DataFile1.txt")
-     * @param f2    file 2 ("DataFile2.txt")
+     * @param f1    file 1 ("DataFile2.txt")
+     * @param f2    file 2 ("DataFile1.txt")
      */
     public Loader(FileReader f1, FileReader f2) {
 
@@ -27,7 +33,8 @@ public class Loader {
     }
     
     /**
-     * 
+     * Opens the files to be read 
+     *
      * @throws java.io.IOException  If an input or output
      *                               exception occurs
      */
