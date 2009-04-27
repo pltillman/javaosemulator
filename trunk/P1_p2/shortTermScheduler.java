@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 
 
-/*************************************************************
+/**
+ * Reads jobs from the ready queue filled by the long-term scheduler
+ * and sorts the queue by the jobs' priority.  The short-term scheduler
+ * then waits until the CPU requests a job.  When the CPU sends its request
+ * the short-term scheduler takes the next job in the ready queue and passes
+ * it to the CPU along with its metadata to be processed
  *
- * @author Patrick Tillman, Bin Zhou, Rebecca Andrews
- ************************************************************/
+ */
 public class shortTermScheduler{
 
         private PCB_block pcb_e;
@@ -18,7 +22,9 @@ public class shortTermScheduler{
 
 
         /**
-         * 
+         * Sorts the ready queue buy the containing jobs' priorities.
+         * The job with the highest priority will be passed to the CPU
+         * first.
          */
         public void SJF() {
 
@@ -45,11 +51,13 @@ public class shortTermScheduler{
             }
         }
 
-        /************************************************************
-         *
-         * @param jID
-         * @return
-         ************************************************************/
+       /**
+        * Removes a job from the ready queue and sets the
+        * time it left the queue and the time it enters the CPU.
+        *
+        * @param jID ID of job to remove from the ready queue
+        * @return job removed from the ready queue
+        */
         public synchronized PCB_block Store(int jID){
 
             PCB_block tmp = LongTermScheduler.readyQueue.get(jID);
