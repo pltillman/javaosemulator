@@ -1,7 +1,8 @@
-/******************************************
- *
- *
- ******************************************/
+
+/**
+ * This class is just a set of tools used by
+ * other components in the OS.
+ */
 public class OSToolkit {
 
     protected int effective_addr;
@@ -11,8 +12,7 @@ public class OSToolkit {
 
 
     /**
-     * This class is just a set of tools used by
-     * other components in the OS.
+     * Default constructor
      */
     public OSToolkit() {
 
@@ -55,9 +55,10 @@ public class OSToolkit {
     }
 
 /**
+ * Takes a string and converts it to a byte
  *
- * @param h
- * @return
+ * @param h string to convert to byte
+ * @return byte representation of given string
  */
     protected String hexToByte(String h) {
 
@@ -76,14 +77,14 @@ public class OSToolkit {
 
     }
 
-     /*****************************************************
+     /**
      * Gets a hex string from disk and converts it into a
      * binary string and adds leading zeros if converted
      * string is less than 32-bits
      *
      * @param index  location on disk to read data from
      * @return       String representation
-     ****************************************************/
+     */
      public String getBinaryData(int index) {
         //System.out.println("index:" + index);
         String hexString = OSDriver.MemManager.readDiskData(index);
