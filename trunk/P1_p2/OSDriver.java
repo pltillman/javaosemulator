@@ -1,9 +1,12 @@
 import java.io.*;
 
-
-  //****************************************************
-  //  Default constructor
-  //****************************************************
+ /**
+  * Core or main thread of the OS Simulator.  Calls the
+  * loader to load the user programs and then calls the short-term scheduler
+  * to assign a job to the CPU from the ready queue created by the
+  * long-term scheduler.
+  *
+  */
   public class OSDriver {
 
       private static Loader loader;
