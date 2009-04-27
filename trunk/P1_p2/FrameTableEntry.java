@@ -1,4 +1,8 @@
-
+/**
+ * Template for a frame table entry and
+ * its associated attributes
+ * 
+ */
 
 public class FrameTableEntry {
 
