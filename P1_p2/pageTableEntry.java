@@ -1,5 +1,8 @@
 
-
+/**
+ * Template for a page table entry
+ * and its associated attributes 
+ */
 public class pageTableEntry {
 
     //private int jobID;
