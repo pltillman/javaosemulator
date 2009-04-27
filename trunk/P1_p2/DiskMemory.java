@@ -1,16 +1,15 @@
 
-    //****************************************************
-    //  Default constructor
-    //****************************************************
-
+/**
+ * Implementation of the OS's disk.
+ * Contains methods to add/modify disk
+ * data via the memory manager, this class
+ * is not directly accessed. 
+ */
 public class DiskMemory {
 
     private String[] disk;
 
 
-    //****************************************************
-    //  Default constructor
-    //****************************************************
     /**
      * Creates an array of the given size to represent disk
      * 
@@ -22,9 +21,6 @@ public class DiskMemory {
 
     }
 
-    //****************************************************
-    //  Default constructor
-    //****************************************************
     /**
      * Writes the given data to the given location on the disk
      *
@@ -37,11 +33,9 @@ public class DiskMemory {
     }
 
 
-    //****************************************************
-    //  Default constructor
-    //****************************************************
     /**
-     * Read data from disk at a given index
+     * Reads data from disk at a given index
+     *
      * @param i index on disk to read data from
      * @return data from disk
      */
@@ -50,7 +44,11 @@ public class DiskMemory {
         return disk[i];
         
     }
-
+    /**
+     * Prints the contents of disk
+     *
+     * @return String representation on objects on disk
+     */
     public String toString() {
 
         System.out.println( disk.toString() );
