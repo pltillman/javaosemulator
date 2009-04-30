@@ -13,52 +13,22 @@ import java.io.*;
  */
 public class CPU implements Runnable {
 
-
-    private short opCode;
-    private short type;
-    private short s1_reg;
-    private short s2_reg;
-    private short d_reg;
-    private short b_reg;
-    private short reg1;
-    private short reg2;
-
+    private short opCode, type, s1_reg, s2_reg, d_reg, b_reg, reg1, reg2;
     private Boolean jumped;
-
     private final int data = 0;
-    private int jobSize;
-
-    private int oBufferSize;
-    private int iBufferSize;
-    private int tBufferSize;
-    
+    private int jobSize, oBufferSize, iBufferSize, tBufferSize;
     private short[] cpu_buffer;
-
     private long address;
-
     private int[] reg_Array;
     private int pc, logicalEnd, physical, jobID;
-
-    private final int ACCUM = 0;
-    private final int ZERO = 1;
-    private final int FINISHED = 3;
-    private final int WAITING = 3;
-
+    private final int ACCUM = 0, ZERO = 1, FINISHED = 3, WAITING = 3;
     private BufferedWriter out;
-
     private static int ioCount;
     private PCB_block j;
 
     // status 0 = ready; status 1 = busy
     public int status=0;
     //NEED SOMETHING TO HOLD THE JOB SIZE IN RAM
-
-
-    //************************************************
-    //
-    //} thrown into a big while (not 'halt' opcode).
-    //************************************************
-
 
     public CPU () {
         status = 0;
@@ -85,9 +55,6 @@ public class CPU implements Runnable {
         out = new BufferedWriter(new FileWriter("CPU_log.txt"));
         out.write("KERNEL:::CALLING CPU...\n");
         out.append("\n\tCREATING CPU LOG FILE : CPU_log.txt\n\tCREATING CPU LOG FILE...COMPLETE\n");
-
-
-        
     }
 
     /**
@@ -122,11 +89,6 @@ public class CPU implements Runnable {
         tBufferSize = j.get_Output_buffer_size();
         cpu_buffer = j.getCPUBuffer();
         jobSize = j.getJobSize();
-        //logicalEnd = j.get_mem_end();
-        //logicalEnd = OSDriver.MemManager.getPhysicalAddress(logicalEnd);
-//        for (int i=0; i<cpu_buffer.length; i++) {
-//            System.out.println("INPUT BUFFER: " + i + " " + cpu_buffer[i]);
-//        }
 
         System.out.println("\tProgram Counter starting at: " + pc);
         //run the duration of the frame
@@ -157,11 +119,6 @@ public class CPU implements Runnable {
                 ioe.printStackTrace();
             }
             //System.out.println("\tPROGRAM COUNTER=" + pc);
-
-            if (pc % 32 == 0) {
-                //OSDriver.MemManager.reclaimFrame(pc/16+j.getFrameOffset());
-                //OSDriver.PCB.searchForPage(data);
-            }
         }
 
     }
