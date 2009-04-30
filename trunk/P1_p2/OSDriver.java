@@ -35,9 +35,6 @@ import java.io.*;
       private static CPU[] cpu_Array;
 
       private static Thread t;
-//      public static ShortestJobFirst SJF;
-
-//     private static int currentProcess;
 
       //****************************************************
       //  Begin main()
@@ -105,33 +102,6 @@ import java.io.*;
             cpu_Array[2] = cpu2;
             cpu_Array[3] = cpu3;
 
-
-//        while (!DONE || !LongTermScheduler.readyQueue.isEmpty()) {
-//
-//            sumPercent += LongTermScheduler.percent;
-//            counter++;
-//
-//            if (!LongTermScheduler.readyQueue.isEmpty()) {
-//
-//                while (LongTermScheduler.readyQueue.size() > 0) {
-//
-//                    jMeta = STS.Store(0);
-//
-//                    try {
-//                        cpu1.loadJob(jMeta);
-//                    } catch (IOException ioe) {
-//                        ioe.printStackTrace();
-//                    }
-//
-//                }
-//
-//                LTS.start();
-//                STS.SJF();
-//
-//            }
-//        }
-
-
             System.out.println("\nKERNEL: EXECUTING JOBS...");
             Thread t;
 
@@ -168,21 +138,9 @@ import java.io.*;
                             default:
                                 System.out.println("\tDEFAULT REACHED");
                         }
-
-                        //System.err.println("READY QUEUE SIZE....................... " + LongTermScheduler.readyQueue.size());
-    //                    if (LongTermScheduler.readyQueue.size() == 0 && !DONE) {
-    //                        System.out.println("\nADDING MORE JOBS........\n");
-    //                        LTS.start();
-    //                        STS.SJF();
-    //                    }
-
-                        //ready = (cpu0.status == 0) || (cpu1.status == 0) || (cpu2.status == 0) || (cpu3.status == 0);
                         ready = (cpu0.status == 0);
-
                     }
-
                 }
-
             } while (!LongTermScheduler.readyQueue.isEmpty());
 
     }

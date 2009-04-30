@@ -131,9 +131,9 @@ public class ProcessControlBlock {
             pageTable[i].getValid();
             return pageTable[i].getFrameNumber();
         } catch (PageFault pf) {
-            updateTableEntry(i, OSDriver.MemManager.getPage(i, j), true);
+            updateTableEntry(i, OSDriver.MemManager.getPage(p, j), true);
             //OSDriver.MemManager.printRam();
-            System.out.println("PAGE FAULT SERVICE TIME: " + (startTime - System.nanoTime()));
+            System.out.println("PAGE FAULT SERVICE TIME: " + (System.nanoTime() - startTime));
             return pageTable[i].getFrameNumber();
         }
     }

@@ -87,21 +87,20 @@ public class MemoryManager {
    */
     public int getPage(int x, PCB_block j) {
         System.out.println("\tRETRIEVING PAGE: " + x);
+        int startLoc = j.getDiskAddress();
+        startLoc += x*4;
         int beginFrame = getNextFrame();
         System.out.println("\tPutting data in frame " + beginFrame);
-        int index = beginFrame;
-        index *= 16+j.getFrameOffset();
+        int index = beginFrame*16;
         //System.out.println("\n\tAdding data starting at index: " + index);
 
-        for (int i=x*4; i<(x*4)+4; i++) {
+        for (int i=startLoc; i<startLoc+4; i++) {
             String bits = OSDriver.tools.getBinaryData(i);
 
             OSDriver.MemManager.writeRamData(index++, Short.valueOf(bits.substring(0,8), 2));
             OSDriver.MemManager.writeRamData(index++, Short.valueOf(bits.substring(8,16), 2));
             OSDriver.MemManager.writeRamData(index++, Short.valueOf(bits.substring(16,24), 2));
             OSDriver.MemManager.writeRamData(index++, Short.valueOf(bits.substring(24,32), 2));
-//            System.out.println("\t" + Short.valueOf(bits.substring(0,8),2) + "\t" + Short.valueOf(bits.substring(8,16),2) + "\t" +
-//                    Short.valueOf(bits.substring(16,24),2) + "\t" + Short.valueOf(bits.substring(24,32),2));
         }
         return beginFrame;
     }
