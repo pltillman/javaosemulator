@@ -1,0 +1,652 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../content/report.css">
+<title>Class Diagram - All Classes</title>
+<script type="text/javascript" src="report.js"></script><script type="text/javascript" src="link_popup.js"></script><script type="text/javascript" src="tooltip.js"></script>
+</head>
+<body style="margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px;" onload="initPage()">
+<div id="spotlight" style="position:absolute; width:100px; height:100px; z-index:1; visibility:hidden">
+<table border="0" onClick="updateCursorPos(event);adjustPopupPositionForSpotLightTable();clearSpotLight()" id="spotLightTable" style="border-style:solid; border-width:3px; border-color:#FF0000">
+<tr>
+<td id="spotLightCell">&nbsp;</td>
+</tr>
+</table>
+</div>
+<div id="spotLightResourcesTop" style="position:absolute; width:100px; height:100px; z-index:1; visibility:hidden">
+<table border="0">
+<tr>
+<td><a href="#top"><img style="border:none" src="../images/icons/BackToTop.gif" alt="Back to top"></a></td><td><a href="javascript:clearSpotLightFromOpenSpecButton();"><img style="border:none" src="../images/icons/OpenSpecification.gif" alt="Open specification"></a></td>
+</tr>
+</table>
+</div>
+<div id="spotLightResourcesRight" style="position:absolute; width:100px; height:100px; z-index:1; visibility:hidden">
+<table border="0">
+<tr>
+<td><a href="#top"><img style="border:none" src="../images/icons/BackToTop.gif" alt="Back to top"></a></td>
+</tr>
+<tr>
+<td><a href="javascript:clearSpotLightFromOpenSpecButton();"><img style="border:none" src="../images/icons/OpenSpecification.gif" alt="Open specification"></a></td>
+</tr>
+</table>
+</div>
+<div style="position:absolute;z-index:2;visibility:hidden" id="linkPopupMenuLayer">
+<table style="border-style:solid; border-width:1px; border-color:#000000; background:#FFFFFF; width:250px" id="linkPopupMenuTable" border="0"></table>
+</div>
+<div style="position:absolute; z-index:1; visibility:hidden" id="referenceIconLayer">
+<table border="0">
+<tr>
+<td><img src="../images/icons/Ref.gif" style="border:none" onclick="movePopupPositionToReferenceIconPosition();resetPopupForReference();switchPopupShowHideStatus();"></td>
+</tr>
+</table>
+</div>
+<div style="position:absolute; z-index:1; visibility:hidden" id="subdiagramIconLayer">
+<table border="0">
+<tr>
+<td><img src="../images/icons/Subdiagram.gif" style="border:none" onclick="movePopupPositionToSubdiagramIconPosition();resetPopupForSubdiagram();switchPopupShowHideStatus();"></td>
+</tr>
+</table>
+</div>
+<p></p>
+<p class="PageTitle">Class Diagram - All Classes</p>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td><span class="TableContent">Jump to:&nbsp;</span><select class="TableContent" onChange="scrollWin(this.value);showSpotLight(this.value)"><option value="">Please select a model element</option><option value="22.100719928741455|491.7410184144974|27.62589991092682|12.278177738189697|Class_x7FslwSGAqACZQaUa.html|Class_x7FslwSGAqACZQaUa.html|JQWJlwSGAqACZYMka">SystemError : Class</option><option value="390.4460520744324|356.6810632944107|55.25179982185364|39.904077649116516|Class_B7FslwSGAqACZQaEa.html|Class_B7FslwSGAqACZQaEa.html|SwWJlwSGAqACZYMna">shortTermScheduler : Class</option><option value="445.697851896286|129.5347751379013|67.52997756004333|30.695444345474243|Class_a7FslwSGAqACZQZqa.html|Class_a7FslwSGAqACZQZqa.html|ywWJlwSGAqACZYMta">RamMemory : Class</option><option value="783.3477396965027|6.7529977560043335|131.99041068553925|92.08633303642273|Class_s7FslwSGAqACZQYqa.html|Class_s7FslwSGAqACZQYqa.html|KwWJlwSGAqACZYMwa">ProcessControlBlock : Class</option><option value="108.04796409606934|246.17746365070343|70.59952199459076|257.84173250198364|Class_lbFslwSGAqACZQWqa.html|Class_lbFslwSGAqACZQWqa.html|KwWJlwSGAqACZYMza">PCB_block : Class</option><option value="949.1031391620636|22.100719928741455|73.66906642913818|61.390888690948486|Class_xbFslwSGAqACZQWEa.html|Class_xbFslwSGAqACZQWEa.html|qwWJlwSGAqACZYM2a">pageTableEntry : Class</option><option value="329.0551633834839|445.697851896286|24.556355476379395|12.278177738189697|Class_xbFslwSGAqACZQWAa.html|Class_xbFslwSGAqACZQWAa.html|qwWJlwSGAqACZYM5a">PageFault : Class</option><option value="206.2733860015869|163.29976391792297|85.94724416732788|55.25179982185364|Class_ubFslwSGAqACZQVYa.html|Class_ubFslwSGAqACZQVYa.html|awWJlwSGAqACZYM8a">OSToolkit : Class</option><option value="221.62110817432404|0.6139088869094849|58.32134425640106|107.43405520915985|Class_GbFslwSGAqACZQVAa.html|Class_GbFslwSGAqACZQVAa.html|awWJlwSGAqACZYM_a">OSDriver : Class</option><option value="550.0623626708984|89.63069748878479|138.1294995546341|113.5731440782547|Class_obFslwSGAqACZQT2a.html|Class_obFslwSGAqACZQT2a.html|6wWJlwSGAqACZYNCa">MemoryManager : Class</option><option value="111.11750853061676|83.49160861968994|64.46043312549591|125.8513218164444|Class_rrFslwSGAqACZQTCa.html|Class_rrFslwSGAqACZQTCa.html|GwWJlwSGAqACZYNFa">LongTermScheduler : Class</option><option value="319.8465300798416|104.97841966152191|76.73861086368561|49.11271095275879|Class_1rFslwSGAqACZQSea.html|Class_1rFslwSGAqACZQSea.html|GwWJlwSGAqACZYNIa">Loader : Class</option><option value="565.4100848436356|221.62110817432404|104.36451077461243|64.46043312549591|Class_srFslwSGAqACZQRna.html|Class_srFslwSGAqACZQRna.html|mwWJlwSGAqACZYNLa">FrameTableEntry : Class</option><option value="721.9568510055542|129.5347751379013|67.52997756004333|30.695444345474243|Class_orFslwSGAqACZQRPa.html|Class_orFslwSGAqACZQRPa.html|2wWJlwSGAqACZYNRa">DiskMemory : Class</option><option value="0.6139088869094849|292.2206301689148|70.59952199459076|168.82494390010834|Class_dTFslwSGAqACZQPsa.html|Class_dTFslwSGAqACZQPsa.html|OwWJlwSGAqACZYNUa">CPU : Class</option></select></td>
+</tr>
+</table>
+<table>
+<tr>
+<td><img id="diagram" src="../images/All_Classes.png" usemap="#diagram_map" class="Image" width="1024" height="505"><map name="diagram_map">
+<area coords="22.100719928741455,491.7410184144974,99.62589991092682,1614.2781777381897" shape="rect" alt="SystemError : Class" id="JQWJlwSGAqACZYMka" href="Class_x7FslwSGAqACZQaUa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('SystemError.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/SystemError.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords)">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads jobs from the ready queue filled by the long-term scheduler
+    </p>
+    <p>
+      and sorts the queue by the jobs' priority. The short-term scheduler
+    </p>
+    <p>
+      then waits until the CPU requests a job. When the CPU sends its request
+    </p>
+    <p>
+      the short-term scheduler takes the next job in the ready queue and passes
+    </p>
+    <p>
+      it to the CPU along with its metadata to be processed
+    </p>
+  </body>
+</html>
+" coords="390.4460520744324,356.6810632944107,1327.2517998218536,1201.9040776491165" shape="rect" alt="shortTermScheduler : Class" id="SwWJlwSGAqACZYMna" href="Class_B7FslwSGAqACZQaEa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('shortTermScheduler.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/shortTermScheduler.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Implementaion of the OS's memory.
+    </p>
+    <p>
+      Contains methods to add/modify data in
+    </p>
+    <p>
+      memory (via the memory manager). This class
+    </p>
+    <p>
+      is not directly accessed.
+    </p>
+  </body>
+</html>
+" coords="445.697851896286,129.5347751379013,1519.5299775600433,452.69544434547424" shape="rect" alt="RamMemory : Class" id="ywWJlwSGAqACZYMta" href="Class_a7FslwSGAqACZQZqa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('RamMemory.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/RamMemory.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Contains all information related to each
+    </p>
+    <p>
+      process
+    </p>
+  </body>
+</html>
+" coords="783.3477396965027,6.7529977560043335,2683.9904106855392,114.08633303642273" shape="rect" alt="ProcessControlBlock : Class" id="KwWJlwSGAqACZYMwa" href="Class_s7FslwSGAqACZQYqa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('ProcessControlBlock.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/ProcessControlBlock.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      This is a template for an individual PCB entry and
+    </p>
+    <p>
+      its associated attributes.
+    </p>
+  </body>
+</html>
+" coords="108.04796409606934,246.17746365070343,422.59952199459076,1059.8417325019836" shape="rect" alt="PCB_block : Class" id="KwWJlwSGAqACZYMza" href="Class_lbFslwSGAqACZQWqa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('PCB_block.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/PCB_block.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Template for a page table entry
+    </p>
+    <p>
+      and its associated attributes
+    </p>
+  </body>
+</html>
+" coords="949.1031391620636,22.100719928741455,3165.669066429138,133.3908886909485" shape="rect" alt="pageTableEntry : Class" id="qwWJlwSGAqACZYM2a" href="Class_xbFslwSGAqACZQWEa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('pageTableEntry.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/pageTableEntry.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Defines a page fault exception
+    </p>
+  </body>
+</html>
+" coords="329.0551633834839,445.697851896286,1096.5563554763794,1464.2781777381897" shape="rect" alt="PageFault : Class" id="qwWJlwSGAqACZYM5a" href="Class_xbFslwSGAqACZQWAa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('PageFault.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/PageFault.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      This class is just a set of tools used by
+    </p>
+    <p>
+      other components in the OS.
+    </p>
+  </body>
+</html>
+" coords="206.2733860015869,163.29976391792297,757.9472441673279,587.2517998218536" shape="rect" alt="OSToolkit : Class" id="awWJlwSGAqACZYM8a" href="Class_ubFslwSGAqACZQVYa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('OSToolkit.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/OSToolkit.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Core or main thread of the OS Simulator. Calls the
+    </p>
+    <p>
+      loader to load the user programs and then calls the short-term scheduler
+    </p>
+    <p>
+      to assign a job to the CPU from the ready queue created by the
+    </p>
+    <p>
+      long-term scheduler.
+    </p>
+  </body>
+</html>
+" coords="221.62110817432404,0.6139088869094849,780.3213442564011,109.43405520915985" shape="rect" alt="OSDriver : Class" id="awWJlwSGAqACZYM_a" href="Class_GbFslwSGAqACZQVAa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('OSDriver.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/OSDriver.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      All reading and writing to and from disk and ram
+    </p>
+    <p>
+      is done so via the memory manager
+    </p>
+  </body>
+</html>
+" coords="550.0623626708984,89.63069748878479,1930.129499554634,405.5731440782547" shape="rect" alt="MemoryManager : Class" id="6wWJlwSGAqACZYNCa" href="Class_obFslwSGAqACZQT2a.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('MemoryManager.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/MemoryManager.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads the job entries from the PCB and places the
+    </p>
+    <p>
+      associated job data into RAM, updates the job's
+    </p>
+    <p>
+      associated PCB entry and places the job into the
+    </p>
+    <p>
+      ready queue
+    </p>
+  </body>
+</html>
+" coords="111.11750853061676,83.49160861968994,426.4604331254959,397.8513218164444" shape="rect" alt="LongTermScheduler : Class" id="GwWJlwSGAqACZYNFa" href="Class_rrFslwSGAqACZQTCa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('LongTermScheduler.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/LongTermScheduler.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads the data file and adds the hex
+    </p>
+    <p>
+      entries to the disk.
+    </p>
+    <p>
+      The job metadata read creates a PCB object
+    </p>
+    <p>
+      and once the associated data metadata is read,
+    </p>
+    <p>
+      the PCB is updated and placed in the PCB array.
+    </p>
+  </body>
+</html>
+" coords="319.8465300798416,104.97841966152191,1118.7386108636856,391.1127109527588" shape="rect" alt="Loader : Class" id="GwWJlwSGAqACZYNIa" href="Class_1rFslwSGAqACZQSea.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('Loader.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/Loader.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Template for a frame table entry and
+    </p>
+    <p>
+      its associated attributes
+    </p>
+  </body>
+</html>
+" coords="565.4100848436356,221.62110817432404,1946.3645107746124,786.4604331254959" shape="rect" alt="FrameTableEntry : Class" id="mwWJlwSGAqACZYNLa" href="Class_srFslwSGAqACZQRna.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('FrameTableEntry.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/FrameTableEntry.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Implementation of the OS's disk.
+    </p>
+    <p>
+      Contains methods to add/modify disk
+    </p>
+    <p>
+      data via the memory manager, this class
+    </p>
+    <p>
+      is not directly accessed.
+    </p>
+  </body>
+</html>
+" coords="721.9568510055542,129.5347751379013,2419.5299775600433,452.69544434547424" shape="rect" alt="DiskMemory : Class" id="2wWJlwSGAqACZYNRa" href="Class_orFslwSGAqACZQRPa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('DiskMemory.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/DiskMemory.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+<area docContent="<html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads the job and associated data from RAM via the
+    </p>
+    <p>
+      Memory manager. The data is converted to a 32-bit string,
+    </p>
+    <p>
+      decoded and executed. Upon completion of execution, or in the event
+    </p>
+    <p>
+      of an error (causing the CPU to halt), control is passed back
+    </p>
+    <p>
+      to the driver.
+    </p>
+    <p>
+      Generates cpulog.txt in project directory for testing
+    </p>
+  </body>
+</html>
+" coords="0.6139088869094849,292.2206301689148,72.59952199459076,1120.8249439001083" shape="rect" alt="CPU : Class" id="OwWJlwSGAqACZYNUa" href="Class_dTFslwSGAqACZQPsa.html" onmouseover="storeReferenceAndSubdiagramInfos(this.coords,new Array('CPU.java*file:////Users/rebes926/NetBeansProjects/OperatingSystemsProject/src/CPU.java'),new Array(),new Array(),new Array(),new Array(),new Array()),showReferenceIcon(this.coords),showTooltip(this)" onmouseout="hideTooltip()">
+</map>
+</td>
+</tr>
+</table>
+<p></p>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td class="Category">Model Elements</td>
+</tr>
+<tr>
+<td style="height: 5px"></td>
+</tr>
+</table>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td class="TableHeaderLine" colspan="4"></td>
+</tr>
+<tr>
+<td class="TableHeaderLine1" colspan="4"></td>
+</tr>
+<tr class="TableHeader">
+<td style="width: 10px"></td><td width="30%"><span class="TableHeaderText">Name</span></td><td style="width: 20px"></td><td><span class="TableHeaderText">Documentation</span></td>
+</tr>
+<tr>
+<td class="TableHeaderLine2" colspan="4"></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_x7FslwSGAqACZQaUa.html" target="" class="ItemLink">SystemError : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent">&nbsp;</span></td>
+</tr>
+<tr class="TableRow2">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_B7FslwSGAqACZQaEa.html" target="" class="ItemLink">shortTermScheduler : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads jobs from the ready queue filled by the long-term scheduler
+    </p>
+    <p>
+      and sorts the queue by the jobs' priority. The short-term scheduler
+    </p>
+    <p>
+      then waits until the CPU requests a job. When the CPU sends its request
+    </p>
+    <p>
+      the short-term scheduler takes the next job in the ready queue and passes
+    </p>
+    <p>
+      it to the CPU along with its metadata to be processed
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_a7FslwSGAqACZQZqa.html" target="" class="ItemLink">RamMemory : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Implementaion of the OS's memory.
+    </p>
+    <p>
+      Contains methods to add/modify data in
+    </p>
+    <p>
+      memory (via the memory manager). This class
+    </p>
+    <p>
+      is not directly accessed.
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow2">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_s7FslwSGAqACZQYqa.html" target="" class="ItemLink">ProcessControlBlock : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Contains all information related to each
+    </p>
+    <p>
+      process
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_lbFslwSGAqACZQWqa.html" target="" class="ItemLink">PCB_block : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      This is a template for an individual PCB entry and
+    </p>
+    <p>
+      its associated attributes.
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow2">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_xbFslwSGAqACZQWEa.html" target="" class="ItemLink">pageTableEntry : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Template for a page table entry
+    </p>
+    <p>
+      and its associated attributes
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_xbFslwSGAqACZQWAa.html" target="" class="ItemLink">PageFault : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Defines a page fault exception
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow2">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_ubFslwSGAqACZQVYa.html" target="" class="ItemLink">OSToolkit : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      This class is just a set of tools used by
+    </p>
+    <p>
+      other components in the OS.
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_GbFslwSGAqACZQVAa.html" target="" class="ItemLink">OSDriver : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Core or main thread of the OS Simulator. Calls the
+    </p>
+    <p>
+      loader to load the user programs and then calls the short-term scheduler
+    </p>
+    <p>
+      to assign a job to the CPU from the ready queue created by the
+    </p>
+    <p>
+      long-term scheduler.
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow2">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_obFslwSGAqACZQT2a.html" target="" class="ItemLink">MemoryManager : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      All reading and writing to and from disk and ram
+    </p>
+    <p>
+      is done so via the memory manager
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_rrFslwSGAqACZQTCa.html" target="" class="ItemLink">LongTermScheduler : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads the job entries from the PCB and places the
+    </p>
+    <p>
+      associated job data into RAM, updates the job's
+    </p>
+    <p>
+      associated PCB entry and places the job into the
+    </p>
+    <p>
+      ready queue
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow2">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_1rFslwSGAqACZQSea.html" target="" class="ItemLink">Loader : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads the data file and adds the hex
+    </p>
+    <p>
+      entries to the disk.
+    </p>
+    <p>
+      The job metadata read creates a PCB object
+    </p>
+    <p>
+      and once the associated data metadata is read,
+    </p>
+    <p>
+      the PCB is updated and placed in the PCB array.
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_srFslwSGAqACZQRna.html" target="" class="ItemLink">FrameTableEntry : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Template for a frame table entry and
+    </p>
+    <p>
+      its associated attributes
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow2">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_orFslwSGAqACZQRPa.html" target="" class="ItemLink">DiskMemory : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Implementation of the OS's disk.
+    </p>
+    <p>
+      Contains methods to add/modify disk
+    </p>
+    <p>
+      data via the memory manager, this class
+    </p>
+    <p>
+      is not directly accessed.
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+<tr class="TableRow1">
+<td style="width: 10px"></td><td><span class="TableContent">
+<div style="float: left; width: 18px !important;height: 18px !important;background-image:url(../images/icons/Class.png) !important; background-image:url(''); filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/Class.png');"></div>&nbsp;
+								<a href="Class_dTFslwSGAqACZQPsa.html" target="" class="ItemLink">CPU : Class</a></span></td><td style="width: 20px"></td><td><span class="TableContent"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Reads the job and associated data from RAM via the
+    </p>
+    <p>
+      Memory manager. The data is converted to a 32-bit string,
+    </p>
+    <p>
+      decoded and executed. Upon completion of execution, or in the event
+    </p>
+    <p>
+      of an error (causing the CPU to halt), control is passed back
+    </p>
+    <p>
+      to the driver.
+    </p>
+    <p>
+      Generates cpulog.txt in project directory for testing
+    </p>
+  </body>
+</html>
+&nbsp;</span></td>
+</tr>
+</table>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td style="height: 1px"></td>
+</tr>
+<tr>
+<td class="TableFooter"></td>
+</tr>
+</table>
+</body>
+</html>
