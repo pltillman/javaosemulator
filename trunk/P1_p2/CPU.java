@@ -82,7 +82,7 @@ public class CPU implements Runnable {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        System.out.println("Job starting at: " + pc);
+        System.out.println("Job " + j.getJobID() + " starting at: " + pc);
         physical = OSDriver.MemManager.getPhysicalAddress(pc, j);
         oBufferSize = j.get_Output_buffer_size(); //size in # of words
         iBufferSize = j.get_Input_buffer_size();
@@ -93,7 +93,7 @@ public class CPU implements Runnable {
         System.out.println("\tProgram Counter starting at: " + pc);
         //run the duration of the frame
         while (status == 1) {
-            System.out.println("Fetching instruction at PC=" + physical);
+            System.out.println("\n\tJob: " + j.getJobID() + "\n\tFetching instruction at PC=" + physical);
             try {
                 out.append("\n\t**********FETCHING INSTRUCTION...**********\n");
                 String instr = fetch(physical);
@@ -636,23 +636,23 @@ private synchronized void calc_arith(int i) throws IOException {
         switch (i) {
             case 0:
                 reg_Array[d_reg] = (short)(reg_Array[s1_reg] + reg_Array[s2_reg]);
-                out.append("s1_reg " + reg_Array[s1_reg] + " + s2_reg " + reg_Array[s2_reg] +
+                out.append("\ts1_reg " + reg_Array[s1_reg] + " + s2_reg " + reg_Array[s2_reg] +
                         " makes d_reg " + (reg_Array[s1_reg] + reg_Array[s2_reg]));
-                System.out.println("s1_reg: " + reg_Array[s1_reg] + " + s2_reg: " + reg_Array[s2_reg] +
+                System.out.println("\ts1_reg: " + reg_Array[s1_reg] + " + s2_reg: " + reg_Array[s2_reg] +
                         "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 1:
                 reg_Array[d_reg] = (short)(reg_Array[s1_reg] - reg_Array[s2_reg]);
-                out.append("s1_reg " + reg_Array[s1_reg] + " - s2_reg " + reg_Array[s2_reg] +
+                out.append("\ts1_reg " + reg_Array[s1_reg] + " - s2_reg " + reg_Array[s2_reg] +
                         " makes d_reg " + reg_Array[d_reg]);
-                System.out.println("s1_reg: " + reg_Array[s1_reg] + " - s2_reg: " + reg_Array[s2_reg] +
+                System.out.println("\ts1_reg: " + reg_Array[s1_reg] + " - s2_reg: " + reg_Array[s2_reg] +
                         "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 2:
                 reg_Array[d_reg] = (short)(reg_Array[s1_reg] * reg_Array[s2_reg]);
-                out.append("s1_reg " + reg_Array[s1_reg] + " * s2_reg " + reg_Array[s2_reg] +
+                out.append("\ts1_reg " + reg_Array[s1_reg] + " * s2_reg " + reg_Array[s2_reg] +
                         " makes d_reg " + reg_Array[d_reg]);
-                System.out.println("s1_reg: " + reg_Array[s1_reg] + " * s2_reg: " + reg_Array[s2_reg] +
+                System.out.println("\ts1_reg: " + reg_Array[s1_reg] + " * s2_reg: " + reg_Array[s2_reg] +
                         "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 3:
@@ -660,38 +660,38 @@ private synchronized void calc_arith(int i) throws IOException {
                     return;
                 else {
                     reg_Array[d_reg] = (short)(reg_Array[s1_reg] / reg_Array[s2_reg]);
-                    out.append("s1_reg: " + reg_Array[s1_reg] + " / s2_reg: " + reg_Array[s2_reg] +
+                    out.append("\ts1_reg: " + reg_Array[s1_reg] + " / s2_reg: " + reg_Array[s2_reg] +
                             " makes d_reg " + reg_Array[d_reg]);
-                    System.out.println("s1_reg: " + reg_Array[s1_reg] + " / s2_reg: " + reg_Array[s2_reg] +
+                    System.out.println("\ts1_reg: " + reg_Array[s1_reg] + " / s2_reg: " + reg_Array[s2_reg] +
                             "\tmakes d_reg: " + reg_Array[d_reg]);
                 }
                 break;
             case 4:
                 reg_Array[d_reg] = (short)(reg_Array[s1_reg] & reg_Array[s2_reg]);
-                out.append("s1_reg " + reg_Array[s1_reg] + " LOGICAL AND'd with s2_reg " + reg_Array[s2_reg] +
+                out.append("\ts1_reg " + reg_Array[s1_reg] + " LOGICAL AND'd with s2_reg " + reg_Array[s2_reg] +
                         " makes d_reg " + reg_Array[d_reg]);
-                System.out.println("s1_reg: " + reg_Array[s1_reg] + " LOGICAL AND'd with s2_reg: " + reg_Array[s2_reg] +
+                System.out.println("\ts1_reg: " + reg_Array[s1_reg] + " LOGICAL AND'd with s2_reg: " + reg_Array[s2_reg] +
                         "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 5:
                 reg_Array[d_reg] = (short)(reg_Array[s1_reg] | reg_Array[s2_reg]);
-                out.append("s1_reg " + reg_Array[s1_reg] + " LOGICAL OR'd with s2_reg " + reg_Array[s2_reg] +
+                out.append("\ts1_reg " + reg_Array[s1_reg] + " LOGICAL OR'd with s2_reg " + reg_Array[s2_reg] +
                         " makes d_reg " + reg_Array[d_reg]);
-                System.out.println("s1_reg: " + reg_Array[s1_reg] + " LOGICAL OR'd with s2_reg: " + reg_Array[s2_reg] +
+                System.out.println("\ts1_reg: " + reg_Array[s1_reg] + " LOGICAL OR'd with s2_reg: " + reg_Array[s2_reg] +
                         "\tmakes d_reg: " + reg_Array[d_reg]);
                 break;
             case 6:
                 int tmp_reg = reg_Array[s1_reg];
                 reg_Array[s1_reg] = reg_Array[s2_reg];
                 reg_Array[s2_reg] = tmp_reg;
-                out.append("s1_reg is now " + reg_Array[s1_reg] + " ");
-                out.append("and s2_reg is now: " + reg_Array[s2_reg]);
-                System.out.println("s1_reg is now: " + reg_Array[s1_reg]);
-                System.out.println("s2_reg is now: " + reg_Array[s2_reg]);
+                out.append("\ts1_reg is now " + reg_Array[s1_reg] + " ");
+                out.append("\tand s2_reg is now: " + reg_Array[s2_reg]);
+                System.out.println("\ts1_reg is now: " + reg_Array[s1_reg]);
+                System.out.println("\ts2_reg is now: " + reg_Array[s2_reg]);
                 break;
             default:
-                out.append("DEFAULT CALC_ARITH SWITCH REACHED");
-                System.out.println("DEFAULT CALC_ARITH SWITCH REACHED");
+                out.append("\tDEFAULT CALC_ARITH SWITCH REACHED");
+                System.out.println("\tDEFAULT CALC_ARITH SWITCH REACHED");
                 break;
         }
     }

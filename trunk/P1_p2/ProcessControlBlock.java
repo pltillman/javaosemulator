@@ -14,7 +14,7 @@ public class ProcessControlBlock {
     
     //private static String [][] jobQ;
     private PCB_block pcb_e;
-    private pageTableEntry pageTable_e;
+    private static pageTableEntry pageTable_e;
     
     private static int count;
 
@@ -83,7 +83,7 @@ public class ProcessControlBlock {
      * @param frameNumber associated frame number
      * @param validFlag  valid or invalid indicator
      */
-    public void updateTableEntry(int pIndex, int frameNumber, Boolean validFlag) {
+    public synchronized void updateTableEntry(int pIndex, int frameNumber, Boolean validFlag) {
         pageTable[pIndex].updatePageEntry(frameNumber, validFlag);
     }
 
@@ -122,7 +122,7 @@ public class ProcessControlBlock {
      * @param a index of page table to get associated frame
      * @return frame number
      */
-    public int getFrame(int p, PCB_block j) {
+    public synchronized int getFrame(int p, PCB_block j) {
         int off = j.getPTBR();
         int i = p+off;
         System.out.println("\tGETTING FRAME AT PAGE TABLE INDEX: " + i);
@@ -144,7 +144,7 @@ public class ProcessControlBlock {
      * @param page page number
      * @return frame number associated with page
      */
-    public int searchForPage(int page) {
+    public synchronized int searchForPage(int page) {
       for (pageTableEntry pte : pageTable) {
         if (pte.getPageNumber() == page) {
           return pte.getFrameNumber();
@@ -158,7 +158,7 @@ public class ProcessControlBlock {
     *
     * @param s size of data
     */
-    public void setDataSize(int s) {
+    public synchronized void setDataSize(int s) {
         pcb_e.setDataSize(s);
     }
 

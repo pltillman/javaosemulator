@@ -14,24 +14,16 @@ public class LongTermScheduler {
     //initially all RAM is available
     // -- value decremented as jobs are added
     private static int Memleft = 1024;
-    private int loc;
-    private int pageNum;
-    private int frameNum=0, frameCount;
-    private int CURRJOB;
-    private int jobStart, v;
-    private int jobSize;
-    private int dataSize;
-    private int jobIBSize;
-    private int jobOBSize;
-    private int jobTBSize;
-    private int cJobStart;
-    private int cJobEnd;
+    private int loc, pageNum, frameNum=0, frameCount, CURRJOB, jobStart, v, jobSize;
+    private int dataSize, jobIBSize, jobOBSize, jobTBSize, cJobStart, cJobEnd;
+
     private final int ready = 0;
     private int jobCount=0;
     PCB_block job;
     double percRam = 0;
     public static double average;
     public static double percent;
+    private ArrayList<PCB_block> jobList;
     
     /**
      * Default constructor- Initializes the ready queue
@@ -39,8 +31,10 @@ public class LongTermScheduler {
      */
     public LongTermScheduler() {
         
-        readyQueue= new ArrayList<PCB_block>();
+        readyQueue = new ArrayList<PCB_block>();
+        jobList = new ArrayList<PCB_block>();
         CURRJOB = 0;
+
         start();
         //printQ();
     }
@@ -53,7 +47,7 @@ public class LongTermScheduler {
     public synchronized void start() {
 
 
-        while (Memleft>128 && (CURRJOB<OSDriver.PCB.getJobCount())) {
+        while (Memleft>32 && (CURRJOB<OSDriver.PCB.getJobCount())) {
 
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();

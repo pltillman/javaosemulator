@@ -7,14 +7,11 @@ import java.util.ArrayList;
  */
 public class MemoryManager {
 
-    private DiskMemory disk;
-    private RamMemory ram;
-    private int totalPageNum;
-    private int totalFrameNum;
-    private int pageNum;
-    private int frameNum;
+    private static DiskMemory disk;
+    private static RamMemory ram;
+    private static int totalPageNum, totalFrameNum, pageNum, frameNum;
     private FrameTableEntry[] frameTable;
-    private PriorityBlockingQueue<Integer> framePool;
+    private static PriorityBlockingQueue<Integer> framePool;
     private ArrayList<Integer> frames;
 
    /**
@@ -44,7 +41,7 @@ public class MemoryManager {
     *
     * @param u frame table value (frame number) to initialize
     */
-    public void initFrameTable(int u) {
+    public synchronized void initFrameTable(int u) {
         frameTable[u] = new FrameTableEntry();
         framePool.add(u);
     }
@@ -53,11 +50,11 @@ public class MemoryManager {
      *
      * @param page
      */
-    public void reclaimFrame(int page) {
+    public synchronized void reclaimFrame(int page) {
         framePool.add(OSDriver.PCB.searchForPage(page));
     }
 
-    public void reclaimFrame(ArrayList p) {
+    public synchronized void reclaimFrame(ArrayList p) {
         frames = p;
         while(!p.isEmpty()) {
             int j = frames.remove(0);
@@ -70,7 +67,7 @@ public class MemoryManager {
     *
     * @return value of next available frame
     */
-    public int getNextFrame() {
+    public synchronized int getNextFrame() {
         System.out.println("FRAME POOL: " + framePool.toString());
         if (framePool.isEmpty()) {
             return framePool.size();
@@ -85,7 +82,7 @@ public class MemoryManager {
    * @param x Initial index to calculate page value
    *          to read data from
    */
-    public int getPage(int x, PCB_block j) {
+    public synchronized int getPage(int x, PCB_block j) {
         System.out.println("\tRETRIEVING PAGE: " + x);
         int startLoc = j.getDiskAddress();
         startLoc += x*4;
@@ -114,7 +111,7 @@ public class MemoryManager {
     * @param alloc    set to true if allocated, false otherwise
     * @param jID      Job ID
     */
-    public void updateFrameTable(int frameNum, int pageNum, Boolean alloc, int jID) {
+    public synchronized void updateFrameTable(int frameNum, int pageNum, Boolean alloc, int jID) {
         frameTable[frameNum].updateFrameEntry(pageNum, jID, alloc);
     }
 
@@ -136,7 +133,7 @@ public class MemoryManager {
     * @param ptbr page table base register
     * @return physical address
     */
-    public int getPhysicalAddress(int p, PCB_block j) {
+    public synchronized int getPhysicalAddress(int p, PCB_block j) {
         System.out.println("\n\tGetting physical address for: " + p + " \tPTBR: " + j.getPTBR());
 
         String pageNumber;
