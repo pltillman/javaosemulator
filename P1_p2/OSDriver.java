@@ -70,9 +70,9 @@ import java.io.*;
                 }
 
             } catch ( FileNotFoundException fnfe ) {
-              fnfe.printStackTrace();
+                fnfe.printStackTrace();
             } catch ( IOException ioe ) {
-              ioe.printStackTrace();
+                ioe.printStackTrace();
             }
 
 
@@ -117,7 +117,7 @@ import java.io.*;
 
                     for (int y=0; y<1; y++) {
 
-                        System.err.println("CPU status:::::: Y " + y + " status " + cpu_Array[y].status);
+                        //System.err.println("CPU status:::::: Y " + y + " status " + cpu_Array[y].status);
 
                         switch (cpu_Array[y].status) {
 
@@ -127,6 +127,7 @@ import java.io.*;
                                         PCB_block j = STS.Store(0);
 
                                         cpu_Array[y].loadJob(j);
+                                        //cpu0.run();
                                         t = new Thread(cpu_Array[y]);
                                         t.start();
                                         MemManager.reclaimFrame(j.getFrameUsed());
@@ -136,10 +137,19 @@ import java.io.*;
                                 }
 
                             default:
-                                System.out.println("\tDEFAULT REACHED");
+                                System.out.println("\t WAITING ON AN AVAILABLE CPU");
                         }
-                        ready = (cpu0.status == 0);
                     }
+                    
+                    if (LongTermScheduler.readyQueue.size() == 0 && !DONE && ready) {
+                        System.out.println("\nADDING MORE JOBS........\n");
+                        LTS.start();
+                        STS.SJF();
+                    }
+
+                    ready = (cpu0.status == 0);
+                    //ready = (cpu0.status == 0) || (cpu1.status == 0) || (cpu2.status == 0) || (cpu3.status == 0);
+                    
                 }
             } while (!LongTermScheduler.readyQueue.isEmpty());
 
