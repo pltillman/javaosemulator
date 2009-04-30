@@ -154,9 +154,12 @@ import java.io.*;
                             case 0:
                                 try {
                                     if (!LongTermScheduler.readyQueue.isEmpty()) {
-                                        cpu_Array[y].loadJob(STS.Store(0));
+                                        PCB_block j = STS.Store(0);
+
+                                        cpu_Array[y].loadJob(j);
                                         t = new Thread(cpu_Array[y]);
                                         t.start();
+                                        MemManager.reclaimFrame(j.getFrameUsed());
                                     }
                                 } catch (IOException ioe) {
                                     ioe.printStackTrace();

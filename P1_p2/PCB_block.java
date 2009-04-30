@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 /**
  * This is a template for an individual PCB entry and
  * its associated attributes.
@@ -14,6 +14,8 @@ public class PCB_block {
     private int tmp_buffer_size;
     private int dataSize;
     private int status;
+    private int frameOffset;
+    private ArrayList<Integer> frameUsed;
 
     private short[] IP_buffer;
     private short[] OP_buffer;
@@ -46,6 +48,7 @@ public class PCB_block {
         this.jobSize = s;
         this.jobPriority = p;
         this.address = a;
+        this.frameUsed = new ArrayList<Integer>();
     }
 
     /**
@@ -85,7 +88,31 @@ public class PCB_block {
     public int getPTBR() {
         return this.PTBR;
     }
-
+    
+    public ArrayList getFrameUsed() {
+        return frameUsed;
+    }
+    public void addUsedFrame(int i) {
+        frameUsed.add(i);
+    }
+    /**
+     * Mutator method to set frame offset
+     *
+     * @param i
+     */
+    public void setFrameOffset(int i) {
+        this.frameOffset = i;
+    }
+    
+    /**
+     * Accessor method to get frame offset
+     * 
+     * @return
+     */
+    
+    public int getFrameOffset() {
+        return this.frameOffset;
+    }
     /**
      * Mutator method to set data size
      *

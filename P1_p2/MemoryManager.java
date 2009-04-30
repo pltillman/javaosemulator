@@ -1,5 +1,6 @@
 
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.ArrayList;
 /**
  * All reading and writing to and from disk and ram
  * is done so via the memory manager
@@ -14,6 +15,7 @@ public class MemoryManager {
     private int frameNum;
     private FrameTableEntry[] frameTable;
     private PriorityBlockingQueue<Integer> framePool;
+    private ArrayList<Integer> frames;
 
    /**
     * Default Constructor
@@ -24,7 +26,7 @@ public class MemoryManager {
     *  Initialize the frame table space
     */
     public MemoryManager() {
-
+        frames = new ArrayList<Integer>();
         framePool = new PriorityBlockingQueue<Integer>();
         disk = new DiskMemory(2048);
         ram = new RamMemory(1024);
@@ -55,6 +57,14 @@ public class MemoryManager {
         framePool.add(OSDriver.PCB.searchForPage(page));
     }
 
+    public void reclaimFrame(ArrayList p) {
+        frames = p;
+        while(!p.isEmpty()) {
+            int j = frames.remove(0);
+            framePool.add(j);
+        }
+    }
+
    /**
     * Finds the first unallocated frame
     *
@@ -75,12 +85,12 @@ public class MemoryManager {
    * @param x Initial index to calculate page value
    *          to read data from
    */
-    public int getPage(int x) {
+    public int getPage(int x, PCB_block j) {
         System.out.println("\tRETRIEVING PAGE: " + x);
         int beginFrame = getNextFrame();
         System.out.println("\tPutting data in frame " + beginFrame);
         int index = beginFrame;
-        index *= 16;
+        index *= 16+j.getFrameOffset();
         //System.out.println("\n\tAdding data starting at index: " + index);
 
         for (int i=x*4; i<(x*4)+4; i++) {
@@ -148,7 +158,8 @@ public class MemoryManager {
         // get the last 2 bits for the offset
         offset = logAddress.substring(6, 10);
 
-        frameNumber = OSDriver.PCB.getFrame(page, j.getPTBR());
+        frameNumber = OSDriver.PCB.getFrame(page, j);
+        j.addUsedFrame(frameNumber);
         System.out.println("\tLogical address: " + logAddress);
         System.out.println("\tPage: " + page + "\tOffset: " + offset);
         System.out.println("\tFound Frame #: " + frameNumber);

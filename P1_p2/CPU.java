@@ -158,8 +158,8 @@ public class CPU implements Runnable {
             }
             //System.out.println("\tPROGRAM COUNTER=" + pc);
 
-            if (pc % 15 == 0) {
-                //OSDriver.MemManager.reclaimFrame(pc/15);
+            if (pc % 32 == 0) {
+                //OSDriver.MemManager.reclaimFrame(pc/16+j.getFrameOffset());
                 //OSDriver.PCB.searchForPage(data);
             }
         }
@@ -672,18 +672,9 @@ public class CPU implements Runnable {
  *          =5 - LOGICAL 'OR'
  *          =6 - SWAP REGISTERS
  * 
- * @throws java.io.IOException  If an input or output exception
- *                                occurs
+ * @throws java.io.IOException  If an input or output exception occurs
  */
 private synchronized void calc_arith(int i) throws IOException {
-
-        // i=0 - ADD
-        // i=1 - SUBTRACT
-        // i=2 - MULTIPLY
-        // i=3 - DIVIDE
-        // i=4 - LOGICAL 'AND'
-        // I=5 - LOGICAL 'OR'
-        // i=6 - SWAP REGISTERS
 
         switch (i) {
             case 0:

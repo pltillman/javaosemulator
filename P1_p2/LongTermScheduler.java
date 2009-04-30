@@ -30,8 +30,8 @@ public class LongTermScheduler {
     private int jobCount=0;
     PCB_block job;
     double percRam = 0;
-    public static  double average;
-    public static  double percent;
+    public static double average;
+    public static double percent;
     
     /**
      * Default constructor- Initializes the ready queue
@@ -53,7 +53,7 @@ public class LongTermScheduler {
     public synchronized void start() {
 
 
-        while (Memleft>=64 && (CURRJOB<OSDriver.PCB.getJobCount())) {
+        while (Memleft>128 && (CURRJOB<OSDriver.PCB.getJobCount())) {
 
             job = OSDriver.PCB.getJob(CURRJOB);
             jobStart = job.getDiskAddress();
@@ -74,7 +74,10 @@ public class LongTermScheduler {
                 //get next available frame
                 frameNum = OSDriver.MemManager.getNextFrame();
                 //page number calculated by job's starting index/4
+                job.addUsedFrame(frameNum);
                 pageNum = jobStart/4;
+                job.setFrameOffset(jobStart%4);
+
                 System.out.println("\t**** Frame Number: "+ frameNum + " ****\n\tADDING DATA...");
                 loc = frameNum*16;
                 v = jobStart+4;
@@ -104,33 +107,9 @@ public class LongTermScheduler {
                     Memleft -= 4;
                 }
 
-//                // add the job's input buffer into paging system
-//                int k = jobStart+jobSize+jobIBSize;
-//                for (int d=jobStart+jobSize; d<k; d++) {
-//                    String binaryBits = OSDriver.tools.getBinaryData(d);
-//
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(0,8), 2));
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(8,16), 2));
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(16,24), 2));
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(24,32), 2));
-//                }
-//
-//                // add the job's output buffer into paging system
-//                int o = jobStart+jobSize+jobOBSize;
-//                for (int d=jobStart+jobSize+jobIBSize; d<o; d++) {
-//                    String binaryBits = OSDriver.tools.getBinaryData(d);
-//
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(0,8), 2));
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(8,16), 2));
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(16,24), 2));
-//                    OSDriver.MemManager.writeRamData(loc++, Short.valueOf(binaryBits.substring(24,32), 2));
-//                }
-
                 if (frameCount == 0) {
                     job.setPTBR(pageNum);
                 }
-
-
 
                 // Update the frame table with the information regarding what we just added
                 OSDriver.MemManager.updateFrameTable(frameNum, pageNum, true, job.getJobID());
@@ -172,29 +151,6 @@ public class LongTermScheduler {
                     job.get_mem_start() + "-" + job.get_mem_end() + "\n");
 
             CURRJOB++;
-
-//            System.out.println("Is the current job < total jobs " + (CURRJOB < OSDriver.PCB.getJobCount()));
-//            System.out.println("Current job: " + CURRJOB + "\tTotal jobs: " + OSDriver.PCB.getJobCount());
-
-//            if (!OSDriver.tools.hasLoadedAllJobs() ) {
-//
-//                System.out.println("CURRENT JOB: " + CURRJOB);
-//
-//                //System.out.println("job end: " + job.get_mem_end(CURRJOB-1));
-//                //System.out.println("job count: "+ jobCount);
-//                //System.out.println("CURRJOB=" + CURRJOB);
-//
-//                job = OSDriver.PCB.getJob(CURRJOB);
-//                jobStart = job.getDiskAddress();
-//                jobSize = job.getJobSize();
-//                dataSize = job.getDataSize();
-//                jobIBSize = job.get_Input_buffer_size();
-//
-//            } else {
-//                percentRam(1);
-//                OSDriver.DONE = true;
-//                return;
-//            }
 
         }
 
